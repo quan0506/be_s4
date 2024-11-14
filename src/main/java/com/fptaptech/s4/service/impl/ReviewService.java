@@ -1,4 +1,4 @@
-package com.fptaptech.s4.service;
+package com.fptaptech.s4.service.impl;
 
 import com.fptaptech.s4.entity.Review;
 import com.fptaptech.s4.repository.ReviewRepository;

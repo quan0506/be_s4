@@ -2,7 +2,7 @@ package com.fptaptech.s4.controller;
 
 import com.fptaptech.s4.entity.Payment;
 import com.fptaptech.s4.repository.PaymentRepository;
-import com.fptaptech.s4.service.VNPayService;
+import com.fptaptech.s4.service.impl.VNPayService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

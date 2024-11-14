@@ -1,9 +1,6 @@
 package com.fptaptech.s4.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,11 +11,30 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "room_detail")
 public class RoomDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+
+    @Column(name = "type", nullable = false)
     private String type;
 
+    @Column(name = "room_size")
+    private int roomSize;
 
+    @Column(name = "price")
+    private int price;
+
+    @Column(name = "photo")
+    private String photo;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "room_id", insertable = false, updatable = false)
+    private Room room;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "hotel_service_id", insertable = false, updatable = false)
+    private HotelServices hotelServices;
 }

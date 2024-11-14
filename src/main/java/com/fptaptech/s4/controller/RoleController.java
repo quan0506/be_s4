@@ -31,7 +31,6 @@ public class RoleController {
             return ResponseEntity.ok("New role created successfully!");
         }catch(RoleAlreadyExistException re){
             return ResponseEntity.status(HttpStatus.CONFLICT).body(re.getMessage());
-
         }
     }
     @DeleteMapping("/delete/{roleId}")

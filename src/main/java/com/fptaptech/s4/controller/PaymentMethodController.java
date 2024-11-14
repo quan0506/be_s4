@@ -2,7 +2,7 @@ package com.fptaptech.s4.controller;
 
 
 import com.fptaptech.s4.entity.PaymentMethod;
-import com.fptaptech.s4.service.PaymentMethodService;
+import com.fptaptech.s4.service.impl.PaymentMethodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

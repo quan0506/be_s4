@@ -1,92 +1,54 @@
 package com.fptaptech.s4.controller;
 
-import com.fptaptech.s4.exception.InvalidBookingRequestException;
-import com.fptaptech.s4.exception.ResourceNotFoundException;
-import com.fptaptech.s4.entity.BookedRoom;
-import com.fptaptech.s4.entity.Room;
-import com.fptaptech.s4.response.BookingResponse;
-import com.fptaptech.s4.response.RoomResponse;
+import com.fptaptech.s4.entity.Booking;
 import com.fptaptech.s4.service.IBookingService;
-import com.fptaptech.s4.service.IRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/bookings")
+@RequiredArgsConstructor
 public class BookingController {
+
     private final IBookingService bookingService;
-    private final IRoomService roomService;
 
-    @GetMapping("/all-bookings")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<BookingResponse>> getAllBookings(){
-        List<BookedRoom> bookings = bookingService.getAllBookings();
-        List<BookingResponse> bookingResponses = new ArrayList<>();
-        for (BookedRoom booking : bookings){
-            BookingResponse bookingResponse = getBookingResponse(booking);
-            bookingResponses.add(bookingResponse);
-        }
-        return ResponseEntity.ok(bookingResponses);
+    @PostMapping("/create")
+    public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
+        Booking newBooking = bookingService.createBooking(booking);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newBooking);
     }
 
-    @PostMapping("/room/{roomId}/booking")
-    public ResponseEntity<?> saveBooking(@PathVariable Long roomId,
-                                         @RequestBody BookedRoom bookingRequest){
-        try{
-            String confirmationCode = bookingService.saveBooking(roomId, bookingRequest);
-            return ResponseEntity.ok(
-                    "Room booked successfully, Your booking confirmation code is :"+confirmationCode);
-
-        }catch (InvalidBookingRequestException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Booking> updateBooking(@PathVariable Long id, @RequestBody Booking booking) {
+        Booking updatedBooking = bookingService.updateBooking(id, booking);
+        return ResponseEntity.ok(updatedBooking);
     }
 
-    @GetMapping("/confirmation/{confirmationCode}")
-    public ResponseEntity<?> getBookingByConfirmationCode(@PathVariable String confirmationCode){
-        try{
-            BookedRoom booking = bookingService.findByBookingConfirmationCode(confirmationCode);
-            BookingResponse bookingResponse = getBookingResponse(booking);
-            return ResponseEntity.ok(bookingResponse);
-        }catch (ResourceNotFoundException ex){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-        }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteBooking(@PathVariable Long id) {
+        bookingService.deleteBooking(id);
+        return ResponseEntity.ok("Booking deleted successfully.");
     }
 
-    @GetMapping("/user/{email}/bookings")
-    public ResponseEntity<List<BookingResponse>> getBookingsByUserEmail(@PathVariable String email) {
-        List<BookedRoom> bookings = bookingService.getBookingsByUserEmail(email);
-        List<BookingResponse> bookingResponses = new ArrayList<>();
-        for (BookedRoom booking : bookings) {
-            BookingResponse bookingResponse = getBookingResponse(booking);
-            bookingResponses.add(bookingResponse);
-        }
-        return ResponseEntity.ok(bookingResponses);
+    @GetMapping("/{id}")
+    public ResponseEntity<Booking> getBookingById(@PathVariable Long id) {
+        Booking booking = bookingService.getBookingById(id);
+        return ResponseEntity.ok(booking);
     }
 
-    @DeleteMapping("/booking/{bookingId}/delete")
-    public void cancelBooking(@PathVariable Long bookingId){
-        bookingService.cancelBooking(bookingId);
+    @GetMapping("/all")
+    public ResponseEntity<List<Booking>> getAllBookings() {
+        List<Booking> bookings = bookingService.getAllBookings();
+        return ResponseEntity.ok(bookings);
     }
 
-    private BookingResponse getBookingResponse(BookedRoom booking) {
-        Room theRoom = roomService.getRoomById(booking.getRoom().getId()).get();
-        RoomResponse room = new RoomResponse(
-                theRoom.getId(),
-                theRoom.getRoomType(),
-                theRoom.getRoomPrice());
-        return new BookingResponse(
-                booking.getBookingId(), booking.getCheckInDate(),
-                booking.getCheckOutDate(),booking.getGuestFullName(),
-                booking.getGuestEmail(), booking.getNumOfAdults(),
-                booking.getNumOfChildren(), booking.getTotalNumOfGuest(),
-                booking.getBookingConfirmationCode(), room);
+    @PostMapping("/payment/{id}")
+    public ResponseEntity<String> processPayment(@PathVariable Long id, @RequestParam String paymentMethod) {
+        bookingService.processPayment(id, paymentMethod);
+        return ResponseEntity.ok("Payment processed successfully.");
     }
 }

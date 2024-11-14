@@ -6,7 +6,7 @@ import com.fptaptech.s4.entity.BookedRoom;
 import com.fptaptech.s4.entity.Room;
 import com.fptaptech.s4.response.BookingResponse;
 import com.fptaptech.s4.response.RoomResponse;
-import com.fptaptech.s4.service.BookingService;
+import com.fptaptech.s4.service.impl.BookingService;
 import com.fptaptech.s4.service.IRoomService;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -37,10 +37,12 @@ public class RoomController {
     @PostMapping("/add/new-room")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<RoomResponse> addNewRoom(
+            @RequestParam("branchId") Long branchId,
+            @RequestParam("hotelId") Long hotelId,
             @RequestParam("photo") MultipartFile photo,
             @RequestParam("roomType") String roomType,
             @RequestParam("roomPrice") BigDecimal roomPrice) throws SQLException, IOException {
-        Room savedRoom = roomService.addNewRoom(photo, roomType, roomPrice);
+        Room savedRoom = roomService.addNewRoom(photo, roomType, roomPrice, hotelId, branchId);
         RoomResponse response = new RoomResponse(savedRoom.getId(), savedRoom.getRoomType(),
                 savedRoom.getRoomPrice());
         return ResponseEntity.ok(response);

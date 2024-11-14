@@ -1,7 +1,7 @@
 package com.fptaptech.s4.controller;
 
 import com.fptaptech.s4.repository.PaymentRepository;
-import com.fptaptech.s4.service.PaypalService;
+import com.fptaptech.s4.service.impl.PaypalService;
 import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;

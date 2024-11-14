@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter
@@ -46,6 +47,17 @@ public class BookedRoom {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private Room room;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "booked_room_services",
+            joinColumns = @JoinColumn(name = "booked_room_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id")
+    )
+
+    @Column(name = "services")
+    private List<HotelServices> services; // Dịch vụ bổ sung
+
 
     public void calculateTotalNumberOfGuest(){
         this.totalNumOfGuest = this.NumOfAdults + NumOfChildren;

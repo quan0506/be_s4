@@ -1,4 +1,4 @@
-package com.fptaptech.s4.service;
+package com.fptaptech.s4.service.impl;
 
 import com.fptaptech.s4.exception.RoleAlreadyExistException;
 import com.fptaptech.s4.exception.UserAlreadyExistsException;
@@ -6,6 +6,7 @@ import com.fptaptech.s4.entity.Role;
 import com.fptaptech.s4.entity.User;
 import com.fptaptech.s4.repository.RoleRepository;
 import com.fptaptech.s4.repository.UserRepository;
+import com.fptaptech.s4.service.IRoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;

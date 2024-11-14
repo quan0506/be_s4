@@ -7,6 +7,7 @@ import com.fptaptech.s4.response.JwtResponse;
 import com.fptaptech.s4.security.jwt.JwtUtils;
 import com.fptaptech.s4.security.user.HotelUserDetails;
 import com.fptaptech.s4.service.IUserService;
+import com.fptaptech.s4.service.impl.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,20 +25,23 @@ import java.util.List;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final IUserService userService;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
-
+    private final UserService userService;
     @PostMapping("/register-user")
     public ResponseEntity<?> registerUser(@RequestBody User user, @RequestParam String role){
         try{
             userService.registerUser(user, role);
             return ResponseEntity.ok("Registration successful!");
-
         }catch (UserAlreadyExistsException e){
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
+
+    /*@GetMapping("/confirm-account")
+    public ResponseEntity<?> confirmAccount(@RequestParam("token") String confirmationToken){
+        return userService.confirmEmail(confirmationToken);
+    }*/
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest request){

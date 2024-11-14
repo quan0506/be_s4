@@ -15,22 +15,39 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@Table(name = "room")
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private  Long id;
+
+    @Column(name = "room_type")
     private String roomType;
+
+    @Column(name = "room_price")
     private BigDecimal roomPrice;
+
+    @Column(name = "is_booked")
     private boolean isBooked = false;
+
+    @ManyToOne
+    @JoinColumn(name = "branch_id", referencedColumnName = "id")
+    private Branch branch;
+
     @Lob
     private Blob photo;
-
     @OneToMany(mappedBy="room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<BookedRoom> bookings;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hotel_id", referencedColumnName = "id")
+    private Hotel hotel;
 
     public Room() {
         this.bookings = new ArrayList<>();
     }
+
     public void addBooking(BookedRoom booking){
         if (bookings == null){
             bookings = new ArrayList<>();
@@ -41,4 +58,6 @@ public class Room {
         String bookingCode = RandomStringUtils.randomNumeric(10);
         booking.setBookingConfirmationCode(bookingCode);
     }
+
+
 }
