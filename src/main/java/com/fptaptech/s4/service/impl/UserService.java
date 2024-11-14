@@ -25,7 +25,7 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
-    private final ConfirmationTokenRepository confirmationTokenRepository;
+    /*private final ConfirmationTokenRepository confirmationTokenRepository;*/
     /*private final EmailService emailService;*/
 
     @Override
