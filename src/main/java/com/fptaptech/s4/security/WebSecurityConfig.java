@@ -26,9 +26,10 @@ public class WebSecurityConfig {
     private final JwtAuthEntryPoint jwtAuthEntryPoint;
 
     @Bean
-    public AuthTokenFilter authenticationTokenFilter(){
+    public AuthTokenFilter authenticationTokenFilter() {
         return new AuthTokenFilter();
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -49,17 +50,122 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer :: disable)
-                .exceptionHandling(
-                        exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
+        http.csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/register-user", "/auth/login").permitAll()  // Public API cho auth
+                        .requestMatchers("/admin/branches/all", "/admin/branches/{id}", "/admin/branches/hotel/**").permitAll()  // Public cho Branch
+                        .requestMatchers("/admin/hotels/all", "/admin/hotels/{id}").permitAll()  // Public cho Hotel
+                        .requestMatchers("/roles/**").hasRole("ADMIN")  // Chỉ ADMIN
+                        .anyRequest().authenticated());  // Các API còn lại yêu cầu xác thực
+        http.authenticationProvider(authenticationProvider());
+        http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
+
+}
+
+
+
+
+/*@Configuration
+@RequiredArgsConstructor
+@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
+public class WebSecurityConfig {
+    private final HotelUserDetailsService userDetailsService;
+    private final JwtAuthEntryPoint jwtAuthEntryPoint;
+
+    @Bean
+    public AuthTokenFilter authenticationTokenFilter() {
+        return new AuthTokenFilter();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        var authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/register-user", "/auth/login").permitAll()  // Cho phép truy cập mà không cần xác thực
-                        .requestMatchers("/auth/**", "/rooms/**","/booked/**","/bookings/**").permitAll()
+                        .requestMatchers("/auth/**", "/rooms/**", "/booked/**", "/bookings/**").permitAll()
+                        .requestMatchers("/admin/hotels/all", "/admin/branches/hotel/**", "/admin/branches/{id}", "/admin/branches/all")
+                        .permitAll()
                         .requestMatchers("/roles/**").hasRole("ADMIN")
                         .anyRequest().authenticated());
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+}*/
+
+
+
+/*
+@Configuration
+@RequiredArgsConstructor
+@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
+public class WebSecurityConfig {
+    private final HotelUserDetailsService userDetailsService;
+    private final JwtAuthEntryPoint jwtAuthEntryPoint;
+
+    @Bean
+    public AuthTokenFilter authenticationTokenFilter() {
+        return new AuthTokenFilter();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        var authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/register-user", "/auth/login").permitAll()  // Cho phép truy cập mà không cần xác thực
+                        .requestMatchers("/auth/**", "/rooms/**", "/booked/**", "/bookings/**").permitAll()
+                        .requestMatchers("/roles/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/hotels/all", "/admin/branches/hotel/**", "/admin/branches/{id}", "/admin/branches/all")
+                        .hasAnyRole("ADMIN", "USER", "EMPLOYEE")
+                        .anyRequest().authenticated());
+        http.authenticationProvider(authenticationProvider());
+        http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
 }
+*/
+

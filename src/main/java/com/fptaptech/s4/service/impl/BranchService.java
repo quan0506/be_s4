@@ -60,3 +60,55 @@ public class BranchService implements IBranchService {
         return branchRepository.findByHotel(hotel);
     }
 }
+
+
+/*
+@Service
+@RequiredArgsConstructor
+public class BranchService implements IBranchService {
+
+    private final BranchRepository branchRepository;
+    private final HotelRepository hotelRepository;
+
+    @Override
+    public Branch addBranch(Long hotelId, Branch branch) {
+        Hotel hotel = hotelRepository.findById(hotelId)
+                .orElseThrow(() -> new ResourceNotFoundException("Hotel not found"));
+        branch.setHotel(hotel);  // Gán khách sạn cho chi nhánh
+        return branchRepository.save(branch);
+    }
+
+    @Override
+    public Branch updateBranch(Long id, Branch branch) {
+        Branch existingBranch = branchRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Branch not found"));
+        existingBranch.setBranchName(branch.getBranchName());
+        existingBranch.setLocation(branch.getLocation());
+        existingBranch.setHotel(branch.getHotel());
+        existingBranch.setCreatedAt(branch.getCreatedAt());
+        return branchRepository.save(existingBranch);
+    }
+
+    @Override
+    public void deleteBranch(Long id) {
+        branchRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Branch> getAllBranches() {
+        return branchRepository.findAll();
+    }
+
+    @Override
+    public Branch getBranchById(Long id) {
+        return branchRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Branch not found"));
+    }
+
+    @Override
+    public List<Branch> getBranchesByHotel(Long hotelId) {
+        Hotel hotel = hotelRepository.findById(hotelId)
+                .orElseThrow(() -> new ResourceNotFoundException("Hotel not found"));
+        return branchRepository.findByHotel(hotel);
+    }
+}*/
