@@ -11,29 +11,29 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/branches")
+@RequestMapping("/branches")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('ADMIN')&& hasRole('USER')")
 public class BranchController {
 
     private final BranchService branchService;
 
     // API thêm chi nhánh cho khách sạn dựa vào hotelId
-    @PostMapping("/add/{id}")
+    @PostMapping("/admin/add/{id}")
     public ResponseEntity<Branch> addBranch(@PathVariable Long id, @RequestBody Branch branch) {
         Branch newBranch = branchService.addBranch(id, branch);
         return ResponseEntity.status(HttpStatus.CREATED).body(newBranch);
     }
 
     // API cập nhật thông tin chi nhánh dựa vào branchId
-    @PutMapping("/update/{id}")
+    @PutMapping("/admin/update/{id}")
     public ResponseEntity<Branch> updateBranch(@PathVariable Long id, @RequestBody Branch branch) {
         Branch updatedBranch = branchService.updateBranch(id, branch);
         return ResponseEntity.ok(updatedBranch);
     }
 
     // API xóa chi nhánh dựa vào branchId
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/admin/delete/{id}")
     public ResponseEntity<String> deleteBranch(@PathVariable Long id) {
         branchService.deleteBranch(id);
         return ResponseEntity.ok("Branch deleted successfully.");

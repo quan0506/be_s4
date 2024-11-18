@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/hotels")
+@RequestMapping("/hotels")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('ADMIN') && hasRole('USER')")
 public class HotelController {
 
     private final HotelServices hotelService;
@@ -24,13 +24,13 @@ public class HotelController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newHotel);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("admin/update/{id}")
     public ResponseEntity<Hotel> updateHotel(@PathVariable Long id, @RequestBody Hotel hotel) {
         Hotel updatedHotel = hotelService.updateHotel(id, hotel);
         return ResponseEntity.ok(updatedHotel);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("admin/delete/{id}")
     public ResponseEntity<String> deleteHotel(@PathVariable Long id) {
         hotelService.deleteHotel(id);
         return ResponseEntity.ok("Hotel deleted successfully.");

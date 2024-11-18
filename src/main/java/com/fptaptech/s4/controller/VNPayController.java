@@ -4,6 +4,7 @@ import com.fptaptech.s4.entity.Payment;
 import com.fptaptech.s4.repository.PaymentRepository;
 import com.fptaptech.s4.service.impl.VNPayService;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,14 +17,12 @@ import java.util.Map;
 @org.springframework.stereotype.Controller
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class VNPayController {
 
-    @Autowired
-    private VNPayService vnPayService;
-
-    @Autowired
-    private PaymentRepository paymentRepository;
+    private final VNPayService vnPayService;
+    private final PaymentRepository paymentRepository;
 
     @PostMapping("/submitOrder")
     public ResponseEntity<Map<String, String>> submitOrder(@RequestParam("amount") int orderTotal,
@@ -46,7 +45,6 @@ public class VNPayController {
         String paymentTime = request.getParameter("vnp_PayDate");
         String transactionId = request.getParameter("vnp_TransactionNo");
         String totalPrice = request.getParameter("vnp_Amount");
-
 
         Payment payment = new Payment();
         payment.setBookingID(Long.parseLong(orderInfo));

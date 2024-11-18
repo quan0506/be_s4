@@ -46,9 +46,9 @@ public class UserService implements IUserService {
 
     private Role findRoleByName(String roleName) {
         return switch (roleName.toUpperCase()) {
-            case "ADMIN" -> roleRepository.findByName("ROLE_ADMIN")
+            case "ROLE_ADMIN" -> roleRepository.findByName("ROLE_ADMIN")
                     .orElseThrow(() -> new RuntimeException("Admin role not found"));
-            case "USER" -> roleRepository.findByName("ROLE_USER")
+            case "ROLE_USER" -> roleRepository.findByName("ROLE_USER")
                     .orElseThrow(() -> new RuntimeException("User role not found"));
             default -> roleRepository.findByName("ROLE_EMPLOYEE")
                     .orElseThrow(() -> new RuntimeException("Employee role not found"));
