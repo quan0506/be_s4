@@ -56,6 +56,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/register-user", "/auth/login").permitAll()  // Public API cho auth
                         .requestMatchers("/admin/branches/all", "/admin/branches/{id}", "/admin/branches/hotel/**").permitAll()  // Public cho Branch
+                        .requestMatchers("/auth/**", "/rooms/**", "/booked/**", "/bookings/**").permitAll()
                         .requestMatchers("/admin/hotels/all", "/admin/hotels/{id}").permitAll()  // Public cho Hotel
                         .requestMatchers("/roles/**").hasRole("ADMIN")  // Chỉ ADMIN
                         .anyRequest().authenticated());  // Các API còn lại yêu cầu xác thực
@@ -63,7 +64,6 @@ public class WebSecurityConfig {
         http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
 }
 
 
