@@ -23,15 +23,24 @@ public class Branch {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    /*@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hotel_id", nullable = false)
-    private Hotel hotel;
+    private Hotel hotel;*/
 
     @Column(name = "branch_name", nullable = false, length = 100)
     private String branchName;
 
     @Column(name = "location", nullable = false, length = 255)
     private String location;
+
+    @Column(name = "spa",nullable = false, length = 255)
+    private String spa;
+
+    @Column(name = "vehicle_service",nullable = false, length = 255)
+    private String vehicleService;
+
+    @Column(name = "restaurant",nullable = false, length = 255)
+    private String restaurant;
 
     @Column(name = "created_at", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)

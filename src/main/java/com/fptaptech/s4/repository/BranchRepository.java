@@ -10,5 +10,4 @@ import java.util.List;
 @Repository
 
 public interface BranchRepository extends JpaRepository<Branch, Long> {
-    List<Branch> findByHotel(Hotel hotel);
 }

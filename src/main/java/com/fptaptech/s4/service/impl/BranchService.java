@@ -19,12 +19,18 @@ public class BranchService implements IBranchService {
     private final HotelRepository hotelRepository;
 
     @Override
+    public Branch addBranch(Branch branch) {
+        return branchRepository.save(branch);
+    }
+
+
+    /*@Override
     public Branch addBranch(Long hotelId, Branch branch) {
         Hotel hotel = hotelRepository.findById(hotelId)
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel not found"));
         branch.setHotel(hotel);
         return branchRepository.save(branch);
-    }
+    }*/
 
     @Override
     public Branch updateBranch(Long id, Branch branch) {
@@ -32,7 +38,7 @@ public class BranchService implements IBranchService {
                 .orElseThrow(() -> new ResourceNotFoundException("Branch not found"));
         existingBranch.setBranchName(branch.getBranchName());
         existingBranch.setLocation(branch.getLocation());
-        existingBranch.setHotel(branch.getHotel());
+        /*existingBranch.setHotel(branch.getHotel());*/
         existingBranch.setCreatedAt(branch.getCreatedAt());
         return branchRepository.save(existingBranch);
     }

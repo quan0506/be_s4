@@ -17,10 +17,10 @@ public class BranchController {
 
     private final BranchService branchService;
 
-    @PostMapping("/add/{id}")
+    @PostMapping("/add")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Branch> addBranch(@PathVariable Long id, @RequestBody Branch branch) {
-        Branch newBranch = branchService.addBranch(id, branch);
+    public ResponseEntity<Branch> addBranch(@RequestBody Branch branch) {
+        Branch newBranch = branchService.addBranch( branch);
         return ResponseEntity.status(HttpStatus.CREATED).body(newBranch);
     }
 
