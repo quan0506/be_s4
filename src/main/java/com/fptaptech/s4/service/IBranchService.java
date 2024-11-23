@@ -11,5 +11,5 @@ public interface IBranchService {
     void deleteBranch(Long id);
     List<Branch> getAllBranches();
     Branch getBranchById(Long id);
-    List<Branch> getBranchesByHotel(Long hotelId);
+    /*List<Branch> getBranchesByHotel(Long hotelId);*/
 }

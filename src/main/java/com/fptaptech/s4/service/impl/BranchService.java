@@ -22,7 +22,7 @@ public class BranchService implements IBranchService {
     public Branch addBranch(Long hotelId, Branch branch) {
         Hotel hotel = hotelRepository.findById(hotelId)
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel not found"));
-        branch.setHotel(hotel);  // Gán khách sạn cho chi nhánh
+        branch.setHotel(hotel);
         return branchRepository.save(branch);
     }
 
@@ -53,12 +53,12 @@ public class BranchService implements IBranchService {
                 .orElseThrow(() -> new ResourceNotFoundException("Branch not found"));
     }
 
-    @Override
+    /*@Override
     public List<Branch> getBranchesByHotel(Long hotelId) {
         Hotel hotel = hotelRepository.findById(hotelId)
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel not found"));
         return branchRepository.findByHotel(hotel);
-    }
+    }*/
 }
 
 

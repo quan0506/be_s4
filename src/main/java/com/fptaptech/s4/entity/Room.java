@@ -1,5 +1,6 @@
 package com.fptaptech.s4.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,6 +36,7 @@ public class Room {
     @JoinColumn(name = "branch_id", referencedColumnName = "id")
     private Branch branch;
 
+    @JsonIgnore
     @Lob
     private Blob photo;
     @OneToMany(mappedBy="room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

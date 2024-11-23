@@ -25,12 +25,11 @@ public class HotelServices implements IHotelService {
         Hotel existingHotel = hotelRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel not found"));
         existingHotel.setHotelName(hotel.getHotelName());
-        existingHotel.setAddress(hotel.getAddress());
-        existingHotel.setCity(hotel.getCity());
+        existingHotel.setStarRating(hotel.getStarRating());
         return hotelRepository.save(existingHotel);
     }
 
-    @Override
+    /*@Override
     public void deleteHotel(Long id) {
         hotelRepository.deleteById(id);
     }
@@ -38,11 +37,11 @@ public class HotelServices implements IHotelService {
     @Override
     public List<Hotel> getAllHotels() {
         return hotelRepository.findAll();
-    }
+    }*/
 
-    @Override
+    /*@Override
     public Hotel getHotelById(Long id) {
         return hotelRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel not found"));
-    }
+    }*/
 }

@@ -38,11 +38,11 @@ public class BranchController {
         return ResponseEntity.ok("Branch deleted successfully.");
     }
 
-    @GetMapping("/hotel/{id}")
+    /*@GetMapping("/hotel/{id}")
     public ResponseEntity<List<Branch>> getAllBranchesByHotel(@PathVariable Long id) {
         List<Branch> branches = branchService.getBranchesByHotel(id);
         return ResponseEntity.ok(branches);
-    }
+    }*/
 
     @GetMapping("/{id}")
     public ResponseEntity<Branch> getBranchById(@PathVariable Long id) {

@@ -22,9 +22,9 @@ public class Hotel {
     @Column(name = "HotelName", nullable = false, length = 100)
     private String hotelName;
 
-    @Column(name = "Address", nullable = false, length = 200)
-    private String address;
+    @Column(name = "StarRating", nullable = false, length = 200)
+    private String starRating;
 
-    @Column(name = "City", nullable = false, length = 100)
-    private String city;
+    /*@Column(name = "City", nullable = false, length = 100)
+    private String city;*/
 }

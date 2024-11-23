@@ -31,7 +31,7 @@ public class HotelController {
         return ResponseEntity.ok(updatedHotel);
     }
 
-    @DeleteMapping("/delete/{id}")
+   /* @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteHotel(@PathVariable Long id) {
         hotelService.deleteHotel(id);
@@ -42,7 +42,7 @@ public class HotelController {
     public ResponseEntity<List<Hotel>> getAllHotels() {
         List<Hotel> hotels = hotelService.getAllHotels();
         return ResponseEntity.ok(hotels);
-    }
+    }*/
 }
 
 
