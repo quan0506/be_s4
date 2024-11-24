@@ -38,11 +38,10 @@ public class RoomController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<RoomResponse> addNewRoom(
             @RequestParam("branchId") Long branchId,
-            @RequestParam("hotelId") Long hotelId,
             @RequestParam("photo") MultipartFile photo,
             @RequestParam("roomType") String roomType,
             @RequestParam("roomPrice") BigDecimal roomPrice) throws SQLException, IOException {
-        Room savedRoom = roomService.addNewRoom(photo, roomType, roomPrice, hotelId, branchId);
+        Room savedRoom = roomService.addNewRoom(photo, roomType, roomPrice, branchId);
         RoomResponse response = new RoomResponse(savedRoom.getId(), savedRoom.getRoomType(),
                 savedRoom.getRoomPrice());
         return ResponseEntity.ok(response);

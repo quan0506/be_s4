@@ -39,12 +39,9 @@ public class Room {
     @JsonIgnore
     @Lob
     private Blob photo;
+
     @OneToMany(mappedBy="room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<BookedRoom> bookings;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hotel_id", referencedColumnName = "id")
-    private Hotel hotel;
 
     public Room() {
         this.bookings = new ArrayList<>();
