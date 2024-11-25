@@ -1,33 +1,67 @@
 package com.fptaptech.s4.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fptaptech.s4.entity.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
-public class UserDTO {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@AllArgsConstructor
 
+public class UserDTO {
     private Long id;
 
     @NotBlank(message = "Email address cannot be empty")
     @Email(message = "Invalid email address")
     private String username;
 
-    @NotBlank(message = "Name cannot be empty")
-    @Size(min = 1, max =1000, message = "Name must only contain letters and numbers")
+    @NotBlank(message = "First name cannot be empty")
+    @Size(min = 1, max = 1000, message = "First name must be between 1 and 1000 characters")
     private String firstName;
 
     @NotBlank(message = "Last name cannot be empty")
-    @Size(min = 1, max =1000, message = "Last name must only contain letters and numbers")
+    @Size(min = 1, max = 1000, message = "Last name must be between 1 and 1000 characters")
     private String lastName;
 
     @NotBlank(message = "Phone cannot be empty")
-    @Size(min = 1, max = 10, message = "Phone number must lest 1 to 10 letter characters")
+    @Size(min = 1, max = 10, message = "Phone number must be between 1 and 10 characters")
     private String phone;
-    private Role role;
 
+    private List<Role> roles = new ArrayList<>();
+    private List<ShuttleBookingDTO> shuttleBookings = new ArrayList<>();
+    private List<SpaBookingDTO> spaBookings = new ArrayList<>();
+    private List<RestaurantDTO> restaurantBookings = new ArrayList<>();
+
+    // Public no-arg constructor
+    public UserDTO() {}
+
+    // Public all-arg constructor
+    public UserDTO(Long id, String username, String firstName, String lastName, String phone, List<Role> roles,
+                   List<ShuttleBookingDTO> shuttleBookings, List<SpaBookingDTO> spaBookings) {
+        this.id = id;
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.roles = roles;
+        this.shuttleBookings = shuttleBookings;
+        this.spaBookings = spaBookings;
+    }
+
+    public String getEmail() {
+        return username;
+    }
 }
