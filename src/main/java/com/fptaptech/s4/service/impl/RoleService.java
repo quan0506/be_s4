@@ -6,7 +6,7 @@ import com.fptaptech.s4.entity.Role;
 import com.fptaptech.s4.entity.User;
 import com.fptaptech.s4.repository.RoleRepository;
 import com.fptaptech.s4.repository.UserRepository;
-import com.fptaptech.s4.service.IRoleService;
+import com.fptaptech.s4.service.interfaces.IRoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;

@@ -30,7 +30,7 @@ public class Branch {
     @JoinColumn(name = "hotel_id", nullable = false)
     private Hotel hotel;*/
 
-    @Column(name = "branch_name", nullable = false, length = 100)
+    @Column(name = "branch_name", nullable = false, length = 100, unique = true)
     private String branchName;
 
     @Column(name = "location", nullable = false)
@@ -44,6 +44,8 @@ public class Branch {
     @Column(name = "address",nullable = false)
     private String address;
 
+    @Column(name = "description", nullable = false)
+    private String description;
 
     @Column(name = "created_at", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)

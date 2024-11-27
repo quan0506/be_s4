@@ -1,6 +1,6 @@
 package com.fptaptech.s4.service.impl;
 
-import com.fptaptech.s4.dto.Response;
+import com.fptaptech.s4.response.Response;
 import com.fptaptech.s4.dto.ShuttleBookingDTO;
 import com.fptaptech.s4.entity.Shuttle;
 import com.fptaptech.s4.entity.ShuttleBooking;
@@ -10,7 +10,7 @@ import com.fptaptech.s4.repository.BranchRepository;
 import com.fptaptech.s4.repository.ShuttleBookingRepository;
 import com.fptaptech.s4.repository.ShuttleRepository;
 import com.fptaptech.s4.repository.UserRepository;
-import com.fptaptech.s4.service.IShuttleBookingService;
+import com.fptaptech.s4.service.interfaces.IShuttleBookingService;
 import com.fptaptech.s4.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;

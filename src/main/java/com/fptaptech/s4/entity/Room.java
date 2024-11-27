@@ -23,10 +23,10 @@ public class Room {
     @Column(name = "id")
     private  Long id;
 
-    @Column(name = "room_type")
+    @Column(name = "room_type", nullable = false)
     private String roomType;
 
-    @Column(name = "room_price")
+    @Column(name = "room_price", nullable = false)
     private BigDecimal roomPrice;
 
     @Column(name = "is_booked")
@@ -36,9 +36,11 @@ public class Room {
     @JoinColumn(name = "branch_id", referencedColumnName = "id")
     private Branch branch;
 
-    @JsonIgnore
-    @Lob
-    private Blob photo;
+    @Column(name = "description", nullable = false)
+    private String description;
+
+    @Column(name = "photo",nullable = false, length = 15000)
+    private String photo;
 
     @OneToMany(mappedBy="room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<BookedRoom> bookings;

@@ -1,8 +1,8 @@
 package com.fptaptech.s4.controller;
 
-import com.fptaptech.s4.dto.Response;
+import com.fptaptech.s4.response.Response;
 import com.fptaptech.s4.dto.SpaDTO;
-import com.fptaptech.s4.service.ISpaService;
+import com.fptaptech.s4.service.interfaces.ISpaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

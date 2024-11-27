@@ -1,4 +1,4 @@
-package com.fptaptech.s4.service;
+package com.fptaptech.s4.service.interfaces;
 
 import com.fptaptech.s4.entity.Role;
 import com.fptaptech.s4.entity.User;

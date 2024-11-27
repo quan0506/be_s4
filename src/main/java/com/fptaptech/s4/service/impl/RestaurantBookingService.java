@@ -1,6 +1,6 @@
 package com.fptaptech.s4.service.impl;
 
-import com.fptaptech.s4.dto.Response;
+import com.fptaptech.s4.response.Response;
 import com.fptaptech.s4.dto.RestaurantBookingDTO;
 import com.fptaptech.s4.entity.Branch;
 import com.fptaptech.s4.entity.Restaurant;
@@ -11,7 +11,7 @@ import com.fptaptech.s4.repository.BranchRepository;
 import com.fptaptech.s4.repository.RestaurantBookingRepository;
 import com.fptaptech.s4.repository.RestaurantRepository;
 import com.fptaptech.s4.repository.UserRepository;
-import com.fptaptech.s4.service.IRestaurantBookingService;
+import com.fptaptech.s4.service.interfaces.IRestaurantBookingService;
 import com.fptaptech.s4.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

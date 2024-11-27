@@ -1,6 +1,7 @@
-package com.fptaptech.s4.dto;
+package com.fptaptech.s4.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fptaptech.s4.dto.*;
 import lombok.Data;
 
 import java.util.List;

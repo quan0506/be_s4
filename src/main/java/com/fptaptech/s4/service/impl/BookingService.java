@@ -4,7 +4,7 @@ import com.fptaptech.s4.entity.Booking;
 import com.fptaptech.s4.exception.ResourceNotFoundException;
 import com.fptaptech.s4.entity.BookedRoom;
 import com.fptaptech.s4.repository.BookingRepository;
-import com.fptaptech.s4.service.IBookingService;
+import com.fptaptech.s4.service.interfaces.IBookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

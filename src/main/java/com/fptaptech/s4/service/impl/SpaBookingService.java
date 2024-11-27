@@ -1,6 +1,6 @@
 package com.fptaptech.s4.service.impl;
 
-import com.fptaptech.s4.dto.Response;
+import com.fptaptech.s4.response.Response;
 import com.fptaptech.s4.dto.SpaBookingDTO;
 import com.fptaptech.s4.entity.Branch;
 import com.fptaptech.s4.entity.Spa;
@@ -11,7 +11,7 @@ import com.fptaptech.s4.repository.BranchRepository;
 import com.fptaptech.s4.repository.SpaBookingRepository;
 import com.fptaptech.s4.repository.SpaRepository;
 import com.fptaptech.s4.repository.UserRepository;
-import com.fptaptech.s4.service.ISpaBookingService;
+import com.fptaptech.s4.service.interfaces.ISpaBookingService;
 import com.fptaptech.s4.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -5,7 +5,7 @@ import com.fptaptech.s4.exception.ResourceNotFoundException;
 import com.fptaptech.s4.entity.HotelServices;
 import com.fptaptech.s4.repository.HotelRepository;
 import com.fptaptech.s4.repository.HotelServiceRepository;
-import com.fptaptech.s4.service.IHotelServiceService;
+import com.fptaptech.s4.service.interfaces.IHotelServiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

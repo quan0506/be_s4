@@ -1,6 +1,9 @@
 package com.fptaptech.s4.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,15 +25,23 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String firstName;
 
+    @Column(nullable = false)
     private String lastName;
 
     @NaturalId(mutable = true)
     private String email;
-
+    @Column(nullable = false)
+    @NotBlank(message = "Password cannot be blank")
+    @Size(min = 8, message = "{user.password.invalid.8characters}")
+    @Pattern(regexp = ".*[A-Z].*", message = "{user.password.invalid.oneuppercaseletter}")
+    @Pattern(regexp = ".*[!@#$%^&*()].*", message = "{user.password.invalid.onespecialcharacter}")
     private String password;
 
+
+    @Column(nullable = false)
     private String phone;
 
     private boolean enabled =false;

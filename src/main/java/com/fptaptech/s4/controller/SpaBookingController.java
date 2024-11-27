@@ -1,10 +1,10 @@
 package com.fptaptech.s4.controller;
 
-import com.fptaptech.s4.dto.Response;
+import com.fptaptech.s4.response.Response;
 import com.fptaptech.s4.dto.SpaBookingDTO;
 import com.fptaptech.s4.dto.UserDTO;
-import com.fptaptech.s4.service.ISpaBookingService;
-import com.fptaptech.s4.service.IUserService;
+import com.fptaptech.s4.service.interfaces.ISpaBookingService;
+import com.fptaptech.s4.service.interfaces.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

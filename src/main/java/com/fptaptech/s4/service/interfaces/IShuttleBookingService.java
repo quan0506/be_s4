@@ -1,8 +1,7 @@
-package com.fptaptech.s4.service;
+package com.fptaptech.s4.service.interfaces;
 
-import com.fptaptech.s4.dto.Response;
+import com.fptaptech.s4.response.Response;
 import com.fptaptech.s4.dto.ShuttleBookingDTO;
-import com.fptaptech.s4.entity.ShuttleBooking;
 
 public interface IShuttleBookingService {
     Response saveShuttleBooking(Long branchId, Long shuttleId, Long userId, ShuttleBookingDTO shuttleBookingRequest);

@@ -1,8 +1,6 @@
-package com.fptaptech.s4.service;
+package com.fptaptech.s4.service.interfaces;
 
 import com.fptaptech.s4.entity.Hotel;
-
-import java.util.List;
 
 public interface IHotelService {
     Hotel addHotel(Hotel hotel);

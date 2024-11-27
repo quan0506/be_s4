@@ -1,27 +1,25 @@
-package com.fptaptech.s4.service;
+package com.fptaptech.s4.service.interfaces;
 
 import com.fptaptech.s4.entity.Room;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 public interface IRoomService {
-    Room addNewRoom(MultipartFile photo, String roomType, BigDecimal roomPrice, Long branchId) throws SQLException, IOException;
+    Room addNewRoom(String photo, String roomType, BigDecimal roomPrice, Long branchId, String description) throws IOException;
 
     List<String> getAllRoomTypes();
 
     List<Room> getAllRooms();
 
-    byte[] getRoomPhotoByRoomId(Long roomId) throws SQLException;
+    String getRoomPhotoByRoomId(Long roomId);
 
     void deleteRoom(Long roomId);
 
-    Room updateRoom(Long roomId, String roomType, BigDecimal roomPrice, byte[] photoBytes);
+    Room updateRoom(Long roomId, String roomType, BigDecimal roomPrice, String base64Photo, String description) throws IOException;
 
     Optional<Room> getRoomById(Long roomId);
 

@@ -1,13 +1,13 @@
 package com.fptaptech.s4.service.impl;
 
-import com.fptaptech.s4.dto.Response;
+import com.fptaptech.s4.response.Response;
 import com.fptaptech.s4.dto.ShuttleDTO;
 import com.fptaptech.s4.entity.Branch;
 import com.fptaptech.s4.entity.Shuttle;
 import com.fptaptech.s4.exception.OurException;
 import com.fptaptech.s4.repository.BranchRepository;
 import com.fptaptech.s4.repository.ShuttleRepository;
-import com.fptaptech.s4.service.IShuttleService;
+import com.fptaptech.s4.service.interfaces.IShuttleService;
 import com.fptaptech.s4.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;

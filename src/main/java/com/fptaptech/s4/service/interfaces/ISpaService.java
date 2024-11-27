@@ -1,6 +1,6 @@
-package com.fptaptech.s4.service;
+package com.fptaptech.s4.service.interfaces;
 
-import com.fptaptech.s4.dto.Response;
+import com.fptaptech.s4.response.Response;
 
 import java.util.List;
 

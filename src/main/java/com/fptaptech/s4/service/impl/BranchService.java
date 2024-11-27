@@ -1,11 +1,9 @@
 package com.fptaptech.s4.service.impl;
 
 import com.fptaptech.s4.entity.Branch;
-import com.fptaptech.s4.entity.Hotel;
 import com.fptaptech.s4.exception.ResourceNotFoundException;
 import com.fptaptech.s4.repository.BranchRepository;
-import com.fptaptech.s4.repository.HotelRepository;
-import com.fptaptech.s4.service.IBranchService;
+import com.fptaptech.s4.service.interfaces.IBranchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +14,6 @@ import java.util.List;
 public class BranchService implements IBranchService {
 
     private final BranchRepository branchRepository;
-    private final HotelRepository hotelRepository;
 
     @Override
     public Branch addBranch(Branch branch) {
@@ -40,6 +37,7 @@ public class BranchService implements IBranchService {
         existingBranch.setLocation(branch.getLocation());
         /*existingBranch.setHotel(branch.getHotel());*/
         existingBranch.setCreatedAt(branch.getCreatedAt());
+        existingBranch.setDescription(branch.getDescription());
         return branchRepository.save(existingBranch);
     }
 
