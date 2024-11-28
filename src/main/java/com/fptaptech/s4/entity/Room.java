@@ -1,14 +1,11 @@
 package com.fptaptech.s4.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.RandomStringUtils;
-
 import java.math.BigDecimal;
-import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,10 +20,10 @@ public class Room {
     @Column(name = "id")
     private  Long id;
 
-    @Column(name = "room_type", nullable = false)
+    @Column(name = "room_type")
     private String roomType;
 
-    @Column(name = "room_price", nullable = false)
+    @Column(name = "room_price")
     private BigDecimal roomPrice;
 
     @Column(name = "is_booked")
@@ -36,10 +33,10 @@ public class Room {
     @JoinColumn(name = "branch_id", referencedColumnName = "id")
     private Branch branch;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description")
     private String description;
 
-    @Column(name = "photo",nullable = false, length = 15000)
+    @Column(name = "photo", length = 15000)
     private String photo;
 
     @OneToMany(mappedBy="room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -60,5 +57,8 @@ public class Room {
         booking.setBookingConfirmationCode(bookingCode);
     }
 
+    public Long getBranchId() {
+        return branch.getId();
+    }
 
 }

@@ -1,5 +1,7 @@
 package com.fptaptech.s4.response;
 
+import com.fptaptech.s4.entity.BookedRoom;
+import com.fptaptech.s4.entity.Booking;
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -49,4 +51,18 @@ public class BookingResponse {
         this.checkOutDate = checkOutDate;
         this.bookingConfirmationCode = bookingConfirmationCode;
     }
+
+    public BookingResponse(BookedRoom bookedRoom) {
+        this.id = bookedRoom.getBookingId();
+        this.checkInDate = bookedRoom.getCheckInDate();
+        this.checkOutDate = bookedRoom.getCheckOutDate();
+        this.guestName = bookedRoom.getGuestFullName();
+        this.guestEmail = bookedRoom.getGuestEmail();
+        this.numOfAdults = bookedRoom.getNumOfAdults();
+        this.numOfChildren = bookedRoom.getNumOfChildren();
+        this.totalNumOfGuests = bookedRoom.getTotalNumOfGuest();
+        this.bookingConfirmationCode = bookedRoom.getBookingConfirmationCode();
+    }
 }
+
+

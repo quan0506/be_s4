@@ -7,7 +7,6 @@ import com.fptaptech.s4.repository.BranchRepository;
 import com.fptaptech.s4.repository.RoomRepository;
 import com.fptaptech.s4.service.interfaces.IRoomService;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -23,17 +22,12 @@ public class RoomService implements IRoomService {
     private final BranchRepository branchRepository;
 
     @Override
-    public Room addNewRoom(String file, String roomType, BigDecimal roomPrice, Long branchId, String description) throws IOException {
+    public Room addNewRoom(String photo, String roomType, BigDecimal roomPrice, Long branchId, String description) throws IOException {
         Room room = new Room();
         room.setRoomType(roomType);
         room.setRoomPrice(roomPrice);
         room.setDescription(description);
-
-        if (!file.isEmpty()) {
-            byte[] photoBytes = file.getBytes();
-            String base64Photo = Base64.encodeBase64String(photoBytes);
-            room.setPhoto(base64Photo);
-        }
+        room.setPhoto(photo);
 
         Branch branch = branchRepository.findById(branchId)
                 .orElseThrow(() -> new ResourceNotFoundException("Branch not found"));
@@ -50,6 +44,21 @@ public class RoomService implements IRoomService {
     @Override
     public List<Room> getAllRooms() {
         return roomRepository.findAll();
+    }
+
+    @Override
+    public List<Room> getRoomsByBranch(Long branchId) {
+        return roomRepository.findByBranch_Id(branchId);
+    }
+
+    @Override
+    public List<Room> getRoomsByTypeAndBranch(String roomType, Long branchId) {
+        return roomRepository.findByRoomTypeAndBranch_Id(roomType, branchId);
+    }
+
+    @Override
+    public List<Room> getRoomsByPriceAndBranch(BigDecimal roomPrice, Long branchId) {
+        return roomRepository.findByRoomPriceAndBranch_Id(roomPrice, branchId);
     }
 
     @Override
@@ -87,3 +96,4 @@ public class RoomService implements IRoomService {
         return roomRepository.findAvailableRoomsByDatesAndType(checkInDate, checkOutDate, roomType);
     }
 }
+

@@ -3,6 +3,7 @@ package com.fptaptech.s4.controller;
 import com.fptaptech.s4.exception.ResourceNotFoundException;
 import com.fptaptech.s4.entity.BookedRoom;
 import com.fptaptech.s4.entity.Room;
+import com.fptaptech.s4.request.RoomRequest;
 import com.fptaptech.s4.response.BookingResponse;
 import com.fptaptech.s4.response.RoomResponse;
 import com.fptaptech.s4.service.impl.BookingService;
@@ -32,17 +33,11 @@ public class RoomController {
 
     @PostMapping("/add/new-room")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<RoomResponse> addNewRoom(
-            @RequestParam("branchId") Long branchId,
-            @RequestParam("photo") MultipartFile photo,
-            @RequestParam("roomType") String roomType,
-            @RequestParam("roomPrice") BigDecimal roomPrice,
-            @RequestParam("description") String description)
-    throws IOException {
-        String base64Photo = Base64.encodeBase64String(photo.getBytes());
-        Room savedRoom = roomService.addNewRoom(base64Photo, roomType, roomPrice, branchId, description);
+    public ResponseEntity<RoomResponse> addNewRoom(@RequestBody RoomRequest roomRequest) throws IOException {
+        String base64Photo = roomRequest.getPhoto() != null ? Base64.encodeBase64String(roomRequest.getPhoto().getBytes()) : null;
+        Room savedRoom = roomService.addNewRoom(base64Photo, roomRequest.getRoomType(), roomRequest.getRoomPrice(), roomRequest.getBranchId(), roomRequest.getDescription());
         RoomResponse response = new RoomResponse(savedRoom.getId(), savedRoom.getRoomType(),
-                savedRoom.getRoomPrice());
+                savedRoom.getRoomPrice(), savedRoom.getBranch().getId(), savedRoom.getPhoto(), savedRoom.getDescription()); // Sửa lại để lấy ID của branch
         return ResponseEntity.ok(response);
     }
 
@@ -60,6 +55,43 @@ public class RoomController {
             RoomResponse roomResponse = getRoomResponse(room);
             roomResponse.setPhoto(base64Photo);
             roomResponses.add(roomResponse);
+            roomResponse.getBranchId();
+            roomResponse.getDescription();
+            roomResponse.getRoomType();
+            roomResponse.getRoomPrice();
+        }
+        return ResponseEntity.ok(roomResponses);
+    }
+
+    @GetMapping("/rooms/by-branch/{branchId}")
+    public ResponseEntity<List<RoomResponse>> getRoomsByBranch(@PathVariable Long branchId) {
+        List<Room> rooms = roomService.getRoomsByBranch(branchId);
+        List<RoomResponse> roomResponses = new ArrayList<>();
+        for (Room room : rooms) {
+            RoomResponse roomResponse = getRoomResponse(room);
+            roomResponses.add(roomResponse);
+        }
+        return ResponseEntity.ok(roomResponses);
+    }
+
+    @GetMapping("/rooms/by-type")
+    public ResponseEntity<List<RoomResponse>> getRoomsByTypeAndBranch(@RequestParam String roomType, @RequestParam Long branchId) {
+        List<Room> rooms = roomService.getRoomsByTypeAndBranch(roomType, branchId);
+        List<RoomResponse> roomResponses = new ArrayList<>();
+        for (Room room : rooms) {
+            RoomResponse roomResponse = getRoomResponse(room);
+            roomResponses.add(roomResponse);
+        }
+        return ResponseEntity.ok(roomResponses);
+    }
+
+    @GetMapping("/rooms/by-price")
+    public ResponseEntity<List<RoomResponse>> getRoomsByPriceAndBranch(@RequestParam BigDecimal roomPrice, @RequestParam Long branchId) {
+        List<Room> rooms = roomService.getRoomsByPriceAndBranch(roomPrice, branchId);
+        List<RoomResponse> roomResponses = new ArrayList<>();
+        for (Room room : rooms) {
+            RoomResponse roomResponse = getRoomResponse(room);
+            roomResponses.add(roomResponse);
         }
         return ResponseEntity.ok(roomResponses);
     }
@@ -76,11 +108,11 @@ public class RoomController {
     public ResponseEntity<RoomResponse> updateRoom(@PathVariable Long roomId,
                                                    @RequestParam(required = false) String roomType,
                                                    @RequestParam(required = false) BigDecimal roomPrice,
-                                                   @RequestParam(required = false) MultipartFile photo,
-                                                   @RequestParam(required = false) String description
-    ) throws IOException {
-        String base64Photo = photo != null && !photo.isEmpty() ?
-                Base64.encodeBase64String(photo.getBytes()) : roomService.getRoomPhotoByRoomId(roomId);
+                                                   @RequestParam(required = false) String photo,
+                                                   @RequestParam(required = false) String description) throws IOException {
+        var base64Photo = photo != null && !photo.isEmpty() ?
+                Base64.encodeBase64String(photo.getBytes()) :
+                roomService.getRoomPhotoByRoomId(roomId);
         Room theRoom = roomService.updateRoom(roomId, roomType, roomPrice, base64Photo, description);
         theRoom.setPhoto(base64Photo);
         RoomResponse roomResponse = getRoomResponse(theRoom);
@@ -104,7 +136,7 @@ public class RoomController {
         List<Room> availableRooms = roomService.getAvailableRooms(checkInDate, checkOutDate, roomType);
         List<RoomResponse> roomResponses = new ArrayList<>();
         for (Room room : availableRooms) {
-            String base64Photo = room.getPhoto();
+            var base64Photo = room.getPhoto();
             RoomResponse roomResponse = getRoomResponse(room);
             roomResponse.setPhoto(base64Photo);
             roomResponses.add(roomResponse);

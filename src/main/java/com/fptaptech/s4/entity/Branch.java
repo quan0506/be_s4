@@ -1,34 +1,23 @@
 package com.fptaptech.s4.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.sql.Blob;
 import java.util.Date;
-
+import java.util.List;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "branch")
 public class Branch {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    /*@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hotel_id", nullable = false)
-    private Hotel hotel;*/
 
     @Column(name = "branch_name", nullable = false, length = 100, unique = true)
     private String branchName;
@@ -36,9 +25,7 @@ public class Branch {
     @Column(name = "location", nullable = false)
     private String location;
 
-    @Column(name = "photo",nullable = true)
-    @JsonIgnore
-    @Lob
+    @Column(name = "photo")
     private String photo;
 
     @Column(name = "address",nullable = false)
@@ -51,9 +38,14 @@ public class Branch {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
+    @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Room> rooms; // Thêm trường này
+
     @PrePersist
     protected void onCreate() {
         createdAt = new Date();
     }
-
 }
+
+
+
