@@ -30,7 +30,8 @@ public class BranchResponse {
         this.address = branch.getAddress();
         this.description = branch.getDescription();
         this.rooms = branch.getRooms().stream()
-                           .map(RoomResponse::new)
-                           .collect(Collectors.toList());
+                .map(RoomResponse::new) // This uses the constructor that does not include the branch reference
+                .collect(Collectors.toList());
     }
 }
+

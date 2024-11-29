@@ -1,5 +1,6 @@
 package com.fptaptech.s4.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@JsonIgnoreProperties({"branch", "rooms"})
 @Table(name = "room")
 public class Room {
     @Id

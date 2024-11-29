@@ -1,6 +1,5 @@
 package com.fptaptech.s4.response;
 
-import com.fptaptech.s4.entity.Branch;
 import com.fptaptech.s4.entity.Room;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,6 +35,9 @@ public class RoomResponse {
         this.bookings = bookings;
     }
 
+
+
+        // Constructor that does not include the branch reference
     public RoomResponse(Room room) {
         this.id = room.getId();
         this.roomType = room.getRoomType();
@@ -43,10 +45,13 @@ public class RoomResponse {
         this.photo = room.getPhoto();
         this.description = room.getDescription();
         this.isBooked = room.isBooked();
+        this.branchId = room.getBranch().getId();
         this.bookings = room.getBookings().stream()
-                .map(BookingResponse::new)
-                .collect(Collectors.toList());
-    }
+            .map(BookingResponse::new)
+            .collect(Collectors.toList());
+        }
+
+
 
     public RoomResponse(Long id, String roomType, BigDecimal roomPrice, Long branchId ,String photo, String description) {
         this.id = id;
