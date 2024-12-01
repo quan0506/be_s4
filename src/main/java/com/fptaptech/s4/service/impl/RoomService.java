@@ -88,12 +88,14 @@ public class RoomService implements IRoomService {
 
     @Override
     public Optional<Room> getRoomById(Long roomId) {
-        return roomRepository.findById(roomId);
+        return Optional.empty();
     }
 
     @Override
-    public List<Room> getAvailableRooms(LocalDate checkInDate, LocalDate checkOutDate, String roomType) {
-        return roomRepository.findAvailableRoomsByDatesAndType(checkInDate, checkOutDate, roomType);
+    public boolean isRoomAvailable(Long roomId , LocalDate checkInDate, LocalDate checkOutDate) {
+        return roomRepository.isRoomAvailable(roomId , checkInDate, checkOutDate);
     }
+
+
 }
 

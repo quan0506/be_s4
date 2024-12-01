@@ -1,7 +1,6 @@
 package com.fptaptech.s4.response;
 
 import com.fptaptech.s4.entity.Room;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +11,6 @@ import java.util.stream.Collectors;
 @Data
 @NoArgsConstructor
 @Builder
-@AllArgsConstructor
 public class RoomResponse {
     private Long id;
     private String roomType;
@@ -25,17 +23,16 @@ public class RoomResponse {
 
     // Constructor bao gồm ảnh dưới dạng chuỗi base64
     public RoomResponse(Long id, String roomType, BigDecimal roomPrice, boolean isBooked,
-                        String photo, String description, List<BookingResponse> bookings) {
+                        String photo, String description, Long branchId , List<BookingResponse> bookings) {
         this.id = id;
         this.roomType = roomType;
         this.roomPrice = roomPrice;
         this.isBooked = isBooked;
         this.photo = photo;
         this.description= description;
+        this.branchId = branchId;
         this.bookings = bookings;
     }
-
-
 
         // Constructor that does not include the branch reference
     public RoomResponse(Room room) {
@@ -45,13 +42,11 @@ public class RoomResponse {
         this.photo = room.getPhoto();
         this.description = room.getDescription();
         this.isBooked = room.isBooked();
-        this.branchId = room.getBranch().getId();
+        this.branchId = room.getBranch()!=null? room.getBranch().getId() : null;
         this.bookings = room.getBookings().stream()
             .map(BookingResponse::new)
             .collect(Collectors.toList());
         }
-
-
 
     public RoomResponse(Long id, String roomType, BigDecimal roomPrice, Long branchId ,String photo, String description) {
         this.id = id;

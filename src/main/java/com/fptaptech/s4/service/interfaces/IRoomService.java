@@ -4,6 +4,7 @@ import com.fptaptech.s4.entity.Room;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,6 @@ public interface IRoomService {
     void deleteRoom(Long roomId);
     Room updateRoom(Long roomId, String roomType, BigDecimal roomPrice, String base64Photo, String description) throws IOException;
     Optional<Room> getRoomById(Long roomId);
-    List<Room> getAvailableRooms(LocalDate checkInDate, LocalDate checkOutDate, String roomType);
+    boolean isRoomAvailable(Long roomId, LocalDate checkInDate, LocalDate checkOutDate);
 }
 

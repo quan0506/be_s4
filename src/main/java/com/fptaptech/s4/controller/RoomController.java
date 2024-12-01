@@ -17,10 +17,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.Id;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,10 +58,6 @@ public class RoomController {
             RoomResponse roomResponse = getRoomResponse(room);
             roomResponse.setPhoto(base64Photo);
             roomResponses.add(roomResponse);
-            roomResponse.getBranchId();
-            roomResponse.getDescription();
-            roomResponse.getRoomType();
-            roomResponse.getRoomPrice();
         }
         return ResponseEntity.ok(roomResponses);
     }
@@ -129,23 +128,26 @@ public class RoomController {
     }
 
     @GetMapping("/available-rooms")
-    public ResponseEntity<List<RoomResponse>> getAvailableRooms(
+    public ResponseEntity<List<RoomResponse>> isRoomAvailable(
             @RequestParam("checkInDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
             @RequestParam("checkOutDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
-            @RequestParam("roomType") String roomType) {
-        List<Room> availableRooms = roomService.getAvailableRooms(checkInDate, checkOutDate, roomType);
-        List<RoomResponse> roomResponses = new ArrayList<>();
-        for (Room room : availableRooms) {
-            var base64Photo = room.getPhoto();
-            RoomResponse roomResponse = getRoomResponse(room);
-            roomResponse.setPhoto(base64Photo);
-            roomResponses.add(roomResponse);
-        }
-        if (roomResponses.isEmpty()) {
+            @RequestParam("roomId") Long roomId) {
+        boolean isAvailable = roomService.isRoomAvailable(roomId, checkInDate, checkOutDate);
+
+        if (!isAvailable) {
             return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(roomResponses);
         }
+
+        Optional<Room> roomOpt = roomService.getRoomById(roomId);
+        if (roomOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Room room = roomOpt.get();
+        RoomResponse roomResponse = getRoomResponse(room);
+        roomResponse.setPhoto(room.getPhoto());
+
+        return ResponseEntity.ok(Collections.singletonList(roomResponse));
     }
 
     private RoomResponse getRoomResponse(Room room) {
@@ -157,7 +159,7 @@ public class RoomController {
                         booking.getCheckOutDate(), booking.getBookingConfirmationCode())).toList();
         return new RoomResponse(room.getId(),
                 room.getRoomType(), room.getRoomPrice(),
-                room.isBooked(), room.getPhoto(), room.getDescription(), bookingInfo);
+                room.isBooked(), room.getPhoto(), room.getDescription(), room.getBranchId(), bookingInfo);
     }
 
     private List<BookedRoom> getAllBookingsByRoomId(Long roomId) {
