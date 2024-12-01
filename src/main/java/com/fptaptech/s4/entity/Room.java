@@ -29,10 +29,10 @@ public class Room {
     private BigDecimal roomPrice;
 
     @Column(name = "is_booked")
-    private boolean isBooked = false;
+    private boolean isBooked;
 
-    @ManyToOne
-    @JoinColumn(name = "branch_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id", nullable = false)
     private Branch branch;
 
     @Column(name = "description")

@@ -1,8 +1,10 @@
 package com.fptaptech.s4.service.impl;
 
 import com.fptaptech.s4.entity.Booking;
+import com.fptaptech.s4.entity.Room;
 import com.fptaptech.s4.exception.ResourceNotFoundException;
 import com.fptaptech.s4.entity.BookedRoom;
+import com.fptaptech.s4.exception.RoomNotAvailableException;
 import com.fptaptech.s4.repository.BookingRepository;
 import com.fptaptech.s4.service.interfaces.IBookingService;
 import lombok.RequiredArgsConstructor;
@@ -15,13 +17,31 @@ import java.util.List;
 public class BookingService implements IBookingService {
 
     private final BookingRepository bookingRepository;
+    private final RoomService roomService;
 
     @Override
     public Booking createBooking(Booking booking) {
-        // Tạo mã xác nhận cho booking
+        // Tìm kiếm Room với id
+        Room room = roomService.getRoomById(booking.getRoom().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Room not found"));
+
+        // Kiểm tra tình trạng phòng trước khi tạo booking
+        if (!roomService.isRoomAvailable(room.getId(), booking.getCheckInDate(), booking.getCheckOutDate())) {
+            throw new RoomNotAvailableException("Phòng đã được đặt hoặc đang trong thời gian sử dụng");
+        }
+
+        // Đảm bảo Room có Branch không bị null
+        if (room.getBranch() == null) {
+            throw new ResourceNotFoundException("Branch not found for the given room");
+        }
+
+        booking.setRoom(room);
         booking.setConfirmBookingCode(generateConfirmCode());
+
         return bookingRepository.save(booking);
     }
+
+
 
     @Override
     public Booking updateBooking(Long bookingId, Booking booking) {
