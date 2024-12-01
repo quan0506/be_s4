@@ -1,13 +1,16 @@
 package com.fptaptech.s4.service.impl;
 
 //import com.fptaptech.s4.entity.ConfirmationToken;
+import com.fptaptech.s4.dto.UserDTO;
 import com.fptaptech.s4.entity.Role;
 import com.fptaptech.s4.entity.User;
+import com.fptaptech.s4.exception.OurException;
 import com.fptaptech.s4.exception.UserAlreadyExistsException;
 /*import com.fptaptech.s4.repository.ConfirmationTokenRepository;*/
 import com.fptaptech.s4.repository.RoleRepository;
 import com.fptaptech.s4.repository.UserRepository;
 import com.fptaptech.s4.service.IUserService;
+import com.fptaptech.s4.utils.Utils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 /*import org.springframework.http.ResponseEntity;
@@ -27,6 +30,16 @@ public class UserService implements IUserService {
     private final RoleRepository roleRepository;
     /*private final ConfirmationTokenRepository confirmationTokenRepository;*/
     /*private final EmailService emailService;*/
+
+
+        @Override
+        public UserDTO findById(Long userId) {
+            User user = userRepository.findById(userId).orElseThrow(() -> new OurException("User Not Found"));
+            return Utils.mapUserEntityToUserDTO(user);
+        }
+
+    @Override public UserDTO findByEmail(String email) { User user = userRepository.findByEmail(email).orElseThrow(() -> new OurException("User Not Found")); return Utils.mapUserEntityToUserDTO(user); }
+
 
     @Override
     public User registerUser(User user, String roleName) {

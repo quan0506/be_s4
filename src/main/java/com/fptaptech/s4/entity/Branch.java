@@ -2,6 +2,7 @@ package com.fptaptech.s4.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,22 +36,14 @@ public class Branch {
     @Column(name = "location", nullable = false)
     private String location;
 
-    @Column(name = "photo",nullable = false)
+    @Column(name = "photo",nullable = true)
     @JsonIgnore
     @Lob
-    private Blob photo;
+    private String photo;
 
     @Column(name = "address",nullable = false)
     private String address;
 
-    @Column(name = "spa",nullable = false)
-    private String spa;
-
-    @Column(name = "vehicle_service",nullable = false)
-    private String vehicleService;
-
-    @Column(name = "restaurant",nullable = false)
-    private String restaurant;
 
     @Column(name = "created_at", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
