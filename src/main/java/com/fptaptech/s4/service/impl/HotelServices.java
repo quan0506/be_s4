@@ -3,11 +3,9 @@ package com.fptaptech.s4.service.impl;
 import com.fptaptech.s4.entity.Hotel;
 import com.fptaptech.s4.exception.ResourceNotFoundException;
 import com.fptaptech.s4.repository.HotelRepository;
-import com.fptaptech.s4.service.IHotelService;
+import com.fptaptech.s4.service.interfaces.IHotelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

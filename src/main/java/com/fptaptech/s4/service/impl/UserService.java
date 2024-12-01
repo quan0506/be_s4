@@ -1,26 +1,38 @@
 package com.fptaptech.s4.service.impl;
 
+<<<<<<< HEAD
 //import com.fptaptech.s4.entity.ConfirmationToken;
 import com.fptaptech.s4.dto.UserDTO;
 import com.fptaptech.s4.entity.Role;
 import com.fptaptech.s4.entity.User;
+=======
+import com.fptaptech.s4.dto.ResetPasswordDTO;
+import com.fptaptech.s4.dto.UserDTO;
+import com.fptaptech.s4.entity.Role;
+import com.fptaptech.s4.entity.User;
+import com.fptaptech.s4.entity.VerificationCode;
+>>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
 import com.fptaptech.s4.exception.OurException;
 import com.fptaptech.s4.exception.UserAlreadyExistsException;
-/*import com.fptaptech.s4.repository.ConfirmationTokenRepository;*/
 import com.fptaptech.s4.repository.RoleRepository;
 import com.fptaptech.s4.repository.UserRepository;
+<<<<<<< HEAD
 import com.fptaptech.s4.service.IUserService;
+=======
+import com.fptaptech.s4.repository.VerificationCodeRepository;
+import com.fptaptech.s4.service.interfaces.IUserService;
+>>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
 import com.fptaptech.s4.utils.Utils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-/*import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;*/
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +40,19 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
-    /*private final ConfirmationTokenRepository confirmationTokenRepository;*/
-    /*private final EmailService emailService;*/
+    private final EmailService emailService;
+    private final VerificationCodeRepository verificationCodeRepository;
+
+        @Override
+        public UserDTO findById(Long userId) {
+            User user = userRepository.findById(userId).orElseThrow(() -> new OurException("User Not Found"));
+            return Utils.mapUserEntityToUserDTO(user);
+        }
+
+    @Override public UserDTO findByEmail(String email) { User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new OurException("User Not Found"));
+            return Utils.mapUserEntityToUserDTO(user); }
+
 
 
         @Override
@@ -50,11 +73,11 @@ public class UserService implements IUserService {
         Role role = findRoleByName(roleName);
         user.setRoles(Collections.singletonList(role));
         user.setEnabled(false);
-        User registeredUser = userRepository.save(user);
+//        User registeredUser = userRepository.save(user);
 
         /*sendConfirmationEmail(user);*/
 
-        return registeredUser;
+        return  userRepository.save(user);
     }
 
     private Role findRoleByName(String roleName) {
@@ -68,7 +91,60 @@ public class UserService implements IUserService {
         };
     }
 
-    /*private void sendConfirmationEmail(User user) {
+    @Override
+    public List<User> getUsers() {
+        return userRepository.findAll();
+    }
+
+    @Transactional
+    @Override
+    public void deleteUser(String email) {
+        User theUser = getUser(email);
+        if (theUser != null) {
+            userRepository.deleteByEmail(email);
+        }
+    }
+
+    @Override
+    public User getUser(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    public void sendVerificationCode(String email) {
+        String code = generateVerificationCode();
+        VerificationCode verificationCode = new VerificationCode();
+        verificationCode.setEmail(email);
+        verificationCode.setCode(code);
+        verificationCode.setExpiryDate(LocalDateTime.now().plusMinutes(10));
+        verificationCodeRepository.save(verificationCode);
+        emailService.sendSimpleMessage(email, "Your verification code", "Your code is: " + code);
+    }
+
+    @Transactional
+    public void resetPassword(String email,ResetPasswordDTO resetPasswordDTO) {
+        VerificationCode verificationCode = verificationCodeRepository.findByEmailAndCode(resetPasswordDTO.getEmail(), resetPasswordDTO.getCode())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid or expired verification code"));
+
+        User user = userRepository.findByEmail(resetPasswordDTO.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        if (!resetPasswordDTO.getNewPassword().equals(resetPasswordDTO.getConfirmNewPassword())) {
+            throw new IllegalArgumentException("New passwords do not match");
+        }
+
+        user.setPassword(passwordEncoder.encode(resetPasswordDTO.getNewPassword()));
+        userRepository.save(user);
+        verificationCodeRepository.delete(verificationCode);
+    }
+
+
+    private String generateVerificationCode() {
+        return UUID.randomUUID().toString().substring(0, 6);
+    }
+}
+
+/*private void sendConfirmationEmail(User user) {
         ConfirmationToken confirmationToken = new ConfirmationToken(user);
         confirmationTokenRepository.save(confirmationToken);
 
@@ -92,24 +168,3 @@ public class UserService implements IUserService {
         }
         return ResponseEntity.badRequest().body("Error: Couldn't verify email");
     }*/
-
-    @Override
-    public List<User> getUsers() {
-        return userRepository.findAll();
-    }
-
-    @Transactional
-    @Override
-    public void deleteUser(String email) {
-        User theUser = getUser(email);
-        if (theUser != null) {
-            userRepository.deleteByEmail(email);
-        }
-    }
-
-    @Override
-    public User getUser(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    }
-}

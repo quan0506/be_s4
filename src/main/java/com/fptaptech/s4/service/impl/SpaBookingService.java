@@ -1,6 +1,10 @@
 package com.fptaptech.s4.service.impl;
 
+<<<<<<< HEAD
 import com.fptaptech.s4.dto.Response;
+=======
+import com.fptaptech.s4.response.Response;
+>>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
 import com.fptaptech.s4.dto.SpaBookingDTO;
 import com.fptaptech.s4.entity.Branch;
 import com.fptaptech.s4.entity.Spa;
@@ -11,6 +15,7 @@ import com.fptaptech.s4.repository.BranchRepository;
 import com.fptaptech.s4.repository.SpaBookingRepository;
 import com.fptaptech.s4.repository.SpaRepository;
 import com.fptaptech.s4.repository.UserRepository;
+<<<<<<< HEAD
 import com.fptaptech.s4.service.ISpaBookingService;
 import com.fptaptech.s4.utils.Utils;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +24,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+=======
+import com.fptaptech.s4.service.interfaces.ISpaBookingService;
+import com.fptaptech.s4.utils.Utils;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+>>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
 
 @Service
 @RequiredArgsConstructor
@@ -80,9 +93,13 @@ public class SpaBookingService implements ISpaBookingService {
     public Response getAllSpaBookings(Long branchId) {
         Response response = new Response();
         try {
+<<<<<<< HEAD
             List<SpaBooking> spaBookingList = spaBookingRepository.findAll(Sort.by(Sort.Direction.DESC, "id")).stream()
                     .filter(booking -> booking.getSpa().getBranch().getId().equals(branchId))
                     .collect(Collectors.toList());
+=======
+            List<SpaBooking> spaBookingList = spaBookingRepository.findByBranchIdOrderByAppointmentTimeAsc(branchId);
+>>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
             List<SpaBookingDTO> spaBookingDTOList = Utils.mapSpaBookingListEntityToSpaBookingListDTO(spaBookingList);
             response.setStatusCode(200);
             response.setMessage("successful");

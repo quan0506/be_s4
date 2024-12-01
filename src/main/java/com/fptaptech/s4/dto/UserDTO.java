@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fptaptech.s4.entity.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,10 +37,23 @@ public class UserDTO {
     @Size(min = 1, max = 1000, message = "Last name must be between 1 and 1000 characters")
     private String lastName;
 
+<<<<<<< HEAD
     @NotBlank(message = "Phone cannot be empty")
     @Size(min = 1, max = 10, message = "Phone number must be between 1 and 10 characters")
     private String phone;
 
+=======
+    @NotBlank(message = "Password cannot be blank")
+    @Size(min = 8, message = "Password must be at least 8 characters")
+    @Pattern(regexp = ".*[A-Z].*", message = "Password must contain at least one uppercase letter")
+    @Pattern(regexp = ".*[!@#$%^&*()].*", message = "Password must contain at least one special character")
+    private String password;
+
+    @NotBlank(message = "Phone cannot be empty")
+    @Size(min = 1, max = 10, message = "Phone number must be between 1 and 10 characters")
+    private String phone;
+
+>>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
     private List<Role> roles = new ArrayList<>();
     private List<ShuttleBookingDTO> shuttleBookings = new ArrayList<>();
     private List<SpaBookingDTO> spaBookings = new ArrayList<>();

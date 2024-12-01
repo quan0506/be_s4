@@ -1,14 +1,12 @@
 package com.fptaptech.s4.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.RandomStringUtils;
-
 import java.math.BigDecimal;
-import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@JsonIgnoreProperties({"branch", "rooms"})
 @Table(name = "room")
 public class Room {
     @Id
@@ -30,15 +29,17 @@ public class Room {
     private BigDecimal roomPrice;
 
     @Column(name = "is_booked")
-    private boolean isBooked = false;
+    private boolean isBooked;
 
-    @ManyToOne
-    @JoinColumn(name = "branch_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id", nullable = false)
     private Branch branch;
 
-    @JsonIgnore
-    @Lob
-    private Blob photo;
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "photo", length = 15000)
+    private String photo;
 
     @OneToMany(mappedBy="room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<BookedRoom> bookings;
@@ -58,5 +59,8 @@ public class Room {
         booking.setBookingConfirmationCode(bookingCode);
     }
 
+    public Long getBranchId() {
+        return branch.getId();
+    }
 
 }

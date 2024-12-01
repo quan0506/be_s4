@@ -1,7 +1,7 @@
 package com.fptaptech.s4.controller;
 
 import com.fptaptech.s4.entity.Booking;
-import com.fptaptech.s4.service.IBookingService;
+import com.fptaptech.s4.service.interfaces.IBookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

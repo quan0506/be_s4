@@ -1,4 +1,4 @@
-package com.fptaptech.s4.service;
+package com.fptaptech.s4.service.interfaces;
 
 import com.fptaptech.s4.entity.Role;
 import com.fptaptech.s4.entity.User;
@@ -10,6 +10,7 @@ public interface IRoleService {
     Role createRole(Role theRole);
 
     void deleteRole(Long id);
+
     Role findByName(String name);
 
     User removeUserFromRole(Long userId, Long roleId);

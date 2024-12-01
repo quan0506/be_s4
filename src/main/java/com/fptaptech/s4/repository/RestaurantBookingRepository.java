@@ -1,7 +1,10 @@
 package com.fptaptech.s4.repository;
 
 import com.fptaptech.s4.entity.RestaurantBooking;
+<<<<<<< HEAD
 import com.fptaptech.s4.entity.User;
+=======
+>>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,5 +18,8 @@ public interface RestaurantBookingRepository extends JpaRepository<RestaurantBoo
 
     @Query("SELECT rb FROM RestaurantBooking rb WHERE rb.user.id = :userId ORDER BY rb.dayCheckIn ASC")
     List<RestaurantBooking> findByUserIdOrderByDayCheckInAsc(@Param("userId") Long userId);
+<<<<<<< HEAD
     List<RestaurantBooking> findByUser(User user);
+=======
+>>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
 }

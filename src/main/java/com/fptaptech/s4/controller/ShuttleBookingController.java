@@ -1,11 +1,19 @@
 package com.fptaptech.s4.controller;
 
+<<<<<<< HEAD
 import com.fptaptech.s4.dto.Response;
 import com.fptaptech.s4.dto.ShuttleBookingDTO;
 import com.fptaptech.s4.dto.UserDTO;
 import com.fptaptech.s4.entity.User;
 import com.fptaptech.s4.service.IShuttleBookingService;
 import com.fptaptech.s4.service.IUserService;
+=======
+import com.fptaptech.s4.response.Response;
+import com.fptaptech.s4.dto.ShuttleBookingDTO;
+import com.fptaptech.s4.dto.UserDTO;
+import com.fptaptech.s4.service.interfaces.IShuttleBookingService;
+import com.fptaptech.s4.service.interfaces.IUserService;
+>>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +27,11 @@ import org.springframework.web.bind.annotation.*;
 public class ShuttleBookingController {
 
     private final IShuttleBookingService shuttleBookingService;
+<<<<<<< HEAD
     private final IUserService userService;
+=======
+    private final IUserService userService; // Assuming you have a IUserService to handle user-related operations
+>>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
 
     @PostMapping("/book-shuttle/{branchId}/{shuttleId}/{userId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
@@ -46,7 +58,11 @@ public class ShuttleBookingController {
         Response response = shuttleBookingService.saveShuttleBooking(branchId, shuttleId, userId, shuttleBookingRequest);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
+<<<<<<< HEAD
 // huy dat dich vu xe
+=======
+
+>>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
     @DeleteMapping("/cancel/{branchId}/{bookingId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
     public ResponseEntity<Response> cancelShuttleBooking(@PathVariable Long branchId, @PathVariable Long bookingId, Authentication authentication) {
@@ -70,6 +86,7 @@ public class ShuttleBookingController {
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
+<<<<<<< HEAD
     // lấy tat ca loai xe trong branch
     @GetMapping("/all/{branchId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -81,10 +98,21 @@ public class ShuttleBookingController {
     // lay book xe qua code
     @GetMapping("/get-by-confirmation-code/{branchId}/{confirmationCode}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
+=======
+    @GetMapping("/all/{branchId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Response> getAllShuttleBookings(@PathVariable Long branchId) {
+        Response response = shuttleBookingService.getAllShuttleBookings(branchId);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
+    @GetMapping("/get-by-confirmation-code/{branchId}/{confirmationCode}")
+>>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
     public ResponseEntity<Response> getShuttleBookingByConfirmationCode(@PathVariable Long branchId, @PathVariable String confirmationCode) {
         Response response = shuttleBookingService.findBookingByConfirmationCode(branchId, confirmationCode);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
+<<<<<<< HEAD
 
 
     // get lich su booking cua user
@@ -109,3 +137,6 @@ public class ShuttleBookingController {
 }
 
 
+=======
+}
+>>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1

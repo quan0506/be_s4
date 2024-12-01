@@ -1,10 +1,10 @@
 #server:
-#  port: 9192
+#  port: 4444
 #
 #spring:
 #  datasource:
 #    username: root
-#    password: admin
+#    password: root
 #    url: jdbc:mysql://localhost:3306/
 #    driver-class-name: com.mysql.cj.jdbc.Driver
 #  jpa:

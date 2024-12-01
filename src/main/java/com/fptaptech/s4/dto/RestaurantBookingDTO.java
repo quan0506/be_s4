@@ -17,7 +17,10 @@ public class RestaurantBookingDTO {
     private String phone;
     private BigDecimal totalPrice;
     private UserDTO user;
+<<<<<<< HEAD
     private String userEmail;
+=======
+>>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
     private RestaurantDTO restaurant;
     private Long branchId;
 }

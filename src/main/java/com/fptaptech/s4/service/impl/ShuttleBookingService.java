@@ -1,6 +1,10 @@
 package com.fptaptech.s4.service.impl;
 
+<<<<<<< HEAD
 import com.fptaptech.s4.dto.Response;
+=======
+import com.fptaptech.s4.response.Response;
+>>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
 import com.fptaptech.s4.dto.ShuttleBookingDTO;
 import com.fptaptech.s4.entity.Shuttle;
 import com.fptaptech.s4.entity.ShuttleBooking;
@@ -10,7 +14,11 @@ import com.fptaptech.s4.repository.BranchRepository;
 import com.fptaptech.s4.repository.ShuttleBookingRepository;
 import com.fptaptech.s4.repository.ShuttleRepository;
 import com.fptaptech.s4.repository.UserRepository;
+<<<<<<< HEAD
 import com.fptaptech.s4.service.IShuttleBookingService;
+=======
+import com.fptaptech.s4.service.interfaces.IShuttleBookingService;
+>>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
 import com.fptaptech.s4.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -102,7 +110,11 @@ public class ShuttleBookingService implements IShuttleBookingService {
     }
 
     @Override
+<<<<<<< HEAD
     public Response getAllShuttles(Long branchId) {
+=======
+    public Response getAllShuttleBookings(Long branchId) {
+>>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
         Response response = new Response();
         try {
             List<ShuttleBooking> shuttleBookingList = shuttleBookingRepository.findAll(Sort.by(Sort.Direction.DESC, "id")).stream()
@@ -112,7 +124,10 @@ public class ShuttleBookingService implements IShuttleBookingService {
             response.setStatusCode(200);
             response.setMessage("successful");
             response.setShuttleBookingList(shuttleBookingDTOList);
+<<<<<<< HEAD
             List<String> userEmails = shuttleBookingList.stream() .map(booking -> booking.getUser().getEmail()) .distinct() .collect(Collectors.toList()); response.setEmail(String.join(", ", userEmails));
+=======
+>>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
         } catch (Exception e) {
             response.setStatusCode(500);
             response.setMessage("Error fetching shuttle bookings: " + e.getMessage());
@@ -141,6 +156,7 @@ public class ShuttleBookingService implements IShuttleBookingService {
         return response;
     }
 
+<<<<<<< HEAD
     @Override public Response getAllShuttleBookingsByUser(Long userId) {
         Response response = new Response();
         try {
@@ -158,6 +174,8 @@ public class ShuttleBookingService implements IShuttleBookingService {
         return response;
     }
 
+=======
+>>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
     @Override
     public String getBookingEmail(Long branchId, Long shuttleBookingId) {
         ShuttleBooking booking = shuttleBookingRepository.findById(shuttleBookingId).orElse(null);

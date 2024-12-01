@@ -6,8 +6,8 @@ import com.fptaptech.s4.exception.InvalidBookingRequestException;
 import com.fptaptech.s4.exception.ResourceNotFoundException;
 import com.fptaptech.s4.response.BookingResponse;
 import com.fptaptech.s4.response.RoomResponse;
-import com.fptaptech.s4.service.IBookedService;
-import com.fptaptech.s4.service.IRoomService;
+import com.fptaptech.s4.service.interfaces.IBookedService;
+import com.fptaptech.s4.service.interfaces.IRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -91,7 +91,9 @@ public class BookedController {
         RoomResponse room = new RoomResponse(
                 theRoom.getId(),
                 theRoom.getRoomType(),
-                theRoom.getRoomPrice());
+                theRoom.getRoomPrice(),
+                theRoom.getPhoto(),
+                theRoom.getDescription());
         return new BookingResponse(
                 booking.getBookingId(), booking.getCheckInDate(),
                 booking.getCheckOutDate(),booking.getGuestFullName(),

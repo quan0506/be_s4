@@ -25,6 +25,9 @@ public class Hotel {
     @Column(name = "StarRating", nullable = false, length = 200)
     private String starRating;
 
+    @Column(name = "description", nullable = false)
+    private String description;
+
     /*@Column(name = "City", nullable = false, length = 100)
     private String city;*/
 }

@@ -3,7 +3,7 @@ package com.fptaptech.s4.controller;
 import com.fptaptech.s4.exception.RoleAlreadyExistException;
 import com.fptaptech.s4.entity.Role;
 import com.fptaptech.s4.entity.User;
-import com.fptaptech.s4.service.IRoleService;
+import com.fptaptech.s4.service.interfaces.IRoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

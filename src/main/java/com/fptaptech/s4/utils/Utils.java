@@ -99,7 +99,10 @@ public class Utils {
         shuttleBookingDTO.setShuttleCheckOutDate(shuttleBooking.getShuttleCheckOutDate());
         shuttleBookingDTO.setBookingConfirmationCode(shuttleBooking.getBookingConfirmationCode());
         shuttleBookingDTO.setTotalPrice(shuttleBooking.getTotalPrice());
+<<<<<<< HEAD
         shuttleBookingDTO.setUserEmail(shuttleBooking.getUser().getEmail());
+=======
+>>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
         shuttleBookingDTO.setBranchId(shuttleBooking.getShuttle().getBranch().getId()); // Set branch ID
         return shuttleBookingDTO;
     }
@@ -166,7 +169,10 @@ public class Utils {
         spaBookingDTO.setAppointmentTime(spaBooking.getAppointmentTime());
         spaBookingDTO.setSpaServiceTime(spaBooking.getSpaServiceTime());
         spaBookingDTO.setSpaServiceName(spaBooking.getSpaServiceName());
+<<<<<<< HEAD
         spaBookingDTO.setUserEmail(spaBooking.getUser().getEmail());
+=======
+>>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
         return spaBookingDTO;
     }
     public static SpaBookingDTO mapSpaBookingEntityToSpaBookingDTOPlusSpa(SpaBooking spaBooking, boolean mapUser) {
@@ -215,7 +221,10 @@ public class Utils {
         restaurantBookingDTO.setName(restaurantBooking.getName());
         restaurantBookingDTO.setPhone(restaurantBooking.getPhone());
         restaurantBookingDTO.setTotalPrice(restaurantBooking.getTotalPrice());
+<<<<<<< HEAD
         restaurantBookingDTO.setUserEmail(restaurantBooking.getUser().getEmail());
+=======
+>>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
         restaurantBookingDTO.setUser(Utils.mapUserEntityToUserDTO(restaurantBooking.getUser()));
         restaurantBookingDTO.setRestaurant(Utils.mapRestaurantEntityToRestaurantDTO(restaurantBooking.getRestaurant()));
         restaurantBookingDTO.setBranchId(restaurantBooking.getRestaurant().getBranch().getId()); // Added branchId

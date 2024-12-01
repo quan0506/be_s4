@@ -2,7 +2,8 @@ package com.fptaptech.s4.controller;
 
 import com.fptaptech.s4.exception.UserAlreadyExistsException;
 import com.fptaptech.s4.entity.User;
-import com.fptaptech.s4.service.IUserService;
+import com.fptaptech.s4.service.interfaces.IUserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class UserController {
     }
 
     @PostMapping("/register-user")
-    public ResponseEntity<?> registerUser(@RequestBody User user, @RequestParam String role) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody User user, @RequestParam String role) {
         try {
             User registeredUser = userService.registerUser(user, role);
             return ResponseEntity.ok(registeredUser);
