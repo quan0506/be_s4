@@ -16,14 +16,14 @@ public class RoomResponse {
     private String roomType;
     private BigDecimal roomPrice;
     private boolean isBooked;
-    private String photo;
+    private byte[] photo;
     private String description;
     private Long branchId;
     private List<BookingResponse> bookings;
 
     // Constructor bao gồm ảnh dưới dạng chuỗi base64
     public RoomResponse(Long id, String roomType, BigDecimal roomPrice, boolean isBooked,
-                        String photo, String description, Long branchId , List<BookingResponse> bookings) {
+                        byte[] photo, String description, Long branchId , List<BookingResponse> bookings) {
         this.id = id;
         this.roomType = roomType;
         this.roomPrice = roomPrice;
@@ -48,7 +48,7 @@ public class RoomResponse {
             .collect(Collectors.toList());
         }
 
-    public RoomResponse(Long id, String roomType, BigDecimal roomPrice, Long branchId ,String photo, String description) {
+    public RoomResponse(Long id, String roomType, BigDecimal roomPrice, Long branchId ,byte[] photo, String description) {
         this.id = id;
         this.roomType = roomType;
         this.roomPrice = roomPrice;
@@ -58,7 +58,7 @@ public class RoomResponse {
         this.branchId = branchId;
     }
 
-    public RoomResponse(Long id, String roomType, BigDecimal roomPrice, String photo, String description) {
+    public RoomResponse(Long id, String roomType, BigDecimal roomPrice, byte[] photo, String description) {
         this.id = id;
         this.roomType = roomType;
         this.roomPrice = roomPrice;

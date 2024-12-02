@@ -17,15 +17,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.Id;
+
+import org.apache.tomcat.util.codec.binary.Base64;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,7 +36,7 @@ public class RoomController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<RoomResponse> addNewRoom(@RequestBody RoomRequest roomRequest) throws IOException {
         String base64Photo = roomRequest.getPhoto() != null ? Base64.encodeBase64String(roomRequest.getPhoto().getBytes()) : null;
-        Room savedRoom = roomService.addNewRoom(base64Photo, roomRequest.getRoomType(), roomRequest.getRoomPrice(), roomRequest.getBranchId(), roomRequest.getDescription());
+        Room savedRoom = roomService.addNewRoom(base64Photo.getBytes(), roomRequest.getRoomType(), roomRequest.getRoomPrice(), roomRequest.getBranchId(), roomRequest.getDescription());
         RoomResponse response = new RoomResponse(savedRoom.getId(), savedRoom.getRoomType(),
                 savedRoom.getRoomPrice(), savedRoom.getBranch().getId(), savedRoom.getPhoto(), savedRoom.getDescription()); // Sửa lại để lấy ID của branch
         return ResponseEntity.ok(response);
@@ -54,13 +52,13 @@ public class RoomController {
         List<Room> rooms = roomService.getAllRooms();
         List<RoomResponse> roomResponses = new ArrayList<>();
         for (Room room : rooms) {
-            String base64Photo = room.getPhoto();
             RoomResponse roomResponse = getRoomResponse(room);
-            roomResponse.setPhoto(base64Photo);
+            roomResponse.setPhoto(room.getPhoto()); // Dữ liệu ảnh vẫn giữ nguyên dạng byte[]
             roomResponses.add(roomResponse);
         }
         return ResponseEntity.ok(roomResponses);
     }
+
 
     @GetMapping("/rooms/by-branch/{branchId}")
     public ResponseEntity<List<RoomResponse>> getRoomsByBranch(@PathVariable Long branchId) {
@@ -107,13 +105,13 @@ public class RoomController {
     public ResponseEntity<RoomResponse> updateRoom(@PathVariable Long roomId,
                                                    @RequestParam(required = false) String roomType,
                                                    @RequestParam(required = false) BigDecimal roomPrice,
-                                                   @RequestParam(required = false) String photo,
+                                                   @RequestParam(required = false) MultipartFile photo, // Thay đổi kiểu dữ liệu
                                                    @RequestParam(required = false) String description) throws IOException {
-        var base64Photo = photo != null && !photo.isEmpty() ?
+        String base64Photo = photo != null && !photo.isEmpty() ?
                 Base64.encodeBase64String(photo.getBytes()) :
-                roomService.getRoomPhotoByRoomId(roomId);
+                Arrays.toString(roomService.getRoomPhotoByRoomId(roomId));
         Room theRoom = roomService.updateRoom(roomId, roomType, roomPrice, base64Photo, description);
-        theRoom.setPhoto(base64Photo);
+        theRoom.setPhoto(base64Photo.getBytes());
         RoomResponse roomResponse = getRoomResponse(theRoom);
         return ResponseEntity.ok(roomResponse);
     }
@@ -166,3 +164,9 @@ public class RoomController {
         return bookingService.getAllBookingsByRoomId(roomId);
     }
 }
+
+
+
+
+// Phần mã updateRoom:
+

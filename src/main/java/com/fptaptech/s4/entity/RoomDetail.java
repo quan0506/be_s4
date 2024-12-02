@@ -27,8 +27,8 @@ public class RoomDetail {
     @Column(name = "price")
     private int price;
 
-    @Column(name = "photo")
-    private String photo;
+    @Column(columnDefinition = "LONGBLOB")
+    private byte photo;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "room_id", insertable = false, updatable = false)

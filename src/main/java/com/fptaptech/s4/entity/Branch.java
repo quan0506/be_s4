@@ -28,20 +28,21 @@ public class Branch {
     @Column(name = "location", nullable = false)
     private String location;
 
-    @Column(name = "photo")
-    private String photo;
+    @Column(name = "photo", columnDefinition = "LONGBLOB")
+    private byte[] photo;
 
     @Column(name = "address",nullable = false)
     private String address;
 
     @Column(name = "description", nullable = false)
     private String description;
+
     @Column(name = "created_at", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
     @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Room> rooms; // Thêm trường này
+    private List<Room> rooms;
 
     @PrePersist
     protected void onCreate() {

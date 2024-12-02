@@ -22,7 +22,7 @@ public class RoomService implements IRoomService {
     private final BranchRepository branchRepository;
 
     @Override
-    public Room addNewRoom(String photo, String roomType, BigDecimal roomPrice, Long branchId, String description) throws IOException {
+    public Room addNewRoom(byte[] photo, String roomType, BigDecimal roomPrice, Long branchId, String description) throws IOException {
         Room room = new Room();
         room.setRoomType(roomType);
         room.setRoomPrice(roomPrice);
@@ -62,7 +62,7 @@ public class RoomService implements IRoomService {
     }
 
     @Override
-    public String getRoomPhotoByRoomId(Long roomId) {
+    public byte[] getRoomPhotoByRoomId(Long roomId) {
         return roomRepository.findById(roomId).map(Room::getPhoto).orElse(null);
     }
 
@@ -80,7 +80,7 @@ public class RoomService implements IRoomService {
         if (roomType != null) room.setRoomType(roomType);
         if (roomPrice != null) room.setRoomPrice(roomPrice);
         if (base64Photo != null && !base64Photo.isEmpty()) {
-            room.setPhoto(base64Photo);
+            room.setPhoto(base64Photo.getBytes());
         }
         if (description != null) room.setDescription(description);
         return roomRepository.save(room);

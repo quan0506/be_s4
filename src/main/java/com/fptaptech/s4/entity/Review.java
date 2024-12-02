@@ -1,10 +1,18 @@
 package com.fptaptech.s4.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "Reviews")
 public class Review {
     @Id
@@ -25,52 +33,11 @@ public class Review {
     @Column(length = 500)
     private String reviewText;
 
-    @Column(length = 255)
-    private String reviewImageURL;
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] reviewImageURL;
 
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    public Review() {
-    }
 
-    public Integer getReviewId() {
-        return reviewId;
-    }
-
-    public void setReviewId(Integer reviewId) {
-        this.reviewId = reviewId;
-    }
-
-    public Integer getRating() {
-        return rating;
-    }
-
-    public void setRating(Integer rating) {
-        this.rating = rating;
-    }
-
-    public String getReviewText() {
-        return reviewText;
-    }
-
-    public void setReviewText(String reviewText) {
-        this.reviewText = reviewText;
-    }
-
-    public String getReviewImageURL() {
-        return reviewImageURL;
-    }
-
-    public void setReviewImageURL(String reviewImageURL) {
-        this.reviewImageURL = reviewImageURL;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
 }
