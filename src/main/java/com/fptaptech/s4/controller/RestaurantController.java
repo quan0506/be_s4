@@ -8,9 +8,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.fptaptech.s4.service.interfaces.IRestaurantService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/restaurants")
@@ -28,26 +30,23 @@ public class RestaurantController {
             @RequestParam(value = "time") String time,
             @RequestParam(value = "restaurantAdultPrice") BigDecimal restaurantAdultPrice,
             @RequestParam(value = "restaurantChildrenPrice") BigDecimal restaurantChildrenPrice,
-            @RequestParam(value = "restaurantPhotoUrl") String restaurantPhotoUrl,
+            @RequestParam(value = "restaurantPhoto") MultipartFile restaurantPhoto,
             @RequestParam(value = "restaurantDescription") String restaurantDescription
     ) {
-        Response response = restaurantService.addNewRestaurant(branchId, restaurantType, time, restaurantAdultPrice, restaurantChildrenPrice, restaurantPhotoUrl, restaurantDescription);
+        Response response = restaurantService.addNewRestaurant(branchId, restaurantType, time, restaurantAdultPrice, restaurantChildrenPrice, restaurantPhoto, restaurantDescription);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
-// lay tat ca loai nha hang
 
     @GetMapping("/all")
     public ResponseEntity<Response> getAllRestaurants(@RequestParam(value = "branchId") Long branchId) {
         Response response = restaurantService.getAllRestaurants(branchId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
-// tim theo loai nha hang
 
     @GetMapping("/types")
     public List<String> getRestaurantTypes(@RequestParam(value = "branchId") Long branchId) {
         return restaurantService.getAllRestaurantTypes(branchId);
     }
-// lay nha hang theo id
 
     @GetMapping("/restaurant-by-id/{restaurantId}")
     public ResponseEntity<Response> getRestaurantById(@PathVariable Long restaurantId,
@@ -65,9 +64,9 @@ public class RestaurantController {
             @RequestParam(value = "time") String time,
             @RequestParam(value = "restaurantAdultPrice") BigDecimal restaurantAdultPrice,
             @RequestParam(value = "restaurantChildrenPrice") BigDecimal restaurantChildrenPrice,
-            @RequestParam(value = "restaurantPhotoUrl") String restaurantPhotoUrl,
+            @RequestParam(value = "restaurantPhoto") MultipartFile restaurantPhoto,
             @RequestParam(value = "restaurantDescription") String restaurantDescription) {
-        Response response = restaurantService.updateRestaurant(branchId, restaurantId, restaurantType, time, restaurantAdultPrice, restaurantChildrenPrice, restaurantPhotoUrl, restaurantDescription);
+        Response response = restaurantService.updateRestaurant(branchId, restaurantId, restaurantType, time, restaurantAdultPrice, restaurantChildrenPrice, restaurantPhoto, restaurantDescription);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 

@@ -2,7 +2,8 @@ package com.fptaptech.s4.service.impl;
 
 
 
-
+//import com.fptaptech.s4.dto.Response;
+import com.fptaptech.s4.response.Response;
 import com.fptaptech.s4.dto.SpaBookingDTO;
 import com.fptaptech.s4.entity.Branch;
 import com.fptaptech.s4.entity.Spa;
@@ -14,7 +15,6 @@ import com.fptaptech.s4.repository.SpaBookingRepository;
 import com.fptaptech.s4.repository.SpaRepository;
 import com.fptaptech.s4.repository.UserRepository;
 
-import com.fptaptech.s4.response.Response;
 import com.fptaptech.s4.service.interfaces.ISpaBookingService;
 import com.fptaptech.s4.utils.Utils;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class SpaBookingService implements ISpaBookingService {
     private final SpaBookingRepository spaBookingRepository;
     private final SpaRepository spaRepository;
     private final UserRepository userRepository;
-    private final BranchRepository branchRepository; // Assuming you have a BranchRepository
+    private final BranchRepository branchRepository;
 
     @Override
     public Response saveSpaBooking(Long branchId, Long spaId, Long userId, SpaBookingDTO spaBookingRequest) {
@@ -46,11 +46,14 @@ public class SpaBookingService implements ISpaBookingService {
             spaBooking.setUser(user);
             spaBooking.setAppointmentTime(spaBookingRequest.getAppointmentTime());
             spaBooking.setSpaServiceTime(spaBookingRequest.getSpaServiceTime());
-            spaBooking.setSpaServiceName(spaBookingRequest.getSpaServiceName());
             spaBooking.setPhone(spaBookingRequest.getPhone());
             spaBooking.setNumberOfPeople(spaBookingRequest.getNumberOfPeople());
             spaBooking.setFullName(spaBookingRequest.getFullName());
             spaBooking.setDescription(spaBookingRequest.getDescription());
+            spaBooking.setSpaServiceName(spa.getSpaServiceName());
+            spaBooking.setSpaServicePrice(spa.getSpaServicePrice());
+            spaBooking.setSpaPhotoUrl(spa.getSpaPhotoUrl());
+            spaBooking.setSpaDescription(spa.getSpaDescription());
 
             spaBookingRepository.save(spaBooking);
             response.setStatusCode(200);
@@ -88,11 +91,10 @@ public class SpaBookingService implements ISpaBookingService {
             List<SpaBooking> spaBookingList = spaBookingRepository.findAll(Sort.by(Sort.Direction.DESC, "id")).stream()
                     .filter(booking -> booking.getSpa().getBranch().getId().equals(branchId))
                     .collect(Collectors.toList());
-            spaBookingRepository.findByBranchIdOrderByAppointmentTimeAsc(branchId);
             List<SpaBookingDTO> spaBookingDTOList = Utils.mapSpaBookingListEntityToSpaBookingListDTO(spaBookingList);
             response.setStatusCode(200);
             response.setMessage("successful");
-            response.setSpaBookingList(spaBookingDTOList);
+            response.setData(spaBookingDTOList);
         } catch (Exception e) {
             response.setStatusCode(500);
             response.setMessage("Error fetching spa bookings: " + e.getMessage());
@@ -106,10 +108,10 @@ public class SpaBookingService implements ISpaBookingService {
         try {
             SpaBooking spaBooking = spaBookingRepository.findById(spaBookingId)
                     .orElseThrow(() -> new OurException("Booking Not Found"));
-            SpaBookingDTO spaBookingDTO = Utils.mapSpaBookingEntityToSpaBookingDTOPlusSpa(spaBooking, true);
+            SpaBookingDTO spaBookingDTO = Utils.mapSpaBookingEntityToSpaBookingDTO(spaBooking);
             response.setStatusCode(200);
             response.setMessage("successful");
-            response.setSpaBooking(spaBookingDTO);
+            response.setData(spaBookingDTO);
         } catch (OurException e) {
             response.setStatusCode(404);
             response.setMessage(e.getMessage());

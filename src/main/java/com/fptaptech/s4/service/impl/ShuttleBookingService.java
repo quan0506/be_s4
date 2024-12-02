@@ -6,6 +6,7 @@ import com.fptaptech.s4.entity.Shuttle;
 import com.fptaptech.s4.entity.ShuttleBooking;
 import com.fptaptech.s4.entity.User;
 import com.fptaptech.s4.exception.OurException;
+import com.fptaptech.s4.repository.BranchRepository;
 import com.fptaptech.s4.repository.ShuttleBookingRepository;
 import com.fptaptech.s4.repository.ShuttleRepository;
 import com.fptaptech.s4.repository.UserRepository;
@@ -27,6 +28,7 @@ public class ShuttleBookingService implements IShuttleBookingService {
     private final ShuttleBookingRepository shuttleBookingRepository;
     private final ShuttleRepository shuttleRepository;
     private final UserRepository userRepository;
+    private final BranchRepository branchRepository; // Assuming you have a BranchRepository
 
     @Override
     public Response saveShuttleBooking(Long branchId, Long shuttleId, Long userId, ShuttleBookingDTO shuttleBookingRequest)
@@ -42,6 +44,7 @@ public class ShuttleBookingService implements IShuttleBookingService {
                 throw new OurException("Shuttle not available for selected date range");
             }
 
+            // Calculate the total price
             long totalBookDays = ChronoUnit.DAYS.between(shuttleBookingRequest.getShuttleCheckInDate(), shuttleBookingRequest.getShuttleCheckOutDate());
             BigDecimal totalPrice = shuttle.getCarPrice().multiply(BigDecimal.valueOf(totalBookDays));
 
@@ -59,7 +62,7 @@ public class ShuttleBookingService implements IShuttleBookingService {
             response.setStatusCode(200);
             response.setMessage("successful");
             response.setBookingConfirmationCode(bookingConfirmationCode);
-            response.setShuttleBooking(shuttleBookingDTO);
+            response.setData(shuttleBookingDTO);
         } catch (OurException e) {
             response.setStatusCode(404);
             response.setMessage(e.getMessage());
@@ -69,6 +72,12 @@ public class ShuttleBookingService implements IShuttleBookingService {
         }
         return response;
     }
+
+
+
+    // Other service methods remain unchanged
+
+
 
     @Override
     public Response findBookingByConfirmationCode(Long branchId, String confirmationCode) {
@@ -82,7 +91,7 @@ public class ShuttleBookingService implements IShuttleBookingService {
             ShuttleBookingDTO shuttleBookingDTO = Utils.mapShuttleBookingEntityToShuttleBookingDTOPlusShuttle(shuttleBooking);
             response.setStatusCode(200);
             response.setMessage("successful");
-            response.setShuttleBooking(shuttleBookingDTO);
+            response.setData(shuttleBookingDTO);
         } catch (OurException e) {
             response.setStatusCode(404);
             response.setMessage(e.getMessage());
@@ -94,7 +103,7 @@ public class ShuttleBookingService implements IShuttleBookingService {
     }
 
     @Override
-    public Response getAllShuttleBookings(Long branchId) {
+    public Response getAllShuttles(Long branchId) {
         Response response = new Response();
         try {
             List<ShuttleBooking> shuttleBookingList = shuttleBookingRepository.findAll(Sort.by(Sort.Direction.DESC, "id")).stream()
@@ -103,8 +112,7 @@ public class ShuttleBookingService implements IShuttleBookingService {
             List<ShuttleBookingDTO> shuttleBookingDTOList = Utils.mapShuttleBookingListEntityToShuttleBookingListDTO(shuttleBookingList);
             response.setStatusCode(200);
             response.setMessage("successful");
-            response.setShuttleBookingList(shuttleBookingDTOList);
-
+            response.setData(shuttleBookingDTOList);
             List<String> userEmails = shuttleBookingList.stream() .map(booking -> booking.getUser().getEmail()) .distinct() .collect(Collectors.toList()); response.setEmail(String.join(", ", userEmails));
         } catch (Exception e) {
             response.setStatusCode(500);
@@ -152,11 +160,6 @@ public class ShuttleBookingService implements IShuttleBookingService {
     }
 
     @Override
-    public Response getAllShuttles(Long branchId) {
-        return null;
-    }
-
-    @Override
     public String getBookingEmail(Long branchId, Long shuttleBookingId) {
         ShuttleBooking booking = shuttleBookingRepository.findById(shuttleBookingId).orElse(null);
         return (booking != null && booking.getShuttle().getBranch().getId().equals(branchId)) ? booking.getUser().getEmail() : null;
@@ -181,9 +184,3 @@ public class ShuttleBookingService implements IShuttleBookingService {
     }
 
 }
-
-
-
-
-
-

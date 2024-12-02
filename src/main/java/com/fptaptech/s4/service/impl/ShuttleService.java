@@ -1,6 +1,7 @@
 package com.fptaptech.s4.service.impl;
 
 
+import com.fptaptech.s4.response.Response;
 import com.fptaptech.s4.dto.ShuttleDTO;
 import com.fptaptech.s4.entity.Branch;
 import com.fptaptech.s4.entity.Shuttle;
@@ -8,7 +9,6 @@ import com.fptaptech.s4.exception.OurException;
 import com.fptaptech.s4.repository.BranchRepository;
 import com.fptaptech.s4.repository.ShuttleRepository;
 
-import com.fptaptech.s4.response.Response;
 import com.fptaptech.s4.service.interfaces.IShuttleService;
 import com.fptaptech.s4.utils.Utils;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ShuttleService implements IShuttleService {
     private final ShuttleRepository shuttleRepository;
-    private final BranchRepository branchRepository; // Assuming you have a BranchRepository
+    private final BranchRepository branchRepository;
     private final CloudinaryService cloudinaryService;
 
     @Override
@@ -47,7 +47,7 @@ public class ShuttleService implements IShuttleService {
             ShuttleDTO carDTO = Utils.mapShuttleEntityToShuttleDTO(savedCar);
             response.setStatusCode(200);
             response.setMessage("successful");
-            response.setShuttle(carDTO);
+            response.setData(carDTO);
         } catch (Exception e) {
             response.setStatusCode(500);
             response.setMessage("Error saving car: " + e.getMessage());

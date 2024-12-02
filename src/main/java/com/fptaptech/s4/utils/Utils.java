@@ -100,7 +100,6 @@ public class Utils {
         shuttleBookingDTO.setBookingConfirmationCode(shuttleBooking.getBookingConfirmationCode());
         shuttleBookingDTO.setTotalPrice(shuttleBooking.getTotalPrice());
         shuttleBookingDTO.setUserEmail(shuttleBooking.getUser().getEmail());
-
         shuttleBookingDTO.setBranchId(shuttleBooking.getShuttle().getBranch().getId()); // Set branch ID
         return shuttleBookingDTO;
     }
@@ -129,7 +128,7 @@ public class Utils {
         userDTO.setId(user.getId());
         userDTO.setFirstName(user.getFirstName());
         userDTO.setLastName(user.getLastName());
-        userDTO.setUserName(user.getUsername());
+        userDTO.setUserName(user.getEmail());
         userDTO.setPhone(user.getPhone());
 
         List<SpaBookingDTO> spaBookingDTOList = user.getSpaBookings().stream()
@@ -144,18 +143,14 @@ public class Utils {
         SpaDTO spaDTO = new SpaDTO();
         spaDTO.setId(spa.getId());
         spaDTO.setSpaServiceName(spa.getSpaServiceName());
+        spaDTO.setSpaServicePrice(spa.getSpaServicePrice());
+        spaDTO.setSpaPhotoUrl(spa.getSpaPhotoUrl());
+        spaDTO.setSpaDescription(spa.getSpaDescription());
+        spaDTO.setBranchId(spa.getBranch().getId());
         return spaDTO;
     }
-    public static SpaDTO mapSpaEntityToSpaDTOPlusBookings(Spa spa) {
-        SpaDTO spaDTO = mapSpaEntityToSpaDTO(spa);
-        if (spa.getSpaBookings() != null) {
-            List<SpaBookingDTO> spaBookingDTOList = spa.getSpaBookings().stream()
-                    .map(Utils::mapSpaBookingEntityToSpaBookingDTO)
-                    .collect(Collectors.toList());
-            spaDTO.setSpaBookings(spaBookingDTOList);
-        }
-        return spaDTO;
-    }
+
+
 
     public static List<SpaDTO> mapSpaListEntityToSpaListDTO(List<Spa> spaList) {
         return spaList.stream().map(Utils::mapSpaEntityToSpaDTO).collect(Collectors.toList());
@@ -166,11 +161,23 @@ public class Utils {
         spaBookingDTO.setId(spaBooking.getId());
         spaBookingDTO.setAppointmentTime(spaBooking.getAppointmentTime());
         spaBookingDTO.setSpaServiceTime(spaBooking.getSpaServiceTime());
+        spaBookingDTO.setPhone(spaBooking.getPhone());
+        spaBookingDTO.setNumberOfPeople(spaBooking.getNumberOfPeople());
+        spaBookingDTO.setFullName(spaBooking.getFullName());
+        spaBookingDTO.setDescription(spaBooking.getDescription());
         spaBookingDTO.setSpaServiceName(spaBooking.getSpaServiceName());
+        spaBookingDTO.setSpaServicePrice(spaBooking.getSpaServicePrice());
+        spaBookingDTO.setSpaPhotoUrl(spaBooking.getSpaPhotoUrl());
+        spaBookingDTO.setSpaDescription(spaBooking.getSpaDescription());
         spaBookingDTO.setUserEmail(spaBooking.getUser().getEmail());
-
+        spaBookingDTO.setUser(mapUserEntityToUserDTO(spaBooking.getUser()));
+        spaBookingDTO.setSpa(mapSpaEntityToSpaDTO(spaBooking.getSpa()));
         return spaBookingDTO;
     }
+    public static List<SpaBookingDTO> mapSpaBookingListEntityToSpaBookingListDTO(List<SpaBooking> spaBookingList) {
+        return spaBookingList.stream().map(Utils::mapSpaBookingEntityToSpaBookingDTO).collect(Collectors.toList());
+    }
+
     public static SpaBookingDTO mapSpaBookingEntityToSpaBookingDTOPlusSpa(SpaBooking spaBooking, boolean mapUser) {
         SpaBookingDTO spaBookingDTO = mapSpaBookingEntityToSpaBookingDTO(spaBooking);
         if (mapUser) {
@@ -183,9 +190,6 @@ public class Utils {
             spaBookingDTO.setSpa(spaDTO);
         }
         return spaBookingDTO;
-    }
-    public static List<SpaBookingDTO> mapSpaBookingListEntityToSpaBookingListDTO(List<SpaBooking> spaBookingList) {
-        return spaBookingList.stream().map(Utils::mapSpaBookingEntityToSpaBookingDTO).collect(Collectors.toList());
     }
 
 
@@ -228,5 +232,5 @@ public class Utils {
         return restaurantBookingList.stream().map(Utils::mapRestaurantBookingEntityToRestaurantBookingDTO).collect(Collectors.toList());
     }
 
-
 }
+

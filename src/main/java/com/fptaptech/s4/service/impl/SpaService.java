@@ -11,29 +11,39 @@ import com.fptaptech.s4.service.interfaces.ISpaService;
 import com.fptaptech.s4.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class SpaService implements ISpaService {
     private final SpaRepository spaRepository;
-    private final BranchRepository branchRepository; // Assuming you have a BranchRepository
+    private final BranchRepository branchRepository;
+    private final CloudinaryService cloudinaryService;
 
     @Override
-    public Response addNewSpaServiceName(Long branchId, String spaServiceName) {
+    public Response addNewSpaServiceName(Long branchId, MultipartFile photo, String spaServiceName, BigDecimal spaServicePrice, String spaDescription) {
         Response response = new Response();
         try {
             Branch branch = branchRepository.findById(branchId).orElseThrow(() -> new OurException("Branch Not Found"));
+            Map uploadResult = cloudinaryService.upload(photo);
+            String imageUrl = (String) uploadResult.get("url");
             Spa spa = new Spa();
             spa.setSpaServiceName(spaServiceName);
+            spa.setSpaServicePrice(spaServicePrice);
+            spa.setSpaPhotoUrl(imageUrl);
+            spa.setSpaDescription(spaDescription);
             spa.setBranch(branch); // Set the branch
             Spa savedSpa = spaRepository.save(spa);
 
             SpaDTO spaDTO = Utils.mapSpaEntityToSpaDTO(savedSpa);
             response.setStatusCode(200);
             response.setMessage("successful");
-            response.setSpa(spaDTO);
+            response.setData(spaDTO);
         } catch (Exception e) {
             response.setStatusCode(500);
             response.setMessage("Error saving spa service name: " + e.getMessage());
@@ -41,10 +51,15 @@ public class SpaService implements ISpaService {
         return response;
     }
 
+
     @Override
-    public List<String> getAllSpaServiceNames() {
-        return spaRepository.findSpaServiceNames();
+    public List<SpaDTO> getAllSpaServices() {
+        List<Spa> spaList = spaRepository.findAll();
+        return spaList.stream()
+                .map(Utils::mapSpaEntityToSpaDTO)
+                .collect(Collectors.toList());
     }
+
 
     @Override
     public Response deleteSpaServiceName(Long spaId) {
@@ -65,17 +80,27 @@ public class SpaService implements ISpaService {
     }
 
     @Override
-    public Response updateSpaServiceName(Long spaId, String newSpaServiceName) {
+    public Response updateSpaServiceName(Long spaId, MultipartFile newSpaPhoto, String newSpaServiceName, BigDecimal newSpaServicePrice, String newSpaDescription) {
         Response response = new Response();
         try {
             Spa spa = spaRepository.findById(spaId).orElseThrow(() -> new OurException("Spa Not Found"));
+
+            // Upload new photo to Cloudinary if provided
+            if (newSpaPhoto != null && !newSpaPhoto.isEmpty()) {
+                Map uploadResult = cloudinaryService.upload(newSpaPhoto);
+                String imageUrl = (String) uploadResult.get("url");
+                spa.setSpaPhotoUrl(imageUrl);
+            }
+
             spa.setSpaServiceName(newSpaServiceName);
+            spa.setSpaServicePrice(newSpaServicePrice);
+            spa.setSpaDescription(newSpaDescription);
             Spa updatedSpa = spaRepository.save(spa);
 
             SpaDTO spaDTO = Utils.mapSpaEntityToSpaDTO(updatedSpa);
             response.setStatusCode(200);
             response.setMessage("successful");
-            response.setSpa(spaDTO);
+            response.setData(spaDTO);
         } catch (OurException e) {
             response.setStatusCode(404);
             response.setMessage(e.getMessage());
@@ -86,6 +111,7 @@ public class SpaService implements ISpaService {
         return response;
     }
 
+
     @Override
     public Response getSpaServiceNameById(Long spaId) {
         Response response = new Response();
@@ -94,7 +120,7 @@ public class SpaService implements ISpaService {
             SpaDTO spaDTO = Utils.mapSpaEntityToSpaDTO(spa);
             response.setStatusCode(200);
             response.setMessage("successful");
-            response.setSpa(spaDTO);
+            response.setData(spaDTO);
         } catch (OurException e) {
             response.setStatusCode(404);
             response.setMessage(e.getMessage());
@@ -114,7 +140,7 @@ public class SpaService implements ISpaService {
             SpaDTO spaDTO = Utils.mapSpaEntityToSpaDTO(spa);
             response.setStatusCode(200);
             response.setMessage("successful");
-            response.setSpa(spaDTO);
+            response.setData(spaDTO);
         } catch (OurException e) {
             response.setStatusCode(404);
             response.setMessage(e.getMessage());
@@ -124,5 +150,4 @@ public class SpaService implements ISpaService {
         }
         return response;
     }
-
 }

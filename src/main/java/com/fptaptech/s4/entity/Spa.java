@@ -3,6 +3,7 @@ package com.fptaptech.s4.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,9 @@ public class Spa {
     private Long id;
 
     private String spaServiceName;
+    private BigDecimal spaServicePrice;
+    private String spaPhotoUrl;
+    private String spaDescription;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "branch_id", nullable = false)
@@ -29,7 +33,11 @@ public class Spa {
         return "Spa{" +
                 "id=" + id +
                 ", spaServiceName='" + spaServiceName + '\'' +
+                ", spaServicePrice=" + spaServicePrice +
+                ", spaPhotoUrl='" + spaPhotoUrl + '\'' +
+                ", spaDescription='" + spaDescription + '\'' +
                 ", branch=" + branch +
+                ", spaBookings=" + spaBookings +
                 '}';
     }
 }

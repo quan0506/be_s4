@@ -11,13 +11,14 @@ import java.util.List;
 public class Response {
     private int statusCode;
     private String message;
+    private Object data;
 
     private String token;
     private String role;
     private String expirationTime;
     private String bookingConfirmationCode;
+    private String Email;
 
-    private String email;
     private Long branchId;
     private UserDTO user;
     private List<UserDTO> userList;

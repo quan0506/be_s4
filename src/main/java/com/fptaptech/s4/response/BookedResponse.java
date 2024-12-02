@@ -29,4 +29,5 @@ public class BookedResponse {
     private String bookingConfirmationCode;
 
     private Room room;
+
 }

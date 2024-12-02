@@ -4,56 +4,53 @@ import com.fptaptech.s4.dto.SpaDTO;
 
 import com.fptaptech.s4.response.Response;
 import com.fptaptech.s4.service.interfaces.ISpaService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @RestController
 @RequestMapping("/spas")
+@RequiredArgsConstructor
 public class SpaController {
 
     @Autowired
-    private ISpaService spaService;
+    private final ISpaService spaService;
 
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Response> addNewSpaServiceName(@RequestParam Long branchId, @RequestParam String spaServiceName) {
+    public ResponseEntity<Response> addNewSpaService(@RequestParam Long branchId,
+                                                     @RequestParam String spaServiceName,
+                                                     @RequestParam BigDecimal spaServicePrice,
+                                                     @RequestParam MultipartFile spaPhoto,
+                                                     @RequestParam String spaDescription) {
         if (spaServiceName == null || spaServiceName.isBlank()) {
             Response response = new Response();
             response.setStatusCode(400);
             response.setMessage("Please provide a spa service name");
             return ResponseEntity.status(response.getStatusCode()).body(response);
         }
-        Response response = spaService.addNewSpaServiceName(branchId, spaServiceName);
+        Response response = spaService.addNewSpaServiceName(branchId, spaPhoto, spaServiceName, spaServicePrice, spaDescription);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-// lay tat ca loai spa
     @GetMapping("/all")
-    public ResponseEntity<Response> getAllSpaServiceNames() {
-        List<String> spaServiceNames = spaService.getAllSpaServiceNames();
+    public ResponseEntity<Response> getAllSpaServices() {
+        List<SpaDTO> spaDTOList = spaService.getAllSpaServices();
         Response response = new Response();
         response.setStatusCode(200);
         response.setMessage("successful");
-        response.setSpaList(new ArrayList<>());
-
-        // Convert List<String> to List<SpaDTO>
-        List<SpaDTO> spaDTOList = spaServiceNames.stream().map(name -> {
-            SpaDTO spaDTO = new SpaDTO();
-            spaDTO.setSpaServiceName(name);
-            return spaDTO;
-        }).collect(Collectors.toList());
-
-        response.setSpaList(spaDTOList);
+        response.setData(spaDTOList);  // Set the list of spa services in the response
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
-
-// lay ten dich vu spa theo id
 
     @GetMapping("/spa-by-id/{spaId}")
     public ResponseEntity<Response> getSpaServiceNameById(@PathVariable Long spaId) {
@@ -67,17 +64,16 @@ public class SpaController {
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-// update dich vu spa
     @PutMapping("/update/{spaId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Response> updateSpaServiceName(@PathVariable Long spaId, @RequestParam String newSpaServiceName) {
-        Response response = spaService.updateSpaServiceName(spaId, newSpaServiceName);
+    public ResponseEntity<Response> updateSpaServiceName(@PathVariable Long spaId,
+                                                         @RequestParam MultipartFile newSpaPhoto,
+                                                         @RequestParam String newSpaServiceName,
+                                                         @RequestParam BigDecimal newSpaServicePrice,
+                                                         @RequestParam String newSpaDescription) {
+        Response response = spaService.updateSpaServiceName(spaId, newSpaPhoto, newSpaServiceName, newSpaServicePrice, newSpaDescription);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
-
-// xoa ten dich vu spa
-
-
 
     @DeleteMapping("/delete/{spaId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
