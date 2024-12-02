@@ -1,5 +1,7 @@
 package com.fptaptech.s4.controller;
 
+import com.fptaptech.s4.Mapper.BookingMapper;
+import com.fptaptech.s4.dto.BookingDTO;
 import com.fptaptech.s4.entity.Booking;
 import com.fptaptech.s4.service.interfaces.IBookingService;
 import lombok.RequiredArgsConstructor;
@@ -35,15 +37,20 @@ public class BookingController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> getBookingById(@PathVariable Long id) {
+    public ResponseEntity<BookingDTO> getBookingById(@PathVariable Long id) {
         Booking booking = bookingService.getBookingById(id);
-        return ResponseEntity.ok(booking);
+        BookingDTO bookingDTO = BookingMapper.toDTO(booking);
+        return ResponseEntity.ok(bookingDTO);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Booking>> getAllBookings() {
+    public ResponseEntity<List<BookingDTO>> getAllBookings() {
         List<Booking> bookings = bookingService.getAllBookings();
-        return ResponseEntity.ok(bookings);
+        // Chuyển đổi từ List<Booking> sang List<BookingDTO>
+        List<BookingDTO> bookingDTOs = bookings.stream()
+                .map(BookingMapper::toDTO)
+                .toList();
+        return ResponseEntity.ok(bookingDTOs);
     }
 
     @PostMapping("/payment/{id}")
