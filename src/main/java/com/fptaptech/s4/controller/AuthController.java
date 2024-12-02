@@ -75,7 +75,7 @@ public class AuthController {
 
     @PostMapping("/reset-password")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordDTO resetPasswordDTO, @RequestParam String code, Principal principal) {
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordDTO resetPasswordDTO, Principal principal) {
         try {
             userService.resetPassword(principal.getName(), resetPasswordDTO);
             return ResponseEntity.ok("Password reset successfully");
@@ -83,8 +83,5 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error resetting password: " + e.getMessage());
         }
     }
-
-
-
 
 }

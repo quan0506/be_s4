@@ -1,21 +1,13 @@
 package com.fptaptech.s4.service.impl;
 
-<<<<<<< HEAD
-import com.fptaptech.s4.dto.Response;
-=======
-import com.fptaptech.s4.response.Response;
->>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
 import com.fptaptech.s4.dto.SpaDTO;
 import com.fptaptech.s4.entity.Branch;
 import com.fptaptech.s4.entity.Spa;
 import com.fptaptech.s4.exception.OurException;
 import com.fptaptech.s4.repository.BranchRepository;
 import com.fptaptech.s4.repository.SpaRepository;
-<<<<<<< HEAD
-import com.fptaptech.s4.service.ISpaService;
-=======
+import com.fptaptech.s4.response.Response;
 import com.fptaptech.s4.service.interfaces.ISpaService;
->>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
 import com.fptaptech.s4.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

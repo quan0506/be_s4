@@ -1,34 +1,22 @@
 package com.fptaptech.s4.service.impl;
 
-<<<<<<< HEAD
-//import com.fptaptech.s4.entity.ConfirmationToken;
 import com.fptaptech.s4.dto.UserDTO;
 import com.fptaptech.s4.entity.Role;
 import com.fptaptech.s4.entity.User;
-=======
 import com.fptaptech.s4.dto.ResetPasswordDTO;
-import com.fptaptech.s4.dto.UserDTO;
-import com.fptaptech.s4.entity.Role;
-import com.fptaptech.s4.entity.User;
 import com.fptaptech.s4.entity.VerificationCode;
->>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
 import com.fptaptech.s4.exception.OurException;
 import com.fptaptech.s4.exception.UserAlreadyExistsException;
 import com.fptaptech.s4.repository.RoleRepository;
 import com.fptaptech.s4.repository.UserRepository;
-<<<<<<< HEAD
-import com.fptaptech.s4.service.IUserService;
-=======
 import com.fptaptech.s4.repository.VerificationCodeRepository;
 import com.fptaptech.s4.service.interfaces.IUserService;
->>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
 import com.fptaptech.s4.utils.Utils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -52,16 +40,6 @@ public class UserService implements IUserService {
     @Override public UserDTO findByEmail(String email) { User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new OurException("User Not Found"));
             return Utils.mapUserEntityToUserDTO(user); }
-
-
-
-        @Override
-        public UserDTO findById(Long userId) {
-            User user = userRepository.findById(userId).orElseThrow(() -> new OurException("User Not Found"));
-            return Utils.mapUserEntityToUserDTO(user);
-        }
-
-    @Override public UserDTO findByEmail(String email) { User user = userRepository.findByEmail(email).orElseThrow(() -> new OurException("User Not Found")); return Utils.mapUserEntityToUserDTO(user); }
 
 
     @Override
@@ -122,11 +100,14 @@ public class UserService implements IUserService {
     }
 
     @Transactional
-    public void resetPassword(String email,ResetPasswordDTO resetPasswordDTO) {
-        VerificationCode verificationCode = verificationCodeRepository.findByEmailAndCode(resetPasswordDTO.getEmail(), resetPasswordDTO.getCode())
+    public void resetPassword(String email, ResetPasswordDTO resetPasswordDTO) {
+        // Lấy code từ resetPasswordDTO
+        String code = resetPasswordDTO.getCode();
+
+        VerificationCode verificationCode = verificationCodeRepository.findByEmailAndCode(email, code)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid or expired verification code"));
 
-        User user = userRepository.findByEmail(resetPasswordDTO.getEmail())
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         if (!resetPasswordDTO.getNewPassword().equals(resetPasswordDTO.getConfirmNewPassword())) {
@@ -139,32 +120,8 @@ public class UserService implements IUserService {
     }
 
 
+
     private String generateVerificationCode() {
         return UUID.randomUUID().toString().substring(0, 6);
     }
 }
-
-/*private void sendConfirmationEmail(User user) {
-        ConfirmationToken confirmationToken = new ConfirmationToken(user);
-        confirmationTokenRepository.save(confirmationToken);
-
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(user.getEmail());
-        mailMessage.setSubject("Complete Registration");
-        mailMessage.setText("To confirm your account, please click here : "
-                + "http://localhost:4444/confirm-account?token=" + confirmationToken.getConfirmationToken());
-        emailService.sendEmail(mailMessage);
-    }*/
-
-    /*public ResponseEntity<?> confirmEmail(String confirmationToken) {
-        ConfirmationToken token = confirmationTokenRepository
-                .findByConfirmationToken(confirmationToken);
-        if (token != null) {
-            User user = userRepository.findByEmail(token.getUser().getEmail())
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-            user.setEnabled(true);
-            userRepository.save(user);
-            return ResponseEntity.ok("Email verified successfully!");
-        }
-        return ResponseEntity.badRequest().body("Error: Couldn't verify email");
-    }*/

@@ -34,7 +34,4 @@ public class RoomDetail {
     @JoinColumn(name = "room_id", insertable = false, updatable = false)
     private Room room;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "hotel_service_id", insertable = false, updatable = false)
-    private HotelServices hotelServices;
 }

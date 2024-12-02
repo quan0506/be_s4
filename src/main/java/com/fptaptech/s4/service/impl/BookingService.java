@@ -6,6 +6,7 @@ import com.fptaptech.s4.exception.ResourceNotFoundException;
 import com.fptaptech.s4.entity.BookedRoom;
 import com.fptaptech.s4.exception.RoomNotAvailableException;
 import com.fptaptech.s4.repository.BookingRepository;
+import com.fptaptech.s4.repository.UserRepository;
 import com.fptaptech.s4.service.interfaces.IBookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ public class BookingService implements IBookingService {
 
     private final BookingRepository bookingRepository;
     private final RoomService roomService;
+    private final UserRepository userRepository;
 
     @Override
     public Booking createBooking(Booking booking) {
@@ -37,7 +39,11 @@ public class BookingService implements IBookingService {
 
         booking.setRoom(room);
         booking.setConfirmBookingCode(generateConfirmCode());
-
+        var userId = booking.getUser().getId();
+        var newUser = userRepository.findById(userId);
+        booking.getUser().setFirstName(newUser.get().getFirstName());
+        booking.getUser().setLastName(newUser.get().getLastName());
+        booking.getUser().setEmail(newUser.get().getEmail());
         return bookingRepository.save(booking);
     }
 

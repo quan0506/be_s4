@@ -9,10 +9,6 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +23,7 @@ public class UserDTO {
 
     @NotBlank(message = "Email address cannot be empty")
     @Email(message = "Invalid email address")
-    private String username;
+    private String userName;
 
     @NotBlank(message = "First name cannot be empty")
     @Size(min = 1, max = 1000, message = "First name must be between 1 and 1000 characters")
@@ -37,23 +33,18 @@ public class UserDTO {
     @Size(min = 1, max = 1000, message = "Last name must be between 1 and 1000 characters")
     private String lastName;
 
-<<<<<<< HEAD
     @NotBlank(message = "Phone cannot be empty")
     @Size(min = 1, max = 10, message = "Phone number must be between 1 and 10 characters")
     private String phone;
 
-=======
+    private String email;
+
     @NotBlank(message = "Password cannot be blank")
     @Size(min = 8, message = "Password must be at least 8 characters")
     @Pattern(regexp = ".*[A-Z].*", message = "Password must contain at least one uppercase letter")
     @Pattern(regexp = ".*[!@#$%^&*()].*", message = "Password must contain at least one special character")
     private String password;
 
-    @NotBlank(message = "Phone cannot be empty")
-    @Size(min = 1, max = 10, message = "Phone number must be between 1 and 10 characters")
-    private String phone;
-
->>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
     private List<Role> roles = new ArrayList<>();
     private List<ShuttleBookingDTO> shuttleBookings = new ArrayList<>();
     private List<SpaBookingDTO> spaBookings = new ArrayList<>();
@@ -63,10 +54,10 @@ public class UserDTO {
     public UserDTO() {}
 
     // Public all-arg constructor
-    public UserDTO(Long id, String username, String firstName, String lastName, String phone, List<Role> roles,
+    public UserDTO(Long id, String userName, String firstName, String lastName, String phone, List<Role> roles,
                    List<ShuttleBookingDTO> shuttleBookings, List<SpaBookingDTO> spaBookings) {
         this.id = id;
-        this.username = username;
+        this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
@@ -76,6 +67,6 @@ public class UserDTO {
     }
 
     public String getEmail() {
-        return username;
+        return userName;
     }
 }

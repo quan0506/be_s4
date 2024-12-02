@@ -1,26 +1,12 @@
 package com.fptaptech.s4.controller;
 
-<<<<<<< HEAD
-import com.fptaptech.s4.dto.Response;
-import com.fptaptech.s4.dto.RestaurantBookingDTO;
-import com.fptaptech.s4.dto.UserDTO;
-import com.fptaptech.s4.service.IRestaurantBookingService;
-import com.fptaptech.s4.service.IRestaurantService;
-import com.fptaptech.s4.service.IUserService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-=======
 import com.fptaptech.s4.response.Response;
-import com.fptaptech.s4.service.interfaces.IRestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
->>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
+
+import com.fptaptech.s4.service.interfaces.IRestaurantService;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -48,30 +34,21 @@ public class RestaurantController {
         Response response = restaurantService.addNewRestaurant(branchId, restaurantType, time, restaurantAdultPrice, restaurantChildrenPrice, restaurantPhotoUrl, restaurantDescription);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
-<<<<<<< HEAD
 // lay tat ca loai nha hang
-=======
 
->>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
     @GetMapping("/all")
     public ResponseEntity<Response> getAllRestaurants(@RequestParam(value = "branchId") Long branchId) {
         Response response = restaurantService.getAllRestaurants(branchId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
-<<<<<<< HEAD
 // tim theo loai nha hang
-=======
 
->>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
     @GetMapping("/types")
     public List<String> getRestaurantTypes(@RequestParam(value = "branchId") Long branchId) {
         return restaurantService.getAllRestaurantTypes(branchId);
     }
-<<<<<<< HEAD
 // lay nha hang theo id
-=======
 
->>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
     @GetMapping("/restaurant-by-id/{restaurantId}")
     public ResponseEntity<Response> getRestaurantById(@PathVariable Long restaurantId,
                                                       @RequestParam(value = "branchId") Long branchId) {

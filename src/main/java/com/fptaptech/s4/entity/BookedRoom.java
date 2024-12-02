@@ -47,30 +47,4 @@ public class BookedRoom {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private Room room;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "booked_room_services",
-            joinColumns = @JoinColumn(name = "booked_room_id"),
-            inverseJoinColumns = @JoinColumn(name = "service_id")
-    )
-
-    @Column(name = "services")
-    private List<HotelServices> services; // Dịch vụ bổ sung
-
-
-    public void calculateTotalNumberOfGuest(){
-        this.totalNumOfGuest = this.NumOfAdults + NumOfChildren;
-    }
-
-    public void setNumOfAdults(int numOfAdults) {
-        NumOfAdults = numOfAdults;
-        calculateTotalNumberOfGuest();
-    }
-
-    public void setNumOfChildren(int numOfChildren) {
-        NumOfChildren = numOfChildren;
-        calculateTotalNumberOfGuest();
-    }
-
 }

@@ -17,6 +17,7 @@ public class Response {
     private String expirationTime;
     private String bookingConfirmationCode;
 
+    private String email;
     private Long branchId;
     private UserDTO user;
     private List<UserDTO> userList;

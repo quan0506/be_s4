@@ -1,6 +1,7 @@
 package com.fptaptech.s4.service.interfaces;
 
-import com.fptaptech.s4.entity.HotelServices;
+import com.fptaptech.s4.service.impl.HotelServices;
+
 import java.util.Optional;
 
 public interface IHotelServiceService {

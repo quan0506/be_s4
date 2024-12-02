@@ -1,14 +1,9 @@
 package com.fptaptech.s4.controller;
 
-<<<<<<< HEAD
-import com.fptaptech.s4.dto.Response;
 import com.fptaptech.s4.dto.SpaDTO;
-import com.fptaptech.s4.service.ISpaService;
-=======
+
 import com.fptaptech.s4.response.Response;
-import com.fptaptech.s4.dto.SpaDTO;
 import com.fptaptech.s4.service.interfaces.ISpaService;
->>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,11 +32,8 @@ public class SpaController {
         Response response = spaService.addNewSpaServiceName(branchId, spaServiceName);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
-<<<<<<< HEAD
-// lay tat ca loai spa
-=======
 
->>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
+// lay tat ca loai spa
     @GetMapping("/all")
     public ResponseEntity<Response> getAllSpaServiceNames() {
         List<String> spaServiceNames = spaService.getAllSpaServiceNames();
@@ -60,42 +52,33 @@ public class SpaController {
         response.setSpaList(spaDTOList);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
-<<<<<<< HEAD
-// lay ten dich vu spa theo id
-=======
 
->>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
+// lay ten dich vu spa theo id
+
     @GetMapping("/spa-by-id/{spaId}")
     public ResponseEntity<Response> getSpaServiceNameById(@PathVariable Long spaId) {
         Response response = spaService.getSpaServiceNameById(spaId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
-<<<<<<< HEAD
-// lay dich vu spa theo ten
-=======
 
->>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
     @GetMapping("/spa-by-name")
     public ResponseEntity<Response> getSpaServiceByName(@RequestParam String spaServiceName) {
         Response response = spaService.getSpaServiceByName(spaServiceName);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
-<<<<<<< HEAD
-// update dich vu spa
-=======
 
->>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
+// update dich vu spa
     @PutMapping("/update/{spaId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Response> updateSpaServiceName(@PathVariable Long spaId, @RequestParam String newSpaServiceName) {
         Response response = spaService.updateSpaServiceName(spaId, newSpaServiceName);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
-<<<<<<< HEAD
-// xoa ten dich vu spa
-=======
 
->>>>>>> 6b3f6db58591a116e0c4b625467d8b7ff67d55f1
+// xoa ten dich vu spa
+
+
+
     @DeleteMapping("/delete/{spaId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Response> deleteSpaServiceName(@PathVariable Long spaId) {
