@@ -18,7 +18,6 @@ public class SpaBookingDTO {
     private String description;
     private String spaServiceName;
     private BigDecimal spaServicePrice;
-    private String spaPhotoUrl;
     private String spaDescription;
     private String userEmail;
 

@@ -167,7 +167,6 @@ public class Utils {
         spaBookingDTO.setDescription(spaBooking.getDescription());
         spaBookingDTO.setSpaServiceName(spaBooking.getSpaServiceName());
         spaBookingDTO.setSpaServicePrice(spaBooking.getSpaServicePrice());
-        spaBookingDTO.setSpaPhotoUrl(spaBooking.getSpaPhotoUrl());
         spaBookingDTO.setSpaDescription(spaBooking.getSpaDescription());
         spaBookingDTO.setUserEmail(spaBooking.getUser().getEmail());
         spaBookingDTO.setUser(mapUserEntityToUserDTO(spaBooking.getUser()));

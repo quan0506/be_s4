@@ -24,10 +24,8 @@ public class SpaBooking {
     private int numberOfPeople;
     private String fullName;
     private String description;
-
     private String spaServiceName;
     private BigDecimal spaServicePrice;
-    private String spaPhotoUrl;
     private String spaDescription;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -50,7 +48,6 @@ public class SpaBooking {
                 ", description='" + description + '\'' +
                 ", spaServiceName='" + spaServiceName + '\'' +
                 ", spaServicePrice=" + spaServicePrice +
-                ", spaPhotoUrl='" + spaPhotoUrl + '\'' +
                 ", spaDescription='" + spaDescription + '\'' +
                 ", user=" + user +
                 ", spa=" + spa +

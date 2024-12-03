@@ -52,7 +52,6 @@ public class SpaBookingService implements ISpaBookingService {
             spaBooking.setDescription(spaBookingRequest.getDescription());
             spaBooking.setSpaServiceName(spa.getSpaServiceName());
             spaBooking.setSpaServicePrice(spa.getSpaServicePrice());
-            spaBooking.setSpaPhotoUrl(spa.getSpaPhotoUrl());
             spaBooking.setSpaDescription(spa.getSpaDescription());
 
             spaBookingRepository.save(spaBooking);
