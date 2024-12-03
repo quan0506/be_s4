@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface IBranchService {
 
-    Branch addBranch( Branch branch, MultipartFile file);
-    Branch updateBranch(Long id, Branch branch, MultipartFile file);
+    Branch addBranch( Branch branch, List<MultipartFile> photos);
+    Branch updateBranch(Long id, Branch branch, List<MultipartFile> photos);
     void deleteBranch(Long id);
     List<Branch> getAllBranches();
     Branch getBranchById(Long id);

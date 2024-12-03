@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,51 +26,66 @@ private final CloudinaryService cloudinaryService;
 
 
 
-@Override
-        public Branch addBranch(Branch branch, MultipartFile photo) {
+    @Override
+    public Branch addBranch(Branch branch, List<MultipartFile> photos) {
+        if (photos != null && !photos.isEmpty()) {
+            List<String> imageUrls = new ArrayList<>();
+            for (MultipartFile photo : photos) {
+                try {
+                    Map uploadResult = cloudinaryService.upload(photo);
+                    String imageUrl = (String) uploadResult.get("url");
+                    imageUrls.add(imageUrl);
+                } catch (Exception e) {
+
+                    throw new RuntimeException("Failed to upload photo", e);
+                }
+            }
+            branch.setPhotos(imageUrls);
+        }
+        branch.setCreatedAt(LocalDate.now());
+        return branchRepository.save(branch);
+    }
+
+
+
+
+
+
+
+    @Override
+    public Branch updateBranch(Long id,Branch branch, List<MultipartFile> photos) {
+        Branch existingBranch = branchRepository.findById(branch.getId())
+                .orElseThrow(() -> new OurException("Branch Not Found"));
+        existingBranch.setId(branch.getId());
+        existingBranch.setBranchName(branch.getBranchName());
+        existingBranch.setLocation(branch.getLocation());
+        existingBranch.setAddress(branch.getAddress());
+        existingBranch.setDescription(branch.getDescription());
+
+        if (photos != null && !photos.isEmpty()) {
+            List<String> imageUrls = uploadPhotos(photos);
+            existingBranch.setPhotos(imageUrls);
+        }
+
+        return branchRepository.save(existingBranch);
+    }
+
+    private List<String> uploadPhotos(List<MultipartFile> photos) {
+        List<String> imageUrls = new ArrayList<>();
+        for (MultipartFile photo : photos) {
             if (photo != null && !photo.isEmpty()) {
                 try {
                     Map uploadResult = cloudinaryService.upload(photo);
                     String imageUrl = (String) uploadResult.get("url");
-                    branch.setPhoto(imageUrl);
-                    branch.setCreatedAt(LocalDate.now());
+                    imageUrls.add(imageUrl);
                 } catch (Exception e) {
-                    // Handle the exception
                     throw new RuntimeException("Failed to upload photo", e);
                 }
             }
-            return branchRepository.save(branch);
         }
-
-
-
-
-
-
-@Override
-public Branch updateBranch(Long id, Branch branch, MultipartFile photo) {
-    Branch existingBranch = branchRepository.findById(branch.getId())
-            .orElseThrow(() -> new OurException("Branch Not Found"));
-
-    existingBranch.setId(branch.getId());
-    existingBranch.setBranchName(branch.getBranchName());
-    existingBranch.setLocation(branch.getLocation());
-    existingBranch.setAddress(branch.getAddress());
-    existingBranch.setDescription(branch.getDescription());
-
-    if (photo != null && !photo.isEmpty()) {
-        try {
-            Map uploadResult = cloudinaryService.upload(photo);
-            String imageUrl = (String) uploadResult.get("url");
-            existingBranch.setPhoto(imageUrl);
-        } catch (Exception e) {
-                    // Handle the exception
-            throw new RuntimeException("Failed to upload photo", e);
-        }
+        return imageUrls;
     }
 
-    return branchRepository.save(existingBranch);
-}
 
 
 

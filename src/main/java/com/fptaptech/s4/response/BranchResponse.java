@@ -17,7 +17,7 @@ public class BranchResponse {
     private Long id;
     private String branchName;
     private String location;
-    private String photo;
+    private List<String> photos;
     private String address;
     private String description;
     private List<RoomResponse> rooms;
@@ -26,7 +26,7 @@ public class BranchResponse {
         this.id = branch.getId();
         this.branchName = branch.getBranchName();
         this.location = branch.getLocation();
-        this.photo = branch.getPhoto();
+        this.photos = branch.getPhotos();
         this.address = branch.getAddress();
         this.description = branch.getDescription();
         this.rooms = branch.getRooms().stream()

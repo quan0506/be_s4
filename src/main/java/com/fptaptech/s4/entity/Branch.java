@@ -30,10 +30,12 @@ public class Branch {
     @Column(name = "location", nullable = false)
     private String location;
 
-    @Column(name = "photo", nullable = true)
-    private String photo;
+    @ElementCollection
+    @CollectionTable(name = "branch_photos", joinColumns = @JoinColumn(name = "branch_id"))
+    @Column(name = "photo_url")
+    private List<String> photos;
 
-    @Column(name = "address",nullable = false)
+    @Column(name = "address", nullable = false)
     private String address;
 
     @Column(name = "description", nullable = false)
@@ -45,7 +47,10 @@ public class Branch {
     @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Room> rooms;
 
-    @PrePersist protected void onCreate() { createdAt = LocalDate.now(); }
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDate.now();
+    }
 }
 
 

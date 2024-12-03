@@ -10,8 +10,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/admin/branches")
@@ -24,27 +24,25 @@ public class BranchController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Branch> addBranch(@RequestParam String branchName,
                                             @RequestParam String location,
-                                            @RequestParam MultipartFile photo,
+                                            @RequestParam List<MultipartFile> photos,
                                             @RequestParam String address,
-                                            @RequestParam String description
-                                            ) {
+                                            @RequestParam String description) {
         Branch branch = Branch.builder()
                 .branchName(branchName)
                 .location(location)
                 .address(address)
                 .description(description)
                 .build();
-        Branch newBranch = branchService.addBranch(branch, photo);
+        Branch newBranch = branchService.addBranch(branch, photos);
         return ResponseEntity.status(HttpStatus.CREATED).body(newBranch);
     }
-
 
     @PutMapping("/update/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Branch> updateBranch(@PathVariable Long id,
                                                @RequestParam String branchName,
                                                @RequestParam String location,
-                                               @RequestParam(required = false) MultipartFile photo,
+                                               @RequestParam(required = false) List<MultipartFile> photos,
                                                @RequestParam String address,
                                                @RequestParam String description) {
         Branch branch = Branch.builder()
@@ -54,10 +52,9 @@ public class BranchController {
                 .address(address)
                 .description(description)
                 .build();
-        Branch updatedBranch = branchService.updateBranch(id,branch, photo);
+        Branch updatedBranch = branchService.updateBranch(id,branch, photos);
         return ResponseEntity.ok(updatedBranch);
     }
-
 
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
@@ -79,5 +76,3 @@ public class BranchController {
         return ResponseEntity.ok(branches);
     }
 }
-
-
