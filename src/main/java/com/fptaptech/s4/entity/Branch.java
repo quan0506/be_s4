@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -28,8 +30,8 @@ public class Branch {
     @Column(name = "location", nullable = false)
     private String location;
 
-    @Column(name = "photo", columnDefinition = "LONGBLOB")
-    private byte[] photo;
+    @Column(name = "photo", nullable = true)
+    private String photo;
 
     @Column(name = "address",nullable = false)
     private String address;
@@ -37,17 +39,13 @@ public class Branch {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "created_at", updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
+    @Column(updatable = false)
+    private LocalDate createdAt;
 
     @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Room> rooms;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = new Date();
-    }
+    @PrePersist protected void onCreate() { createdAt = LocalDate.now(); }
 }
 
 

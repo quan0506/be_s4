@@ -17,7 +17,7 @@ public class BranchResponse {
     private Long id;
     private String branchName;
     private String location;
-    private byte[] photo;
+    private String photo;
     private String address;
     private String description;
     private List<RoomResponse> rooms;

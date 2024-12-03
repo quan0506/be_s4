@@ -2,38 +2,78 @@ package com.fptaptech.s4.service.impl;
 
 import com.fptaptech.s4.entity.Branch;
 import com.fptaptech.s4.entity.Room;
+import com.fptaptech.s4.exception.OurException;
 import com.fptaptech.s4.exception.ResourceNotFoundException;
 import com.fptaptech.s4.repository.BranchRepository;
 import com.fptaptech.s4.repository.RoomRepository;
 import com.fptaptech.s4.service.interfaces.IBranchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class BranchService implements IBranchService {
     private final BranchRepository branchRepository;
     private final RoomRepository roomRepository;
+private final CloudinaryService cloudinaryService;
 
-    @Override
-    public Branch addBranch(Branch branch) {
-        return branchRepository.save(branch);
+
+
+@Override
+        public Branch addBranch(Branch branch, MultipartFile photo) {
+            if (photo != null && !photo.isEmpty()) {
+                try {
+                    Map uploadResult = cloudinaryService.upload(photo);
+                    String imageUrl = (String) uploadResult.get("url");
+                    branch.setPhoto(imageUrl);
+                    branch.setCreatedAt(LocalDate.now());
+                } catch (Exception e) {
+                    // Handle the exception
+                    throw new RuntimeException("Failed to upload photo", e);
+                }
+            }
+            return branchRepository.save(branch);
+        }
+
+
+
+
+
+
+@Override
+public Branch updateBranch(Long id, Branch branch, MultipartFile photo) {
+    Branch existingBranch = branchRepository.findById(branch.getId())
+            .orElseThrow(() -> new OurException("Branch Not Found"));
+
+    existingBranch.setId(branch.getId());
+    existingBranch.setBranchName(branch.getBranchName());
+    existingBranch.setLocation(branch.getLocation());
+    existingBranch.setAddress(branch.getAddress());
+    existingBranch.setDescription(branch.getDescription());
+
+    if (photo != null && !photo.isEmpty()) {
+        try {
+            Map uploadResult = cloudinaryService.upload(photo);
+            String imageUrl = (String) uploadResult.get("url");
+            existingBranch.setPhoto(imageUrl);
+        } catch (Exception e) {
+                    // Handle the exception
+            throw new RuntimeException("Failed to upload photo", e);
+        }
     }
 
-    @Override
-    public Branch updateBranch(Long id, Branch branch) {
-        Branch existingBranch = branchRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Branch not found"));
-        existingBranch.setBranchName(branch.getBranchName());
-        existingBranch.setLocation(branch.getLocation());
-        existingBranch.setPhoto(branch.getPhoto());
-        existingBranch.setDescription(branch.getDescription());
-        existingBranch.setCreatedAt(branch.getCreatedAt());
-        existingBranch.setDescription(branch.getDescription());
-        return branchRepository.save(existingBranch);
-    }
+    return branchRepository.save(existingBranch);
+}
+
+
+
+
 
     @Override
     public void deleteBranch(Long id) {
@@ -60,3 +100,4 @@ public class BranchService implements IBranchService {
         return branch;
     }
 }
+

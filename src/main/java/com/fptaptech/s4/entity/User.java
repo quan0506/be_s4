@@ -63,8 +63,8 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<SpaBooking> spaBookings = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<RestaurantBooking> restaurantBookings = new ArrayList<>();
+//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    private List<RestaurantBooking> restaurantBookings = new ArrayList<>();
 
     @Override
     public boolean isCredentialsNonExpired() {
