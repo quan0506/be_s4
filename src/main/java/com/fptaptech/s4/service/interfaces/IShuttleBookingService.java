@@ -8,14 +8,10 @@ public interface IShuttleBookingService {
 
     Response findBookingByConfirmationCode(Long branchId, String confirmationCode);
 
+    Response getAllShuttles(Long branchId);
 
     Response cancelShuttleBooking(Long branchId, Long shuttleBookingId);
 
-    String getBookingEmail(Long branchId, Long shuttleBookingId);
-
-    Response getAllShuttleBookings(Long branchId);
-
     Response getAllShuttleBookingsByUser(Long userId);
-
-    Response getAllShuttles(Long branchId);
+    String getBookingEmail(Long branchId, Long shuttleBookingId);
 }
