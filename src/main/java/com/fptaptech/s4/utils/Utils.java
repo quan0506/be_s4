@@ -231,5 +231,30 @@ public class Utils {
         return restaurantBookingList.stream().map(Utils::mapRestaurantBookingEntityToRestaurantBookingDTO).collect(Collectors.toList());
     }
 
+
+    // review
+    public static ReviewDTO mapReviewEntityToReviewDTO(Review review) {
+        ReviewDTO reviewDTO = new ReviewDTO();
+        reviewDTO.setReviewId(review.getReviewId());
+        reviewDTO.setRating(review.getRating());
+        reviewDTO.setReviewText(review.getReviewText());
+        reviewDTO.setReviewImageURL(review.getReviewImageURL());
+        reviewDTO.setCreatedAt(review.getCreatedAt());
+
+        if (review.getBranch() != null) {
+            reviewDTO.setBranchId(review.getBranch().getId());
+            reviewDTO.setBranchName(review.getBranch().getBranchName());
+        }
+
+        if (review.getRoom() != null) {
+            reviewDTO.setRoomId(review.getRoom().getId());
+            reviewDTO.setRoomType(review.getRoom().getRoomType());
+        }
+
+        return reviewDTO;
+    }
+
+
+
 }
 
