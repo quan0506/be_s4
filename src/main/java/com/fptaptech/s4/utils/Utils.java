@@ -233,7 +233,7 @@ public class Utils {
 
 
     // review
-    public static ReviewDTO mapReviewEntityToReviewDTO(Review review) {
+    public static ReviewDTO mapReviewEntityToReviewDTO(Review review, String userEmail) {
         ReviewDTO reviewDTO = new ReviewDTO();
         reviewDTO.setReviewId(review.getReviewId());
         reviewDTO.setRating(review.getRating());
@@ -251,10 +251,9 @@ public class Utils {
             reviewDTO.setRoomType(review.getRoom().getRoomType());
         }
 
+        reviewDTO.setUserEmail(userEmail); // Set the user's email
+
         return reviewDTO;
     }
-
-
-
 }
 

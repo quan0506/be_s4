@@ -3,6 +3,7 @@ package com.fptaptech.s4.dto;
 import lombok.Data;
 import java.time.LocalDateTime;
 
+
 @Data
 public class ReviewDTO {
     private Integer reviewId;
@@ -14,4 +15,5 @@ public class ReviewDTO {
     private String branchName;
     private Long roomId;
     private String roomType;
+    private String userEmail;
 }

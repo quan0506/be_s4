@@ -59,6 +59,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/shuttles/all","/shuttles/types","/shuttles/car-by-id/{carId}","/shuttles/all","/shuttles/all-available-cars","/shuttles/all","/shuttles/available-cars-by-date-and-type").permitAll()
                         .requestMatchers("/spas/all","/spas/spa-by-id/{spaId}","/spas//spa-by-name","/spas/all").permitAll()
                         .requestMatchers("/restaurants/all","/restaurants/restaurant-by-id/{restaurantId}","/restaurants/types").permitAll()
+                        .requestMatchers("/reviews/branch/{branchId}","reviews/room/{roomId}").permitAll()
                         .requestMatchers("/auth/**", "/rooms/**", "/booked/**", "/bookings/**","/shuttles/**","/spas/**","/restaurants/**").permitAll()
                         .requestMatchers("/admin/hotels/all", "/admin/hotels/{id}").permitAll()  // Public cho Hotel
                         .requestMatchers("/roles/**").hasRole("ADMIN")  // Chỉ ADMIN
