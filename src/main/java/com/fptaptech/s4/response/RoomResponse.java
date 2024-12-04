@@ -16,19 +16,19 @@ public class RoomResponse {
     private String roomType;
     private BigDecimal roomPrice;
     private boolean isBooked;
-    private byte[] photo;
+    private List<String> photos;
     private String description;
     private Long branchId;
     private List<BookingResponse> bookings;
 
     // Constructor bao gồm ảnh dưới dạng chuỗi base64
     public RoomResponse(Long id, String roomType, BigDecimal roomPrice, boolean isBooked,
-                        byte[] photo, String description, Long branchId , List<BookingResponse> bookings) {
+                        List<String> photos, String description, Long branchId , List<BookingResponse> bookings) {
         this.id = id;
         this.roomType = roomType;
         this.roomPrice = roomPrice;
         this.isBooked = isBooked;
-        this.photo = photo;
+        this.photos = photos;
         this.description= description;
         this.branchId = branchId;
         this.bookings = bookings;
@@ -39,7 +39,7 @@ public class RoomResponse {
         this.id = room.getId();
         this.roomType = room.getRoomType();
         this.roomPrice = room.getRoomPrice();
-        this.photo = room.getPhoto();
+        this.photos = room.getPhotos();
         this.description = room.getDescription();
         this.isBooked = room.isBooked();
         this.branchId = room.getBranch()!=null? room.getBranch().getId() : null;
@@ -48,22 +48,22 @@ public class RoomResponse {
             .collect(Collectors.toList());
         }
 
-    public RoomResponse(Long id, String roomType, BigDecimal roomPrice, Long branchId ,byte[] photo, String description) {
+    public RoomResponse(Long id, String roomType, BigDecimal roomPrice, Long branchId ,List<String> photos, String description) {
         this.id = id;
         this.roomType = roomType;
         this.roomPrice = roomPrice;
         this.isBooked = false;
-        this.photo = photo;
+        this.photos = photos;
         this.description = description;
         this.branchId = branchId;
     }
 
-    public RoomResponse(Long id, String roomType, BigDecimal roomPrice, byte[] photo, String description) {
+    public RoomResponse(Long id, String roomType, BigDecimal roomPrice, List<String> photos, String description) {
         this.id = id;
         this.roomType = roomType;
         this.roomPrice = roomPrice;
         this.isBooked = false;
-        this.photo = photo;
+        this.photos = photos;
         this.description = description;
     }
 }

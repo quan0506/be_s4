@@ -38,8 +38,10 @@ public class Room {
     @Column(name = "description")
     private String description;
 
-    @Column(columnDefinition = "LONGBLOB")
-    private byte[] photo;
+    @ElementCollection
+    @CollectionTable(name = "room_photos", joinColumns = @JoinColumn(name ="room_id"))
+    @Column(name = "photo_url")
+    private List<String> photos;
 
     @OneToMany(mappedBy="room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<BookedRoom> bookings;

@@ -92,7 +92,7 @@ public class BookedController {
                 theRoom.getId(),
                 theRoom.getRoomType(),
                 theRoom.getRoomPrice(),
-                theRoom.getPhoto(),
+                theRoom.getPhotos(),
                 theRoom.getDescription());
         return new BookingResponse(
                 booking.getBookingId(), booking.getCheckInDate(),

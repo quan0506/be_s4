@@ -34,11 +34,14 @@ public class RoomController {
 
     @PostMapping("/add/new-room")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<RoomResponse> addNewRoom(@RequestBody RoomRequest roomRequest) throws IOException {
-        String base64Photo = roomRequest.getPhoto() != null ? Base64.encodeBase64String(roomRequest.getPhoto().getBytes()) : null;
-        Room savedRoom = roomService.addNewRoom(base64Photo.getBytes(), roomRequest.getRoomType(), roomRequest.getRoomPrice(), roomRequest.getBranchId(), roomRequest.getDescription());
+    public ResponseEntity<RoomResponse> addNewRoom(@RequestParam String roomType,
+                                                   @RequestParam BigDecimal roomPrice,
+                                                   @RequestParam Long branchId,
+                                                   @RequestParam String description,
+                                                   @RequestParam List<MultipartFile> photos) throws IOException {
+        Room savedRoom = roomService.addNewRoom(photos, roomType, roomPrice, branchId, description);
         RoomResponse response = new RoomResponse(savedRoom.getId(), savedRoom.getRoomType(),
-                savedRoom.getRoomPrice(), savedRoom.getBranch().getId(), savedRoom.getPhoto(), savedRoom.getDescription()); // Sửa lại để lấy ID của branch
+                savedRoom.getRoomPrice(), savedRoom.getBranch().getId(), savedRoom.getPhotos(), savedRoom.getDescription());
         return ResponseEntity.ok(response);
     }
 
@@ -50,46 +53,36 @@ public class RoomController {
     @GetMapping("/all-rooms")
     public ResponseEntity<List<RoomResponse>> getAllRooms() {
         List<Room> rooms = roomService.getAllRooms();
-        List<RoomResponse> roomResponses = new ArrayList<>();
-        for (Room room : rooms) {
-            RoomResponse roomResponse = getRoomResponse(room);
-            roomResponse.setPhoto(room.getPhoto()); // Dữ liệu ảnh vẫn giữ nguyên dạng byte[]
-            roomResponses.add(roomResponse);
-        }
+        List<RoomResponse> roomResponses = rooms.stream()
+                .map(this::getRoomResponse)
+                .toList();
         return ResponseEntity.ok(roomResponses);
     }
-
 
     @GetMapping("/rooms/by-branch/{branchId}")
     public ResponseEntity<List<RoomResponse>> getRoomsByBranch(@PathVariable Long branchId) {
         List<Room> rooms = roomService.getRoomsByBranch(branchId);
-        List<RoomResponse> roomResponses = new ArrayList<>();
-        for (Room room : rooms) {
-            RoomResponse roomResponse = getRoomResponse(room);
-            roomResponses.add(roomResponse);
-        }
+        List<RoomResponse> roomResponses = rooms.stream()
+                .map(this::getRoomResponse)
+                .toList();
         return ResponseEntity.ok(roomResponses);
     }
 
     @GetMapping("/rooms/by-type")
     public ResponseEntity<List<RoomResponse>> getRoomsByTypeAndBranch(@RequestParam String roomType, @RequestParam Long branchId) {
         List<Room> rooms = roomService.getRoomsByTypeAndBranch(roomType, branchId);
-        List<RoomResponse> roomResponses = new ArrayList<>();
-        for (Room room : rooms) {
-            RoomResponse roomResponse = getRoomResponse(room);
-            roomResponses.add(roomResponse);
-        }
+        List<RoomResponse> roomResponses = rooms.stream()
+                .map(this::getRoomResponse)
+                .toList();
         return ResponseEntity.ok(roomResponses);
     }
 
     @GetMapping("/rooms/by-price")
     public ResponseEntity<List<RoomResponse>> getRoomsByPriceAndBranch(@RequestParam BigDecimal roomPrice, @RequestParam Long branchId) {
         List<Room> rooms = roomService.getRoomsByPriceAndBranch(roomPrice, branchId);
-        List<RoomResponse> roomResponses = new ArrayList<>();
-        for (Room room : rooms) {
-            RoomResponse roomResponse = getRoomResponse(room);
-            roomResponses.add(roomResponse);
-        }
+        List<RoomResponse> roomResponses = rooms.stream()
+                .map(this::getRoomResponse)
+                .toList();
         return ResponseEntity.ok(roomResponses);
     }
 
@@ -105,24 +98,19 @@ public class RoomController {
     public ResponseEntity<RoomResponse> updateRoom(@PathVariable Long roomId,
                                                    @RequestParam(required = false) String roomType,
                                                    @RequestParam(required = false) BigDecimal roomPrice,
-                                                   @RequestParam(required = false) MultipartFile photo, // Thay đổi kiểu dữ liệu
+                                                   @RequestParam(required = false) List<MultipartFile> photos,
                                                    @RequestParam(required = false) String description) throws IOException {
-        String base64Photo = photo != null && !photo.isEmpty() ?
-                Base64.encodeBase64String(photo.getBytes()) :
-                Arrays.toString(roomService.getRoomPhotoByRoomId(roomId));
-        Room theRoom = roomService.updateRoom(roomId, roomType, roomPrice, base64Photo, description);
-        theRoom.setPhoto(base64Photo.getBytes());
-        RoomResponse roomResponse = getRoomResponse(theRoom);
+        Room updatedRoom = roomService.updateRoom(roomId, roomType, roomPrice, photos, description);
+        RoomResponse roomResponse = getRoomResponse(updatedRoom);
         return ResponseEntity.ok(roomResponse);
     }
 
     @GetMapping("/room/{roomId}")
-    public ResponseEntity<Optional<RoomResponse>> getRoomById(@PathVariable Long roomId) {
-        Optional<Room> theRoom = roomService.getRoomById(roomId);
-        return theRoom.map(room -> {
-            RoomResponse roomResponse = getRoomResponse(room);
-            return ResponseEntity.ok(Optional.of(roomResponse));
-        }).orElseThrow(() -> new ResourceNotFoundException("Room not found"));
+    public ResponseEntity<RoomResponse> getRoomById(@PathVariable Long roomId) {
+        return roomService.getRoomById(roomId)
+                .map(this::getRoomResponse)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new ResourceNotFoundException("Room not found"));
     }
 
     @GetMapping("/available-rooms")
@@ -136,35 +124,28 @@ public class RoomController {
             return ResponseEntity.noContent().build();
         }
 
-        Optional<Room> roomOpt = roomService.getRoomById(roomId);
-        if (roomOpt.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Room room = roomOpt.get();
-        RoomResponse roomResponse = getRoomResponse(room);
-        roomResponse.setPhoto(room.getPhoto());
-
-        return ResponseEntity.ok(Collections.singletonList(roomResponse));
+        return roomService.getRoomById(roomId)
+                .map(this::getRoomResponse)
+                .map(Collections::singletonList)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     private RoomResponse getRoomResponse(Room room) {
         List<BookedRoom> bookings = getAllBookingsByRoomId(room.getId());
-        List<BookingResponse> bookingInfo = bookings
-                .stream()
+        List<BookingResponse> bookingInfo = bookings.stream()
                 .map(booking -> new BookingResponse(booking.getBookingId(),
                         booking.getCheckInDate(),
-                        booking.getCheckOutDate(), booking.getBookingConfirmationCode())).toList();
-        return new RoomResponse(room.getId(),
-                room.getRoomType(), room.getRoomPrice(),
-                room.isBooked(), room.getPhoto(), room.getDescription(), room.getBranchId(), bookingInfo);
+                        booking.getCheckOutDate(), booking.getBookingConfirmationCode()))
+                .toList();
+        return new RoomResponse(room.getId(), room.getRoomType(), room.getRoomPrice(),
+                room.isBooked(), room.getPhotos(), room.getDescription(), room.getBranch().getId(), bookingInfo);
     }
 
     private List<BookedRoom> getAllBookingsByRoomId(Long roomId) {
         return bookingService.getAllBookingsByRoomId(roomId);
     }
 }
-
 
 
 

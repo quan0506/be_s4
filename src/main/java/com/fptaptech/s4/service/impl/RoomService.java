@@ -8,32 +8,66 @@ import com.fptaptech.s4.repository.RoomRepository;
 import com.fptaptech.s4.service.interfaces.IRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class RoomService implements IRoomService {
     private final RoomRepository roomRepository;
     private final BranchRepository branchRepository;
+    private final CloudinaryService cloudinaryService;
 
     @Override
-    public Room addNewRoom(byte[] photo, String roomType, BigDecimal roomPrice, Long branchId, String description) throws IOException {
+    public Room addNewRoom(List<MultipartFile> photos, String roomType, BigDecimal roomPrice, Long branchId, String description) throws IOException {
         Room room = new Room();
         room.setRoomType(roomType);
         room.setRoomPrice(roomPrice);
         room.setDescription(description);
-        room.setPhoto(photo);
 
         Branch branch = branchRepository.findById(branchId)
                 .orElseThrow(() -> new ResourceNotFoundException("Branch not found"));
         room.setBranch(branch);
 
+        if (photos != null && !photos.isEmpty()) {
+            List<String> photoUrls = uploadPhotos(photos);
+            room.setPhotos(photoUrls);
+        }
+
         return roomRepository.save(room);
+    }
+
+    @Override
+    public Room updateRoom(Long roomId, String roomType, BigDecimal roomPrice, List<MultipartFile> photos, String description) throws IOException {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new ResourceNotFoundException("Room not found"));
+
+        if (roomType != null) room.setRoomType(roomType);
+        if (roomPrice != null) room.setRoomPrice(roomPrice);
+        if (description != null) room.setDescription(description);
+
+        if (photos != null && !photos.isEmpty()) {
+            List<String> photoUrls = uploadPhotos(photos);
+            room.setPhotos(photoUrls);
+        }
+
+        return roomRepository.save(room);
+    }
+
+    private List<String> uploadPhotos(List<MultipartFile> photos) throws IOException {
+        List<String> photoUrls = new ArrayList<>();
+        for (MultipartFile photo : photos) {
+            if (photo != null && !photo.isEmpty()) {
+                Map uploadResult = cloudinaryService.upload(photo);
+                String photoUrl = (String) uploadResult.get("url");
+                photoUrls.add(photoUrl);
+            }
+        }
+        return photoUrls;
     }
 
     @Override
@@ -63,27 +97,19 @@ public class RoomService implements IRoomService {
 
     @Override
     public byte[] getRoomPhotoByRoomId(Long roomId) {
-        return roomRepository.findById(roomId).map(Room::getPhoto).orElse(null);
+        return roomRepository.findById(roomId).map(Room::getPhotos).orElse(Collections.emptyList()).stream()
+                .findFirst().map(this::convertUrlToByteArray).orElse(null);
+    }
+
+    private byte[] convertUrlToByteArray(String url) {
+        // Add logic to convert URL to byte array if needed
+        return new byte[0]; // Placeholder
     }
 
     @Override
     public void deleteRoom(Long roomId) {
         Optional<Room> theRoom = roomRepository.findById(roomId);
-        if (theRoom.isPresent()) {
-            roomRepository.deleteById(roomId);
-        }
-    }
-
-    @Override
-    public Room updateRoom(Long roomId, String roomType, BigDecimal roomPrice, String base64Photo, String description){
-        Room room = roomRepository.findById(roomId).orElseThrow(() -> new ResourceNotFoundException("Room not found"));
-        if (roomType != null) room.setRoomType(roomType);
-        if (roomPrice != null) room.setRoomPrice(roomPrice);
-        if (base64Photo != null && !base64Photo.isEmpty()) {
-            room.setPhoto(base64Photo.getBytes());
-        }
-        if (description != null) room.setDescription(description);
-        return roomRepository.save(room);
+        theRoom.ifPresent(room -> roomRepository.deleteById(roomId));
     }
 
     @Override
@@ -91,12 +117,8 @@ public class RoomService implements IRoomService {
         return roomRepository.findById(roomId);
     }
 
-
     @Override
-    public boolean isRoomAvailable(Long roomId , LocalDate checkInDate, LocalDate checkOutDate) {
-        return roomRepository.isRoomAvailable(roomId , checkInDate, checkOutDate);
+    public boolean isRoomAvailable(Long roomId, LocalDate checkInDate, LocalDate checkOutDate) {
+        return roomRepository.isRoomAvailable(roomId, checkInDate, checkOutDate);
     }
-
-
 }
-
