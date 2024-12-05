@@ -38,7 +38,7 @@ public class Utils {
     public static UserDTO mapUserEntityToUserDTO(User user) {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
-        userDTO.setUserName(user.getEmail());
+        userDTO.setUserName(user.getFirstName()+user.getLastName());
         userDTO.setFirstName(user.getFirstName());
         userDTO.setLastName(user.getLastName());
         userDTO.setPhone(user.getPhone());

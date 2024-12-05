@@ -5,6 +5,7 @@ import com.fptaptech.s4.dto.UserDTO;
 import com.fptaptech.s4.dto.UserUpdateDTO;
 import com.fptaptech.s4.entity.User;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -15,6 +16,9 @@ public interface IUserService {
     void deleteUser(String email);
     User getUser(String email);
     UserDTO findById(Long userId);
+
+    UserDTO getCurrentUser(Authentication authentication);
+
     void resetPassword(String email, ResetPasswordDTO resetPasswordDTO);
 
     @Transactional

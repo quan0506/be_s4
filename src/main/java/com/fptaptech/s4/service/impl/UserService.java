@@ -15,6 +15,7 @@ import com.fptaptech.s4.service.interfaces.IUserService;
 import com.fptaptech.s4.utils.Utils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -118,6 +119,14 @@ public class UserService implements IUserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
+    @Override
+    public UserDTO getCurrentUser(Authentication authentication) {
+            String email = authentication.getName();
+            // Lấy email từ thông tin người dùng đăng nhập
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new OurException("User Not Found"));
+            return Utils.mapUserEntityToUserDTO(user); }
+
     public void sendVerificationCode(String email) {
         String code = generateVerificationCode();
         VerificationCode verificationCode = new VerificationCode();
@@ -147,8 +156,6 @@ public class UserService implements IUserService {
         userRepository.save(user);
         verificationCodeRepository.delete(verificationCode);
     }
-
-
 
     private String generateVerificationCode() {
         return UUID.randomUUID().toString().substring(0, 6);

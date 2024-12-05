@@ -41,6 +41,10 @@ public class UserController {
         }
     }
 
+    @GetMapping("/me") public ResponseEntity<UserDTO> getCurrentUser(Authentication authentication) {
+        UserDTO user = userService.getCurrentUser(authentication);
+        return ResponseEntity.ok(user); }
+
     @PutMapping("/update")
     /*@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_EMPLOYEE')")*/
     public ResponseEntity<String> updateUser(@RequestBody UserUpdateDTO userUpdateDTO, Authentication authentication) {
