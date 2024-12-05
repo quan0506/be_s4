@@ -1,5 +1,6 @@
 package com.fptaptech.s4.controller;
 
+import com.fptaptech.s4.dto.UserDTO;
 import com.fptaptech.s4.exception.UserAlreadyExistsException;
 import com.fptaptech.s4.entity.User;
 import com.fptaptech.s4.service.interfaces.IUserService;
@@ -38,12 +39,18 @@ public class UserController {
         }
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<Void> updateUser(@RequestBody UserDTO userDTO) {
+        userService.updateUser(userDTO);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/{email}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_EMPLOYEE')")
     public ResponseEntity<?> getUserByEmail(@PathVariable("email") String email){
         try{
-            User theUser = userService.getUser(email);
-            return ResponseEntity.ok(theUser);
+            UserDTO user = userService.findByEmail(email);
+            return ResponseEntity.ok(user);
         }catch (UsernameNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }catch (Exception e){

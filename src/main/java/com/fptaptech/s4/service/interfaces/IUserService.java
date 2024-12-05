@@ -14,4 +14,5 @@ public interface IUserService {
     User getUser(String email);
     UserDTO findById(Long userId);
     void resetPassword(String email, ResetPasswordDTO resetPasswordDTO);
+    void updateUser(UserDTO userDTO);
 }

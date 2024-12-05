@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @AllArgsConstructor
-
+@NoArgsConstructor
 public class UserDTO {
     private Long id;
 
@@ -49,22 +50,6 @@ public class UserDTO {
     private List<ShuttleBookingDTO> shuttleBookings = new ArrayList<>();
     private List<SpaBookingDTO> spaBookings = new ArrayList<>();
     private List<RestaurantDTO> restaurantBookings = new ArrayList<>();
-
-    // Public no-arg constructor
-    public UserDTO() {}
-
-    // Public all-arg constructor
-    public UserDTO(Long id, String userName, String firstName, String lastName, String phone, List<Role> roles,
-                   List<ShuttleBookingDTO> shuttleBookings, List<SpaBookingDTO> spaBookings) {
-        this.id = id;
-        this.userName = userName;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
-        this.roles = roles;
-        this.shuttleBookings = shuttleBookings;
-        this.spaBookings = spaBookings;
-    }
 
     public String getEmail() {
         return userName;

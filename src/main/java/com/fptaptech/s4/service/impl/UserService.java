@@ -37,7 +37,8 @@ public class UserService implements IUserService {
             return Utils.mapUserEntityToUserDTO(user);
         }
 
-    @Override public UserDTO findByEmail(String email) { User user = userRepository.findByEmail(email)
+    @Override public UserDTO findByEmail(String email) {
+            User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new OurException("User Not Found"));
             return Utils.mapUserEntityToUserDTO(user); }
 
@@ -82,6 +83,16 @@ public class UserService implements IUserService {
             userRepository.deleteByEmail(email);
         }
     }
+
+    @Transactional public void updateUser(UserDTO userDTO) {
+            User user = userRepository.findById(userDTO.getId())
+                    .orElseThrow(() -> new OurException("User Not Found"));
+            user.setFirstName(userDTO.getFirstName());
+            user.setLastName(userDTO.getLastName());
+            user.setEmail(userDTO.getEmail());
+            user.setPhone(userDTO.getPhone());
+            user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+            userRepository.save(user); }
 
     @Override
     public User getUser(String email) {

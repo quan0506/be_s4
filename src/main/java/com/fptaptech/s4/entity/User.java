@@ -33,13 +33,13 @@ public class User implements UserDetails {
 
     @NaturalId(mutable = true)
     private String email;
+
     @Column(nullable = false)
     @NotBlank(message = "Password cannot be blank")
     @Size(min = 8, message = "{user.password.invalid.8characters}")
     @Pattern(regexp = ".*[A-Z].*", message = "{user.password.invalid.oneuppercaseletter}")
     @Pattern(regexp = ".*[!@#$%^&*()].*", message = "{user.password.invalid.onespecialcharacter}")
     private String password;
-
 
     @Column(nullable = false)
     private String phone;
@@ -52,9 +52,6 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
     inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles = new HashSet<>();
-
-
-
     // Service Booking History
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
