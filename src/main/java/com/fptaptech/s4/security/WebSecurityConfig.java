@@ -55,6 +55,7 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/register-user", "/auth/login").permitAll()  // Public API cho auth
+                        .requestMatchers("/api/user/update").authenticated() // Yêu cầu đăng nhập cho endpoint cập nhật
                         .requestMatchers("/admin/branches/all", "/admin/branches/{id}", "/admin/branches/hotel/**").permitAll()  // Public cho Branch
                         .requestMatchers("/shuttles/all","/shuttles/types","/shuttles/car-by-id/{carId}","/shuttles/all","/shuttles/all-available-cars","/shuttles/all","/shuttles/available-cars-by-date-and-type").permitAll()
                         .requestMatchers("/spas/all","/spas/spa-by-id/{spaId}","/spas//spa-by-name","/spas/all").permitAll()

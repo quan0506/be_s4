@@ -1,6 +1,7 @@
 package com.fptaptech.s4.controller;
 
 import com.fptaptech.s4.dto.UserDTO;
+import com.fptaptech.s4.dto.UserUpdateDTO;
 import com.fptaptech.s4.exception.UserAlreadyExistsException;
 import com.fptaptech.s4.entity.User;
 import com.fptaptech.s4.service.interfaces.IUserService;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,9 +42,11 @@ public class UserController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Void> updateUser(@RequestBody UserDTO userDTO) {
-        userService.updateUser(userDTO);
-        return ResponseEntity.noContent().build();
+    /*@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_EMPLOYEE')")*/
+    public ResponseEntity<String> updateUser(@RequestBody UserUpdateDTO userUpdateDTO, Authentication authentication) {
+        String email = authentication.getName(); // Lấy email của người dùng đăng nhập
+        userService.updateUser(userUpdateDTO, email);
+        return ResponseEntity.ok("Update Success");
     }
 
     @GetMapping("/{email}")

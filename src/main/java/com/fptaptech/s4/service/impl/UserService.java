@@ -1,9 +1,10 @@
 package com.fptaptech.s4.service.impl;
 
+import com.fptaptech.s4.dto.ResetPasswordDTO;
 import com.fptaptech.s4.dto.UserDTO;
+import com.fptaptech.s4.dto.UserUpdateDTO;
 import com.fptaptech.s4.entity.Role;
 import com.fptaptech.s4.entity.User;
-import com.fptaptech.s4.dto.ResetPasswordDTO;
 import com.fptaptech.s4.entity.VerificationCode;
 import com.fptaptech.s4.exception.OurException;
 import com.fptaptech.s4.exception.UserAlreadyExistsException;
@@ -84,17 +85,34 @@ public class UserService implements IUserService {
         }
     }
 
-    @Transactional public void updateUser(UserDTO userDTO) {
-            User user = userRepository.findById(userDTO.getId())
-                    .orElseThrow(() -> new OurException("User Not Found"));
-            user.setFirstName(userDTO.getFirstName());
-            user.setLastName(userDTO.getLastName());
-            user.setEmail(userDTO.getEmail());
-            user.setPhone(userDTO.getPhone());
-            user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-            userRepository.save(user); }
-
+    @Transactional
     @Override
+    public void updateUser(UserUpdateDTO userUpdateDTO, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new OurException("User Not Found"));
+
+        if (userUpdateDTO.getUserName() != null) {
+            user.setEmail(userUpdateDTO.getUserName());
+        }
+        if (userUpdateDTO.getFirstName() != null) {
+            user.setFirstName(userUpdateDTO.getFirstName());
+        }
+        if (userUpdateDTO.getLastName() != null) {
+            user.setLastName(userUpdateDTO.getLastName());
+        }
+        if (userUpdateDTO.getPhone() != null) {
+            user.setPhone(userUpdateDTO.getPhone());
+        }
+        if (userUpdateDTO.getEmail() != null) {
+            user.setEmail(userUpdateDTO.getEmail());
+        }
+        if (userUpdateDTO.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(userUpdateDTO.getPassword()));
+        }
+
+        userRepository.save(user);
+    }
+        @Override
     public User getUser(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -136,3 +154,4 @@ public class UserService implements IUserService {
         return UUID.randomUUID().toString().substring(0, 6);
     }
 }
+

@@ -2,7 +2,9 @@ package com.fptaptech.s4.service.interfaces;
 
 import com.fptaptech.s4.dto.ResetPasswordDTO;
 import com.fptaptech.s4.dto.UserDTO;
+import com.fptaptech.s4.dto.UserUpdateDTO;
 import com.fptaptech.s4.entity.User;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 
@@ -14,5 +16,7 @@ public interface IUserService {
     User getUser(String email);
     UserDTO findById(Long userId);
     void resetPassword(String email, ResetPasswordDTO resetPasswordDTO);
-    void updateUser(UserDTO userDTO);
+
+    @Transactional
+    void updateUser(UserUpdateDTO userUpdateDTO, String email);
 }
