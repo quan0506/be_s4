@@ -147,7 +147,3 @@ public class RoomController {
     }
 }
 
-
-
-// Phần mã updateRoom:
-

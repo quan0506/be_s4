@@ -11,6 +11,7 @@ import com.fptaptech.s4.service.interfaces.IBookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -44,10 +45,31 @@ public class BookingService implements IBookingService {
         booking.getUser().setFirstName(newUser.get().getFirstName());
         booking.getUser().setLastName(newUser.get().getLastName());
         booking.getUser().setEmail(newUser.get().getEmail());
+        booking.getUser().setPhone(newUser.get().getPhone());
+
+        BigDecimal totalPrice = calculateTotalPrice(booking);
+        booking.setTotalPrice(totalPrice);
+
         return bookingRepository.save(booking);
     }
 
 
+    private BigDecimal calculateTotalPrice(Booking booking) {
+        Room room = booking.getRoom();
+        BigDecimal basePrice = room.getRoomPrice();
+        int adults = booking.getAdults();
+        int children = booking.getChildren();
+
+        if (adults > 2) {
+            basePrice = basePrice.add(basePrice.multiply(BigDecimal.valueOf(0.30)));
+        }
+
+        if (children > 0) {
+            basePrice = basePrice.add(basePrice.multiply(BigDecimal.valueOf(0.15)));
+        }
+
+        return basePrice;
+    }
 
     @Override
     public Booking updateBooking(Long bookingId, Booking booking) {
