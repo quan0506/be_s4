@@ -118,9 +118,17 @@ public class RestaurantBookingService implements IRestaurantBookingService {
         try {
             User user = userRepository.findById(userId).orElseThrow(() -> new OurException("User Not Found"));
             List<RestaurantBooking> restaurantBookingList = restaurantBookingRepository.findByUser(user);
+
+            if (restaurantBookingList.isEmpty()) {
+                response.setStatusCode(404);
+                response.setMessage("No restaurant bookings found for the specified user.");
+                return response;
+            }
+
             List<RestaurantBookingDTO> restaurantBookingDTOList = Utils.mapRestaurantBookingListEntityToRestaurantBookingListDTO(restaurantBookingList);
+
             response.setStatusCode(200);
-            response.setMessage("successful");
+            response.setMessage("User restaurant bookings retrieved successfully.");
             response.setRestaurantBookingList(restaurantBookingDTOList);
             response.setEmail(user.getEmail());  // Include the user's email in the response
         } catch (OurException e) {
@@ -132,6 +140,7 @@ public class RestaurantBookingService implements IRestaurantBookingService {
         }
         return response;
     }
+
     @Override
     public Response getUserRestaurantBookings (Long userId, Long branchId){
         Response response1 = new Response();

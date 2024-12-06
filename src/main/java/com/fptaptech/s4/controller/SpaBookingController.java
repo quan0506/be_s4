@@ -84,13 +84,13 @@ public class SpaBookingController {
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-    @GetMapping("/get-by-user/{branchId}/{userId}")
+    @GetMapping("/user-bookings/{userId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
-    public ResponseEntity<Response> getUserSpaBookings(@PathVariable Long branchId, @PathVariable Long userId, Authentication authentication) {
+    public ResponseEntity<Response> getAllSpaBookingsByUser(@PathVariable Long userId, Authentication authentication) {
         HotelUserDetails currentUser = (HotelUserDetails) authentication.getPrincipal();
 
         if (currentUser.getId().equals(userId) || authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"))) {
-            Response response = spaBookingService.getUserSpaBookings(userId, branchId);
+            Response response = spaBookingService.getAllSpaBookingsByUser(userId);
             return ResponseEntity.status(response.getStatusCode()).body(response);
         } else {
             Response response = new Response();
@@ -99,4 +99,5 @@ public class SpaBookingController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
         }
     }
+
 }

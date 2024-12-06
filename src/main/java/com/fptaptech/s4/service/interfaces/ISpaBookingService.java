@@ -12,5 +12,5 @@ public interface ISpaBookingService {
 
     Response cancelSpaBooking(Long branchId, Long spaBookingId);
 
-    Response getUserSpaBookings(Long userId, Long branchId);
+    Response getAllSpaBookingsByUser(Long userId);
 }

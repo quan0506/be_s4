@@ -68,13 +68,23 @@ public class SpaBookingService implements ISpaBookingService {
     }
 
     @Override
-    public Response getUserSpaBookings(Long userId, Long branchId) {
+    public Response getAllSpaBookingsByUser(Long userId) {
         Response response = new Response();
         try {
+            // Fetch all spa bookings for the specified user
             List<SpaBooking> spaBookingList = spaBookingRepository.findByUserIdOrderByAppointmentTimeAsc(userId);
+            if (spaBookingList.isEmpty()) {
+                response.setStatusCode(404);
+                response.setMessage("No spa bookings found for the specified user.");
+                return response;
+            }
+
+            // Map entities to DTOs
             List<SpaBookingDTO> spaBookingDTOList = Utils.mapSpaBookingListEntityToSpaBookingListDTO(spaBookingList);
+
+            // Set response details
             response.setStatusCode(200);
-            response.setMessage("User spa bookings retrieved successfully");
+            response.setMessage("User spa bookings retrieved successfully.");
             response.setSpaBookingList(spaBookingDTOList);
         } catch (Exception e) {
             response.setStatusCode(500);
@@ -82,6 +92,7 @@ public class SpaBookingService implements ISpaBookingService {
         }
         return response;
     }
+
 
     @Override
     public Response getAllSpaBookings(Long branchId) {

@@ -142,7 +142,7 @@ public class ShuttleBookingService implements IShuttleBookingService {
         return response;
     }
 
-    @Override public Response getAllShuttleBookingsByUser(Long userId) {
+    public Response getAllShuttleBookingsByUser(Long userId) {
         Response response = new Response();
         try {
             User user = userRepository.findById(userId).orElseThrow(() -> new OurException("User Not Found"));
@@ -151,11 +151,14 @@ public class ShuttleBookingService implements IShuttleBookingService {
             response.setStatusCode(200);
             response.setMessage("successful");
             response.setShuttleBookingList(shuttleBookingDTOList);
-            response.setEmail(user.getEmail());}
-        catch (OurException e) { response.setStatusCode(404);
-            response.setMessage(e.getMessage()); } catch (Exception e) {
+            response.setEmail(user.getEmail());
+        } catch (OurException e) {
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+        } catch (Exception e) {
             response.setStatusCode(500);
-            response.setMessage("Error fetching shuttle bookings: " + e.getMessage()); }
+            response.setMessage("Error fetching shuttle bookings: " + e.getMessage());
+        }
         return response;
     }
 
@@ -184,3 +187,4 @@ public class ShuttleBookingService implements IShuttleBookingService {
     }
 
 }
+

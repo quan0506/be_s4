@@ -8,6 +8,7 @@ import com.fptaptech.s4.dto.UserDTO;
 import com.fptaptech.s4.entity.User;
 
 import com.fptaptech.s4.response.Response;
+import com.fptaptech.s4.security.user.HotelUserDetails;
 import com.fptaptech.s4.service.interfaces.IRestaurantBookingService;
 import com.fptaptech.s4.service.interfaces.IUserService;
 import lombok.RequiredArgsConstructor;
@@ -69,11 +70,13 @@ public class RestaurantBookingController {
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-// tim lich su theo user
-    @GetMapping("/user/{userId}")
+// tim booking theo id
+
+    @GetMapping("/user-bookings/{userId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
-    public ResponseEntity<Response> getAllRestaurantBookingsByUser(@PathVariable Long userId, Authentication authentication) {
-        User currentUser = (User) authentication.getPrincipal();
+    public ResponseEntity<Response> getAllRestaurantBookingsByUser(
+            @PathVariable Long userId, Authentication authentication) {
+        HotelUserDetails currentUser = (HotelUserDetails) authentication.getPrincipal();
 
         if (currentUser.getId().equals(userId) || authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"))) {
             Response response = restaurantBookingService.getAllRestaurantBookingsByUser(userId);
@@ -85,16 +88,7 @@ public class RestaurantBookingController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
         }
     }
-// tim booking theo id
 
-    @GetMapping("/user-bookings/{userId}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
-    public ResponseEntity<Response> getUserRestaurantBookings(
-            @PathVariable Long userId,
-            @RequestParam(value = "branchId") Long branchId) {
-        Response response = restaurantBookingService.getUserRestaurantBookings(userId, branchId);
-        return ResponseEntity.status(response.getStatusCode()).body(response);
-    }
 
     @GetMapping("/booking-by-id/{bookingId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
