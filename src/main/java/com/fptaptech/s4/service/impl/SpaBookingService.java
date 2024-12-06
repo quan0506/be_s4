@@ -71,27 +71,33 @@ public class SpaBookingService implements ISpaBookingService {
     public Response getAllSpaBookingsByUser(Long userId) {
         Response response = new Response();
         try {
-            // Fetch all spa bookings for the specified user
+            User user = userRepository.findById(userId).orElseThrow(() -> new OurException("User Not Found"));
             List<SpaBooking> spaBookingList = spaBookingRepository.findByUserIdOrderByAppointmentTimeAsc(userId);
+
             if (spaBookingList.isEmpty()) {
                 response.setStatusCode(404);
                 response.setMessage("No spa bookings found for the specified user.");
                 return response;
             }
 
-            // Map entities to DTOs
-            List<SpaBookingDTO> spaBookingDTOList = Utils.mapSpaBookingListEntityToSpaBookingListDTO(spaBookingList);
+            List<SpaBookingDTO> spaBookingDTOList = spaBookingList.stream()
+                    .map(Utils::mapSpaBookingEntityToSpaBookingDTO)
+                    .collect(Collectors.toList());
 
-            // Set response details
             response.setStatusCode(200);
             response.setMessage("User spa bookings retrieved successfully.");
             response.setSpaBookingList(spaBookingDTOList);
+            response.setEmail(user.getEmail());
+        } catch (OurException e) {
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
         } catch (Exception e) {
             response.setStatusCode(500);
-            response.setMessage("Error fetching user spa bookings: " + e.getMessage());
+            response.setMessage("Error fetching spa bookings: " + e.getMessage());
         }
         return response;
     }
+
 
 
     @Override

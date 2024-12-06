@@ -24,15 +24,6 @@ public class Utils {
         return stringBuilder.toString();
     }
 
-    public static String generateRandomVoucherAndDiscountCode(int length) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < 10; i++) {
-            int randomIndex = secureRandom.nextInt(ALPHANUMERIC_STRING.length());
-            char randomChar = ALPHANUMERIC_STRING.charAt(randomIndex);
-            stringBuilder.append(randomChar);
-        }
-        return stringBuilder.toString();
-    }
 
     // User mappings
     public static UserDTO mapUserEntityToUserDTO(User user) {
@@ -49,20 +40,6 @@ public class Utils {
         return userDTO;
     }
 
-    public static UserDTO mapUserEntityToUserDTOPlusUserBookings(User user) {
-        UserDTO userDTO = mapUserEntityToUserDTO(user);
-
-        List<ShuttleBookingDTO> shuttleBookingDTOList = user.getShuttleBookings().stream()
-                .map(Utils::mapShuttleBookingEntityToShuttleBookingDTOPlusShuttle)
-                .collect(Collectors.toList());
-        userDTO.setShuttleBookings(shuttleBookingDTOList);
-
-        return userDTO;
-    }
-
-    public static List<UserDTO> mapUserListEntityToUserListDTO(List<User> userList) {
-        return userList.stream().map(Utils::mapUserEntityToUserDTO).collect(Collectors.toList());
-    }
 
     // Shuttle mappings
     public static ShuttleDTO mapShuttleEntityToShuttleDTO(Shuttle shuttle) {
@@ -123,21 +100,7 @@ public class Utils {
 
 
     //Spa mappings
-    public static UserDTO mapUserEntityToUserDTOPlusUserBookingsAndSpa(User user) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
-        userDTO.setFirstName(user.getFirstName());
-        userDTO.setLastName(user.getLastName());
-        userDTO.setUserName(user.getEmail());
-        userDTO.setPhone(user.getPhone());
 
-        List<SpaBookingDTO> spaBookingDTOList = user.getSpaBookings().stream()
-                .map(booking -> mapSpaBookingEntityToSpaBookingDTOPlusSpa(booking, false))
-                .collect(Collectors.toList());
-        userDTO.setSpaBookings(spaBookingDTOList);
-
-        return userDTO;
-    }
 
     public static SpaDTO mapSpaEntityToSpaDTO(Spa spa) {
         SpaDTO spaDTO = new SpaDTO();
@@ -151,10 +114,6 @@ public class Utils {
     }
 
 
-
-    public static List<SpaDTO> mapSpaListEntityToSpaListDTO(List<Spa> spaList) {
-        return spaList.stream().map(Utils::mapSpaEntityToSpaDTO).collect(Collectors.toList());
-    }
 
     public static SpaBookingDTO mapSpaBookingEntityToSpaBookingDTO(SpaBooking spaBooking) {
         SpaBookingDTO spaBookingDTO = new SpaBookingDTO();
@@ -176,21 +135,6 @@ public class Utils {
     public static List<SpaBookingDTO> mapSpaBookingListEntityToSpaBookingListDTO(List<SpaBooking> spaBookingList) {
         return spaBookingList.stream().map(Utils::mapSpaBookingEntityToSpaBookingDTO).collect(Collectors.toList());
     }
-
-    public static SpaBookingDTO mapSpaBookingEntityToSpaBookingDTOPlusSpa(SpaBooking spaBooking, boolean mapUser) {
-        SpaBookingDTO spaBookingDTO = mapSpaBookingEntityToSpaBookingDTO(spaBooking);
-        if (mapUser) {
-            spaBookingDTO.setUser(Utils.mapUserEntityToUserDTO(spaBooking.getUser()));
-        }
-        if (spaBooking.getSpa() != null) {
-            SpaDTO spaDTO = new SpaDTO();
-            spaDTO.setId(spaBooking.getSpa().getId());
-            spaDTO.setSpaServiceName(spaBooking.getSpa().getSpaServiceName());
-            spaBookingDTO.setSpa(spaDTO);
-        }
-        return spaBookingDTO;
-    }
-
 
     // Restaurant mapping
 

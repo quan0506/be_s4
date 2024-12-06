@@ -142,14 +142,25 @@ public class ShuttleBookingService implements IShuttleBookingService {
         return response;
     }
 
+    @Override
     public Response getAllShuttleBookingsByUser(Long userId) {
         Response response = new Response();
         try {
             User user = userRepository.findById(userId).orElseThrow(() -> new OurException("User Not Found"));
             List<ShuttleBooking> shuttleBookingList = shuttleBookingRepository.findByUser(user);
-            List<ShuttleBookingDTO> shuttleBookingDTOList = Utils.mapShuttleBookingListEntityToShuttleBookingListDTO(shuttleBookingList);
+
+            if (shuttleBookingList.isEmpty()) {
+                response.setStatusCode(404);
+                response.setMessage("No shuttle bookings found for the specified user.");
+                return response;
+            }
+
+            List<ShuttleBookingDTO> shuttleBookingDTOList = shuttleBookingList.stream()
+                    .map(Utils::mapShuttleBookingEntityToShuttleBookingDTOPlusShuttle)
+                    .collect(Collectors.toList());
+
             response.setStatusCode(200);
-            response.setMessage("successful");
+            response.setMessage("User shuttle bookings retrieved successfully.");
             response.setShuttleBookingList(shuttleBookingDTOList);
             response.setEmail(user.getEmail());
         } catch (OurException e) {
@@ -161,6 +172,7 @@ public class ShuttleBookingService implements IShuttleBookingService {
         }
         return response;
     }
+
 
     @Override
     public String getBookingEmail(Long branchId, Long shuttleBookingId) {
@@ -187,4 +199,3 @@ public class ShuttleBookingService implements IShuttleBookingService {
     }
 
 }
-

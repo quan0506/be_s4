@@ -125,12 +125,14 @@ public class RestaurantBookingService implements IRestaurantBookingService {
                 return response;
             }
 
-            List<RestaurantBookingDTO> restaurantBookingDTOList = Utils.mapRestaurantBookingListEntityToRestaurantBookingListDTO(restaurantBookingList);
+            List<RestaurantBookingDTO> restaurantBookingDTOList = restaurantBookingList.stream()
+                    .map(Utils::mapRestaurantBookingEntityToRestaurantBookingDTO)
+                    .collect(Collectors.toList());
 
             response.setStatusCode(200);
             response.setMessage("User restaurant bookings retrieved successfully.");
             response.setRestaurantBookingList(restaurantBookingDTOList);
-            response.setEmail(user.getEmail());  // Include the user's email in the response
+            response.setEmail(user.getEmail());
         } catch (OurException e) {
             response.setStatusCode(404);
             response.setMessage(e.getMessage());
@@ -140,6 +142,7 @@ public class RestaurantBookingService implements IRestaurantBookingService {
         }
         return response;
     }
+
 
     @Override
     public Response getUserRestaurantBookings (Long userId, Long branchId){

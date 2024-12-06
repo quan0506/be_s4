@@ -37,7 +37,7 @@ public class HotelUserDetails implements UserDetails {
     }
 
 
-
+// Oauth gg
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
