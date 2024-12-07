@@ -151,6 +151,20 @@ public class ReviewService {
         return response;
     }
 
+    public Response getAllReviews(String userEmail) {
+        List<Review> reviews = reviewRepository.findAll(); // Lấy tất cả reviews từ repository
+        List<ReviewDTO> reviewDTOs = reviews.stream()
+                .map(review -> Utils.mapReviewEntityToReviewDTO(review, userEmail)) // Chuyển đổi thành DTO
+                .collect(Collectors.toList());
+
+        Response response = new Response();
+        response.setStatusCode(200);
+        response.setMessage("Fetched all reviews successfully");
+        response.setData(reviewDTOs);
+        return response;
+    }
+
+
     public Response getReviewById(Integer reviewId, String userEmail) {
         Review review = reviewRepository.findById(reviewId).orElse(null);
         Response response = new Response();
