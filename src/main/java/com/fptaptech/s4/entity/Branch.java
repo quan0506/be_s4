@@ -24,10 +24,10 @@ public class Branch {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "branch_name", nullable = false, length = 100, unique = true)
+    @Column(name = "branch_name", nullable = false,columnDefinition = "TEXT", unique = true)
     private String branchName;
 
-    @Column(name = "location", nullable = false)
+    @Column(name = "location", nullable = false,columnDefinition = "TEXT")
     private String location;
 
     @ElementCollection
@@ -35,10 +35,10 @@ public class Branch {
     @Column(name = "photo_url")
     private List<String> photos;
 
-    @Column(name = "address", nullable = false)
+    @Column(name = "address", nullable = false, columnDefinition = "TEXT")
     private String address;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
 
     @Column(updatable = false)

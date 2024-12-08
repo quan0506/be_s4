@@ -1,6 +1,8 @@
 package com.fptaptech.s4.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,9 +28,11 @@ public class Review {
     private Integer reviewId;
 
     @NotNull
+    @Max(5)
+    @Min(1)
     private Integer rating;
 
-    @Column(length = 500)
+    @Column(columnDefinition = "TEXT")
     private String reviewText;
 
     @Column(name = "reviewImageURL", nullable = true)

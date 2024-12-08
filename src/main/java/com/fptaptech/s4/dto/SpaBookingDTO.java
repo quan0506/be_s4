@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SpaBookingDTO {
     private Long id;
-    private LocalDateTime appointmentTime; // Combination of date and time
-    private String spaServiceTime; // Duration in minutes (e.g., "45", "60")
+    private LocalDateTime appointmentTime;
+    private String spaServiceTime;
     private String phone;
     private int numberOfPeople;
     private String fullName;

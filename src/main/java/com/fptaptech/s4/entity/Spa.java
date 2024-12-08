@@ -16,9 +16,14 @@ public class Spa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(columnDefinition = "TEXT")
     private String spaServiceName;
+
     private BigDecimal spaServicePrice;
+
     private String spaPhotoUrl;
+
+    @Column(columnDefinition = "TEXT")
     private String spaDescription;
 
     @ManyToOne(fetch = FetchType.LAZY)

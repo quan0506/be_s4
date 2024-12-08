@@ -22,7 +22,7 @@ public class Room {
     @Column(name = "id")
     private  Long id;
 
-    @Column(name = "room_type")
+    @Column(name = "room_type",columnDefinition = "TEXT")
     private String roomType;
 
     @Column(name = "room_price")
@@ -35,7 +35,7 @@ public class Room {
     @JoinColumn(name = "branch_id", nullable = false)
     private Branch branch;
 
-    @Column(name = "description")
+    @Column(name = "description",columnDefinition = "TEXT")
     private String description;
 
     @ElementCollection

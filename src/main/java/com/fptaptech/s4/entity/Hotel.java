@@ -19,13 +19,13 @@ public class Hotel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "HotelName", nullable = false, length = 100)
+    @Column(name = "HotelName", nullable = false, columnDefinition = "TEXT")
     private String hotelName;
 
     @Column(name = "StarRating", nullable = false, length = 200)
     private String starRating;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
 
     /*@Column(name = "City", nullable = false, length = 100)

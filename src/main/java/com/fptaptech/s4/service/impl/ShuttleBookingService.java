@@ -28,7 +28,6 @@ public class ShuttleBookingService implements IShuttleBookingService {
     private final ShuttleBookingRepository shuttleBookingRepository;
     private final ShuttleRepository shuttleRepository;
     private final UserRepository userRepository;
-    private final BranchRepository branchRepository; // Assuming you have a BranchRepository
 
     @Override
     public Response saveShuttleBooking(Long branchId, Long shuttleId, Long userId, ShuttleBookingDTO shuttleBookingRequest)

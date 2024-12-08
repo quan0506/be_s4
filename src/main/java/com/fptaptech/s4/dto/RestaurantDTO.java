@@ -15,5 +15,5 @@ public class RestaurantDTO {
     private BigDecimal restaurantChildrenPrice;
     private String restaurantPhotoUrl;
     private String restaurantDescription;
-    private Long branchId; // Added branch connection
+    private Long branchId;
 }

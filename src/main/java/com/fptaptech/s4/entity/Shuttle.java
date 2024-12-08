@@ -16,9 +16,15 @@ public class Shuttle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(columnDefinition = "TEXT")
     private String carType;
+
     private BigDecimal carPrice;
+
+    @Column(columnDefinition = "TEXT")
     private String carPhotoUrl;
+
+    @Column(columnDefinition = "TEXT")
     private String carDescription;
 
     @ManyToOne(fetch = FetchType.LAZY)
