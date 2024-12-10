@@ -12,7 +12,7 @@ public class SpaDTO {
     private Long id;
     private String spaServiceName;
     private BigDecimal spaServicePrice;
-    private String spaPhotoUrl;
+    private List<String> photos;
     private String spaDescription;
     private Long branchId;
     private String branchName;

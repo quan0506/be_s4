@@ -8,13 +8,13 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface ISpaService {
-    Response addNewSpaServiceName(Long branchId, MultipartFile photo, String spaServiceName, BigDecimal spaServicePrice, String spaDescription);
+    Response addNewSpa(Long branchId, List<MultipartFile> photos, String spaServiceName, BigDecimal spaServicePrice, String spaDescription);
 
     List<SpaDTO> getAllSpaServices();
 
     Response deleteSpaServiceName(Long spaId);
 
-    Response updateSpaServiceName(Long spaId, MultipartFile newSpaPhoto, String newSpaServiceName, BigDecimal newSpaServicePrice, String newSpaDescription);
+    Response updateSpa(Long branchId, Long spaId, String spaServiceName, BigDecimal spaServicePrice, String spaDescription, List<MultipartFile> photos);
 
     Response getSpaServiceNameById(Long spaId);
 

@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,37 +26,37 @@ import java.util.Map;
 public class RestaurantService implements IRestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final BranchRepository branchRepository;
-    private final Cloudinary cloudinary;
+    private final CloudinaryService cloudinaryService;
 
     @Override
-    public Response addNewRestaurant(Long branchId, String restaurantType, String time, BigDecimal restaurantAdultPrice, BigDecimal restaurantChildrenPrice, MultipartFile restaurantPhoto, String restaurantDescription) {
+    public Response addNewRestaurant(Long branchId, List<MultipartFile> photos, String restaurantType, String time, BigDecimal restaurantAdultPrice, BigDecimal restaurantChildrenPrice, String restaurantDescription) {
         Response response = new Response();
         try {
             Branch branch = branchRepository.findById(branchId).orElseThrow(() -> new OurException("Branch Not Found"));
-            Map uploadResult = cloudinary.uploader().upload(restaurantPhoto.getBytes(), ObjectUtils.emptyMap());
+
+            List<String> imageUrls = uploadPhotos(photos); // Upload photos to Cloudinary
 
             Restaurant restaurant = new Restaurant();
+            restaurant.setBranch(branch); // Set the branch
+            restaurant.setPhotos(imageUrls); // Set the list of photos
             restaurant.setRestaurantType(restaurantType);
             restaurant.setTime(time);
             restaurant.setRestaurantAdultPrice(restaurantAdultPrice);
             restaurant.setRestaurantChildrenPrice(restaurantChildrenPrice);
-            restaurant.setRestaurantPhotoUrl(uploadResult.get("url").toString());
             restaurant.setRestaurantDescription(restaurantDescription);
-            restaurant.setBranch(branch);
+            Restaurant savedRestaurant = restaurantRepository.save(restaurant);
 
-            restaurantRepository.save(restaurant);
+            RestaurantDTO restaurantDTO = Utils.mapRestaurantEntityToRestaurantDTO(savedRestaurant);
             response.setStatusCode(200);
             response.setMessage("successful");
-            response.setRestaurant(Utils.mapRestaurantEntityToRestaurantDTO(restaurant));
-        } catch (IOException e) {
-            response.setStatusCode(500);
-            response.setMessage("Error uploading photo: " + e.getMessage());
+            response.setData(restaurantDTO);
         } catch (Exception e) {
             response.setStatusCode(500);
             response.setMessage("Error saving restaurant: " + e.getMessage());
         }
         return response;
     }
+
 
     @Override
     public List<String> getAllRestaurantTypes(Long branchId) {
@@ -102,31 +103,27 @@ public class RestaurantService implements IRestaurantService {
     }
 
     @Override
-    public Response updateRestaurant(Long branchId, Long restaurantId, String restaurantType, String time, BigDecimal restaurantAdultPrice, BigDecimal restaurantChildrenPrice, MultipartFile restaurantPhoto, String restaurantDescription) {
+    public Response updateRestaurant(Long branchId, Long restaurantId, String restaurantType, String time, BigDecimal restaurantAdultPrice, BigDecimal restaurantChildrenPrice, String restaurantDescription, List<MultipartFile> photos) {
         Response response = new Response();
         try {
-            Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() -> new OurException("Restaurant Not Found"));
-            if (!restaurant.getBranch().getId().equals(branchId)) {
-                response.setStatusCode(403);
-                response.setMessage("You don't have permission to update this restaurant.");
-                return response;
+            List<String> imageUrls = null;
+            if (photos != null && !photos.isEmpty()) {
+                imageUrls = uploadPhotos(photos); // Upload photos to Cloudinary
             }
 
-            Map uploadResult = cloudinary.uploader().upload(restaurantPhoto.getBytes(), ObjectUtils.emptyMap());
-            restaurant.setRestaurantType(restaurantType);
-            restaurant.setTime(time);
-            restaurant.setRestaurantAdultPrice(restaurantAdultPrice);
-            restaurant.setRestaurantChildrenPrice(restaurantChildrenPrice);
-            restaurant.setRestaurantPhotoUrl(uploadResult.get("url").toString());
-            restaurant.setRestaurantDescription(restaurantDescription);
+            Restaurant restaurant = restaurantRepository.findByIdAndBranchId(restaurantId, branchId).orElseThrow(() -> new OurException("Restaurant Not Found"));
+            if (restaurantType != null) restaurant.setRestaurantType(restaurantType);
+            if (time != null) restaurant.setTime(time);
+            if (restaurantAdultPrice != null) restaurant.setRestaurantAdultPrice(restaurantAdultPrice);
+            if (restaurantChildrenPrice != null) restaurant.setRestaurantChildrenPrice(restaurantChildrenPrice);
+            if (restaurantDescription != null) restaurant.setRestaurantDescription(restaurantDescription);
+            if (imageUrls != null && !imageUrls.isEmpty()) restaurant.setPhotos(imageUrls);
 
-            restaurantRepository.save(restaurant);
+            Restaurant updatedRestaurant = restaurantRepository.save(restaurant);
+            RestaurantDTO restaurantDTO = Utils.mapRestaurantEntityToRestaurantDTO(updatedRestaurant);
             response.setStatusCode(200);
             response.setMessage("successful");
-            response.setRestaurant(Utils.mapRestaurantEntityToRestaurantDTO(restaurant));
-        } catch (IOException e) {
-            response.setStatusCode(500);
-            response.setMessage("Error uploading photo: " + e.getMessage());
+            response.setData(restaurantDTO);
         } catch (OurException e) {
             response.setStatusCode(404);
             response.setMessage(e.getMessage());
@@ -136,6 +133,23 @@ public class RestaurantService implements IRestaurantService {
         }
         return response;
     }
+
+    private List<String> uploadPhotos(List<MultipartFile> photos) {
+        List<String> imageUrls = new ArrayList<>();
+        for (MultipartFile photo : photos) {
+            if (photo != null && !photo.isEmpty()) {
+                try {
+                    Map uploadResult = cloudinaryService.upload(photo);
+                    String imageUrl = (String) uploadResult.get("url");
+                    imageUrls.add(imageUrl);
+                } catch (Exception e) {
+                    throw new RuntimeException("Failed to upload photo", e);
+                }
+            }
+        }
+        return imageUrls;
+    }
+
 
     @Override
     public Response getRestaurantById(Long branchId, Long restaurantId) {
@@ -176,4 +190,7 @@ public class RestaurantService implements IRestaurantService {
         return response;
     }
 }
+
+
+
 

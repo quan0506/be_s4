@@ -6,7 +6,6 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
 @Data
 @Entity
 @Table(name = "spas")
@@ -21,7 +20,10 @@ public class Spa {
 
     private BigDecimal spaServicePrice;
 
-    private String spaPhotoUrl;
+    @ElementCollection
+    @CollectionTable(name = "spa_photos", joinColumns = @JoinColumn(name = "spa_id"))
+    @Column(name = "photo_url")
+    private List<String> photos;
 
     @Column(columnDefinition = "TEXT")
     private String spaDescription;
@@ -39,7 +41,7 @@ public class Spa {
                 "id=" + id +
                 ", spaServiceName='" + spaServiceName + '\'' +
                 ", spaServicePrice=" + spaServicePrice +
-                ", spaPhotoUrl='" + spaPhotoUrl + '\'' +
+                ", photos=" + photos +
                 ", spaDescription='" + spaDescription + '\'' +
                 ", branch=" + branch +
                 ", spaBookings=" + spaBookings +

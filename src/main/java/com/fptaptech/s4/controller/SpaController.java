@@ -26,19 +26,21 @@ public class SpaController {
     private final ISpaService spaService;
 
     @PostMapping("/add")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Response> addNewSpaService(@RequestParam Long branchId,
-                                                     @RequestParam String spaServiceName,
-                                                     @RequestParam BigDecimal spaServicePrice,
-                                                     @RequestParam MultipartFile spaPhoto,
-                                                     @RequestParam String spaDescription) {
-        if (spaServiceName == null || spaServiceName.isBlank()) {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Response> addNewSpa(
+            @RequestParam("branchId") Long branchId,
+            @RequestParam(value = "photos", required = false) List<MultipartFile> photos,
+            @RequestParam(value = "spaServiceName", required = false) String spaServiceName,
+            @RequestParam(value = "spaServicePrice", required = false) BigDecimal spaServicePrice,
+            @RequestParam(value = "spaDescription", required = false) String spaDescription
+    ) {
+        if (photos == null || photos.isEmpty() || spaServiceName == null || spaServiceName.isBlank() || spaServicePrice == null) {
             Response response = new Response();
             response.setStatusCode(400);
-            response.setMessage("Please provide a spa service name");
+            response.setMessage("Please provide values for all fields (branchId, photos, spaServiceName, spaServicePrice)");
             return ResponseEntity.status(response.getStatusCode()).body(response);
         }
-        Response response = spaService.addNewSpaServiceName(branchId, spaPhoto, spaServiceName, spaServicePrice, spaDescription);
+        Response response = spaService.addNewSpa(branchId, photos, spaServiceName, spaServicePrice, spaDescription);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
@@ -65,13 +67,16 @@ public class SpaController {
     }
 
     @PutMapping("/update/{spaId}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Response> updateSpaServiceName(@PathVariable Long spaId,
-                                                         @RequestParam MultipartFile newSpaPhoto,
-                                                         @RequestParam String newSpaServiceName,
-                                                         @RequestParam BigDecimal newSpaServicePrice,
-                                                         @RequestParam String newSpaDescription) {
-        Response response = spaService.updateSpaServiceName(spaId, newSpaPhoto, newSpaServiceName, newSpaServicePrice, newSpaDescription);
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Response> updateSpa(
+            @PathVariable Long spaId,
+            @RequestParam("branchId") Long branchId,
+            @RequestParam(value = "photos", required = false) List<MultipartFile> photos,
+            @RequestParam(value = "spaServiceName", required = false) String spaServiceName,
+            @RequestParam(value = "spaServicePrice", required = false) BigDecimal spaServicePrice,
+            @RequestParam(value = "spaDescription", required = false) String spaDescription
+    ) {
+        Response response = spaService.updateSpa(branchId, spaId, spaServiceName, spaServicePrice, spaDescription, photos);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 

@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface IRestaurantService {
-    Response addNewRestaurant(Long branchId, String restaurantType, String time, BigDecimal restaurantAdultPrice, BigDecimal restaurantChildrenPrice, MultipartFile restaurantPhoto, String restaurantDescription);
+    Response addNewRestaurant(Long branchId, List<MultipartFile> photos, String restaurantType, String time, BigDecimal restaurantAdultPrice, BigDecimal restaurantChildrenPrice, String restaurantDescription);
 
     List<String> getAllRestaurantTypes(Long branchId);
 
@@ -15,7 +15,7 @@ public interface IRestaurantService {
 
     Response deleteRestaurant(Long branchId, Long restaurantId);
 
-    Response updateRestaurant(Long branchId, Long restaurantId, String restaurantType, String time, BigDecimal restaurantAdultPrice, BigDecimal restaurantChildrenPrice, MultipartFile restaurantPhoto, String restaurantDescription);
+    Response updateRestaurant(Long branchId, Long restaurantId, String restaurantType, String time, BigDecimal restaurantAdultPrice, BigDecimal restaurantChildrenPrice, String restaurantDescription, List<MultipartFile> photos);
 
     Response getRestaurantById(Long branchId, Long restaurantId);
 

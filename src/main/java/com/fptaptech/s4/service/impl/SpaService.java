@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,18 +27,19 @@ public class SpaService implements ISpaService {
     private final CloudinaryService cloudinaryService;
 
     @Override
-    public Response addNewSpaServiceName(Long branchId, MultipartFile photo, String spaServiceName, BigDecimal spaServicePrice, String spaDescription) {
+    public Response addNewSpa(Long branchId, List<MultipartFile> photos, String spaServiceName, BigDecimal spaServicePrice, String spaDescription) {
         Response response = new Response();
         try {
             Branch branch = branchRepository.findById(branchId).orElseThrow(() -> new OurException("Branch Not Found"));
-            Map uploadResult = cloudinaryService.upload(photo);
-            String imageUrl = (String) uploadResult.get("url");
+
+            List<String> imageUrls = uploadPhotos(photos); // Upload photos to Cloudinary
+
             Spa spa = new Spa();
+            spa.setBranch(branch); // Set the branch
+            spa.setPhotos(imageUrls); // Set the list of photos
             spa.setSpaServiceName(spaServiceName);
             spa.setSpaServicePrice(spaServicePrice);
-            spa.setSpaPhotoUrl(imageUrl);
             spa.setSpaDescription(spaDescription);
-            spa.setBranch(branch); // Set the branch
             Spa savedSpa = spaRepository.save(spa);
 
             SpaDTO spaDTO = Utils.mapSpaEntityToSpaDTO(savedSpa);
@@ -46,10 +48,11 @@ public class SpaService implements ISpaService {
             response.setData(spaDTO);
         } catch (Exception e) {
             response.setStatusCode(500);
-            response.setMessage("Error saving spa service name: " + e.getMessage());
+            response.setMessage("Error saving spa: " + e.getMessage());
         }
         return response;
     }
+
 
 
     @Override
@@ -80,23 +83,21 @@ public class SpaService implements ISpaService {
     }
 
     @Override
-    public Response updateSpaServiceName(Long spaId, MultipartFile newSpaPhoto, String newSpaServiceName, BigDecimal newSpaServicePrice, String newSpaDescription) {
+    public Response updateSpa(Long branchId, Long spaId, String spaServiceName, BigDecimal spaServicePrice, String spaDescription, List<MultipartFile> photos) {
         Response response = new Response();
         try {
-            Spa spa = spaRepository.findById(spaId).orElseThrow(() -> new OurException("Spa Not Found"));
-
-            // Upload new photo to Cloudinary if provided
-            if (newSpaPhoto != null && !newSpaPhoto.isEmpty()) {
-                Map uploadResult = cloudinaryService.upload(newSpaPhoto);
-                String imageUrl = (String) uploadResult.get("url");
-                spa.setSpaPhotoUrl(imageUrl);
+            List<String> imageUrls = null;
+            if (photos != null && !photos.isEmpty()) {
+                imageUrls = uploadPhotos(photos); // Upload photos to Cloudinary
             }
 
-            spa.setSpaServiceName(newSpaServiceName);
-            spa.setSpaServicePrice(newSpaServicePrice);
-            spa.setSpaDescription(newSpaDescription);
-            Spa updatedSpa = spaRepository.save(spa);
+            Spa spa = spaRepository.findByIdAndBranchId(spaId, branchId).orElseThrow(() -> new OurException("Spa Not Found"));
+            if (spaServiceName != null) spa.setSpaServiceName(spaServiceName);
+            if (spaServicePrice != null) spa.setSpaServicePrice(spaServicePrice);
+            if (spaDescription != null) spa.setSpaDescription(spaDescription);
+            if (imageUrls != null && !imageUrls.isEmpty()) spa.setPhotos(imageUrls);
 
+            Spa updatedSpa = spaRepository.save(spa);
             SpaDTO spaDTO = Utils.mapSpaEntityToSpaDTO(updatedSpa);
             response.setStatusCode(200);
             response.setMessage("successful");
@@ -106,9 +107,27 @@ public class SpaService implements ISpaService {
             response.setMessage(e.getMessage());
         } catch (Exception e) {
             response.setStatusCode(500);
-            response.setMessage("Error updating spa service name: " + e.getMessage());
+            response.setMessage("Error updating spa: " + e.getMessage());
         }
         return response;
+    }
+
+
+
+    private List<String> uploadPhotos(List<MultipartFile> photos) {
+        List<String> imageUrls = new ArrayList<>();
+        for (MultipartFile photo : photos) {
+            if (photo != null && !photo.isEmpty()) {
+                try {
+                    Map uploadResult = cloudinaryService.upload(photo);
+                    String imageUrl = (String) uploadResult.get("url");
+                    imageUrls.add(imageUrl);
+                } catch (Exception e) {
+                    throw new RuntimeException("Failed to upload photo", e);
+                }
+            }
+        }
+        return imageUrls;
     }
 
 

@@ -34,14 +34,13 @@ public class ReviewController {
             @RequestParam(required = false) Long roomId,
             @RequestParam Integer rating,
             @RequestParam String reviewText,
-            @RequestParam(required = false) MultipartFile reviewImage) {
+            @RequestParam(required = false) List<MultipartFile> reviewImages) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
-        Response response = reviewService.createReview(branchId, roomId, rating, reviewText, reviewImage, userEmail);
+        Response response = reviewService.createReview(branchId, roomId, rating, reviewText, reviewImages, userEmail);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
-
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
@@ -51,7 +50,6 @@ public class ReviewController {
         Response response = reviewService.getAllReviews(userEmail);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
-
 
     @GetMapping("/get/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -80,10 +78,14 @@ public class ReviewController {
 
     @PutMapping("/update/{id}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Response> updateReview(@PathVariable Integer id, @RequestBody Review review) {
+    public ResponseEntity<Response> updateReview(
+            @PathVariable Integer id,
+            @RequestBody Review review,
+            @RequestParam(required = false) List<MultipartFile> reviewImages) {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
-        Response response = reviewService.updateReview(id, review, userEmail);
+        Response response = reviewService.updateReview(id, review, reviewImages, userEmail);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 

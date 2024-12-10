@@ -108,7 +108,7 @@ public class Utils {
         spaDTO.setId(spa.getId());
         spaDTO.setSpaServiceName(spa.getSpaServiceName());
         spaDTO.setSpaServicePrice(spa.getSpaServicePrice());
-        spaDTO.setSpaPhotoUrl(spa.getSpaPhotoUrl());
+        spaDTO.setPhotos(spa.getPhotos());
         spaDTO.setSpaDescription(spa.getSpaDescription());
         spaDTO.setBranchId(spa.getBranch().getId());
         spaDTO.setBranchName(spa.getBranch().getBranchName());
@@ -147,7 +147,7 @@ public class Utils {
         restaurantDTO.setTime(restaurant.getTime());
         restaurantDTO.setRestaurantAdultPrice(restaurant.getRestaurantAdultPrice());
         restaurantDTO.setRestaurantChildrenPrice(restaurant.getRestaurantChildrenPrice());
-        restaurantDTO.setRestaurantPhotoUrl(restaurant.getRestaurantPhotoUrl());
+        restaurantDTO.setPhotos(restaurant.getPhotos());
         restaurantDTO.setRestaurantDescription(restaurant.getRestaurantDescription());
         restaurantDTO.setBranchId(restaurant.getBranch().getId());
         restaurantDTO.setBranchName(restaurant.getBranch().getBranchName());
@@ -180,27 +180,35 @@ public class Utils {
 
 
     // review
-    public static ReviewDTO mapReviewEntityToReviewDTO(Review review, String userEmail) {
+    public static ReviewDTO mapReviewEntityToReviewDTO(Review review) {
         ReviewDTO reviewDTO = new ReviewDTO();
         reviewDTO.setReviewId(review.getReviewId());
         reviewDTO.setRating(review.getRating());
         reviewDTO.setReviewText(review.getReviewText());
-        reviewDTO.setReviewImageURL(review.getReviewImageURL());
+        reviewDTO.setPhotos(review.getPhotos()); // Map the photos list
         reviewDTO.setCreatedAt(review.getCreatedAt());
 
         if (review.getBranch() != null) {
             reviewDTO.setBranchId(review.getBranch().getId());
-            reviewDTO.setBranchName(review.getBranch().getBranchName());
+            reviewDTO.setBranchName(review.getBranch().getBranchName()); // Set branch name
         }
 
         if (review.getRoom() != null) {
             reviewDTO.setRoomId(review.getRoom().getId());
-            reviewDTO.setRoomType(review.getRoom().getRoomType());
+            reviewDTO.setRoomType(review.getRoom().getRoomType()); // Set room type
         }
 
-        reviewDTO.setUserEmail(userEmail); // Set the user's email
+        if (review.getUser() != null) {
+            reviewDTO.setUserEmail(review.getUser().getEmail()); // Set user email
+        }
 
         return reviewDTO;
+    }
+
+
+
+    public static List<ReviewDTO> mapReviewListEntityToReviewListDTO(List<Review> reviewList) {
+        return reviewList.stream().map(Utils::mapReviewEntityToReviewDTO).collect(Collectors.toList());
     }
 }
 

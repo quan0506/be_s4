@@ -8,11 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import java.util.List;
 
 @Entity
 @Data
@@ -35,8 +33,10 @@ public class Review {
     @Column(columnDefinition = "TEXT")
     private String reviewText;
 
-    @Column(name = "reviewImageURL", nullable = true)
-    private String reviewImageURL;
+    @ElementCollection
+    @CollectionTable(name = "review_photos", joinColumns = @JoinColumn(name = "review_id"))
+    @Column(name = "photo_url")
+    private List<String> photos;
 
     @NotNull
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -49,6 +49,7 @@ public class Review {
     @JoinColumn(name = "room_id", nullable = true)
     private Room room;
 
-
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }

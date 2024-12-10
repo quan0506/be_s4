@@ -6,7 +6,6 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
 @Data
 @Entity
 @Table(name = "restaurants")
@@ -17,12 +16,18 @@ public class Restaurant {
     private Long id;
 
     private String restaurantType;
-    private String time; // Enum or String for breakfast, lunch, dinner
+    private String time;
     @Column(nullable = false)
-    private BigDecimal restaurantAdultPrice; // Minimum price constraint can be handled in validation
+    private BigDecimal restaurantAdultPrice;
     @Column(nullable = false)
-    private BigDecimal restaurantChildrenPrice; // Minimum price constraint can be handled in validation
-    private String restaurantPhotoUrl;
+    private BigDecimal restaurantChildrenPrice;
+
+    @ElementCollection
+    @CollectionTable(name = "restaurant_photos", joinColumns = @JoinColumn(name = "restaurant_id"))
+    @Column(name = "photo_url")
+    private List<String> photos;
+
+    @Column(columnDefinition = "TEXT")
     private String restaurantDescription;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -40,7 +45,7 @@ public class Restaurant {
                 ", time='" + time + '\'' +
                 ", restaurantAdultPrice=" + restaurantAdultPrice +
                 ", restaurantChildrenPrice=" + restaurantChildrenPrice +
-                ", restaurantPhotoUrl='" + restaurantPhotoUrl + '\'' +
+                ", photos=" + photos +
                 ", restaurantDescription='" + restaurantDescription + '\'' +
                 '}';
     }

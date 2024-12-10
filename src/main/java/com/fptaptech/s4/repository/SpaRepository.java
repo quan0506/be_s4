@@ -16,4 +16,7 @@ public interface SpaRepository extends JpaRepository<Spa, Long> {
 
     @Query("SELECT s FROM Spa s WHERE s.branch.id = :branchId")
     List<Spa> findByBranchId(@Param("branchId") Long branchId);
+
+    @Query("SELECT s FROM Spa s WHERE s.id = :spaId AND s.branch.id = :branchId")
+    Optional<Spa> findByIdAndBranchId(@Param("spaId") Long spaId, @Param("branchId") Long branchId);
 }
