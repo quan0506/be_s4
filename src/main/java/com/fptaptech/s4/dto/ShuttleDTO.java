@@ -12,7 +12,7 @@ public class ShuttleDTO {
     private Long id;
     private String carType;
     private BigDecimal carPrice;
-    private String carPhotoUrl;
+    private List<String> photos;
     private String carDescription;
     private Long branchId;
     private String branchName;

@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,16 +30,16 @@ public class ShuttleService implements IShuttleService {
     private final CloudinaryService cloudinaryService;
 
     @Override
-    public Response addNewCar(Long branchId, MultipartFile photo, String carType, BigDecimal carPrice, String description) {
+    public Response addNewCar(Long branchId, List<MultipartFile> photos, String carType, BigDecimal carPrice, String description) {
         Response response = new Response();
         try {
             Branch branch = branchRepository.findById(branchId).orElseThrow(() -> new OurException("Branch Not Found"));
-            Map uploadResult = cloudinaryService.upload(photo);
-            String imageUrl = (String) uploadResult.get("url");
+
+            List<String> imageUrls = uploadPhotos(photos); // Upload photos to Cloudinary
 
             Shuttle car = new Shuttle();
             car.setBranch(branch); // Set the branch
-            car.setCarPhotoUrl(imageUrl);
+            car.setPhotos(imageUrls); // Set the list of photos
             car.setCarType(carType);
             car.setCarPrice(carPrice);
             car.setCarDescription(description);
@@ -54,6 +55,55 @@ public class ShuttleService implements IShuttleService {
         }
         return response;
     }
+
+    @Override
+    public Response updateCar(Long branchId, Long carId, String description, String carType, BigDecimal carPrice, List<MultipartFile> photos) {
+        Response response = new Response();
+        try {
+            List<String> imageUrls = null;
+            if (photos != null && !photos.isEmpty()) {
+                imageUrls = uploadPhotos(photos); // Upload photos to Cloudinary
+            }
+
+            Shuttle car = shuttleRepository.findByIdAndBranchId(carId, branchId).orElseThrow(() -> new OurException("Car Not Found"));
+            if (carType != null) car.setCarType(carType);
+            if (carPrice != null) car.setCarPrice(carPrice);
+            if (description != null) car.setCarDescription(description);
+            if (imageUrls != null && !imageUrls.isEmpty()) car.setPhotos(imageUrls);
+
+            Shuttle updatedCar = shuttleRepository.save(car);
+            ShuttleDTO carDTO = Utils.mapShuttleEntityToShuttleDTO(updatedCar);
+            response.setStatusCode(200);
+            response.setMessage("successful");
+            response.setShuttle(carDTO);
+        } catch (OurException e) {
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error updating car: " + e.getMessage());
+        }
+        return response;
+    }
+
+
+    private List<String> uploadPhotos(List<MultipartFile> photos) {
+        List<String> imageUrls = new ArrayList<>();
+        for (MultipartFile photo : photos) {
+            if (photo != null && !photo.isEmpty()) {
+                try {
+                    Map uploadResult = cloudinaryService.upload(photo);
+                    String imageUrl = (String) uploadResult.get("url");
+                    imageUrls.add(imageUrl);
+                } catch (Exception e) {
+                    throw new RuntimeException("Failed to upload photo", e);
+                }
+            }
+        }
+        return imageUrls;
+    }
+
+
 
     @Override
     public List<String> getAllCarTypes(Long branchId) {
@@ -94,36 +144,7 @@ public class ShuttleService implements IShuttleService {
         return response;
     }
 
-    @Override
-    public Response updateCar(Long branchId, Long carId, String description, String carType, BigDecimal carPrice, MultipartFile photo) {
-        Response response = new Response();
-        try {
-            String imageUrl = null;
-            if (photo != null && !photo.isEmpty()) {
-                Map uploadResult = cloudinaryService.upload(photo);
-                imageUrl = (String) uploadResult.get("url");
-            }
 
-            Shuttle car = shuttleRepository.findByIdAndBranchId(carId, branchId).orElseThrow(() -> new OurException("Car Not Found"));
-            if (carType != null) car.setCarType(carType);
-            if (carPrice != null) car.setCarPrice(carPrice);
-            if (description != null) car.setCarDescription(description);
-            if (imageUrl != null) car.setCarPhotoUrl(imageUrl);
-
-            Shuttle updatedCar = shuttleRepository.save(car);
-            ShuttleDTO carDTO = Utils.mapShuttleEntityToShuttleDTO(updatedCar);
-            response.setStatusCode(200);
-            response.setMessage("successful");
-            response.setShuttle(carDTO);
-        } catch (OurException e) {
-            response.setStatusCode(404);
-            response.setMessage(e.getMessage());
-        } catch (Exception e) {
-            response.setStatusCode(500);
-            response.setMessage("Error updating car: " + e.getMessage());
-        }
-        return response;
-    }
 
     @Override
     public Response getCarById(Long branchId, Long carId) {

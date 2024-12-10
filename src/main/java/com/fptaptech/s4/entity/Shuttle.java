@@ -21,8 +21,10 @@ public class Shuttle {
 
     private BigDecimal carPrice;
 
-    @Column(columnDefinition = "TEXT")
-    private String carPhotoUrl;
+    @ElementCollection
+    @CollectionTable(name = "shuttle_photos", joinColumns = @JoinColumn(name = "shuttle_id"))
+    @Column(name = "photo_url")
+    private List<String> photos;
 
     @Column(columnDefinition = "TEXT")
     private String carDescription;
@@ -40,7 +42,7 @@ public class Shuttle {
                 "id=" + id +
                 ", carType='" + carType + '\'' +
                 ", carPrice=" + carPrice +
-                ", carPhotoUrl='" + carPhotoUrl + '\'' +
+                ", photos=" + photos +
                 ", carDescription='" + carDescription + '\'' +
                 '}';
     }

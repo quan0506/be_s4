@@ -47,7 +47,7 @@ public class Utils {
         shuttleDTO.setId(shuttle.getId());
         shuttleDTO.setCarType(shuttle.getCarType());
         shuttleDTO.setCarPrice(shuttle.getCarPrice());
-        shuttleDTO.setCarPhotoUrl(shuttle.getCarPhotoUrl());
+        shuttleDTO.setPhotos(shuttle.getPhotos());
         shuttleDTO.setCarDescription(shuttle.getCarDescription());
         shuttleDTO.setBranchId(shuttle.getBranch().getId());
         shuttleDTO.setBranchName(shuttle.getBranch().getBranchName());

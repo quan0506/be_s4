@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface IShuttleService {
-    Response addNewCar(Long branchId, MultipartFile photo, String carType, BigDecimal carPrice, String description);
+    Response addNewCar(Long branchId, List<MultipartFile> photos, String carType, BigDecimal carPrice, String description);
 
     List<String> getAllCarTypes(Long branchId);
 
@@ -16,7 +16,7 @@ public interface IShuttleService {
 
     Response deleteCar(Long branchId, Long carId);
 
-    Response updateCar(Long branchId, Long carId, String description, String carType, BigDecimal carPrice, MultipartFile photo);
+    Response updateCar(Long branchId, Long carId, String description, String carType, BigDecimal carPrice, List<MultipartFile> photos);
 
     Response getCarById(Long branchId, Long carId);
 

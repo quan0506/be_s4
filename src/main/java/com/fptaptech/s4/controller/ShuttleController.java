@@ -25,21 +25,21 @@ public class ShuttleController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Response> addNewCar(
             @RequestParam("branchId") Long branchId,
-            @RequestParam(value = "photo", required = false) MultipartFile photo,
+            @RequestParam(value = "photos", required = false) List<MultipartFile> photos,
             @RequestParam(value = "carType", required = false) String carType,
             @RequestParam(value = "carPrice", required = false) BigDecimal carPrice,
             @RequestParam(value = "carDescription", required = false) String carDescription
     ) {
-
-        if (photo == null || photo.isEmpty() || carType == null || carType.isBlank() || carPrice == null) {
+        if (photos == null || photos.isEmpty() || carType == null || carType.isBlank() || carPrice == null) {
             Response response = new Response();
             response.setStatusCode(400);
-            response.setMessage("Please provide values for all fields (branchId, photo, carType, carPrice)");
+            response.setMessage("Please provide values for all fields (branchId, photos, carType, carPrice)");
             return ResponseEntity.status(response.getStatusCode()).body(response);
         }
-        Response response = shuttleService.addNewCar(branchId, photo, carType, carPrice, carDescription);
+        Response response = shuttleService.addNewCar(branchId, photos, carType, carPrice, carDescription);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
+
 
 
     // lay tat ca dich vu xe
@@ -101,16 +101,18 @@ public class ShuttleController {
     // update dich vu xe
     @PutMapping("/update/{carId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Response> updateCar(@PathVariable Long carId,
-                                              @RequestParam("branchId") Long branchId,
-                                              @RequestParam(value = "photo", required = false) MultipartFile photo,
-                                              @RequestParam(value = "carType", required = false) String carType,
-                                              @RequestParam(value = "carPrice", required = false) BigDecimal carPrice,
-                                              @RequestParam(value = "carDescription", required = false) String carDescription
+    public ResponseEntity<Response> updateCar(
+            @PathVariable Long carId,
+            @RequestParam("branchId") Long branchId,
+            @RequestParam(value = "photos", required = false) List<MultipartFile> photos,
+            @RequestParam(value = "carType", required = false) String carType,
+            @RequestParam(value = "carPrice", required = false) BigDecimal carPrice,
+            @RequestParam(value = "carDescription", required = false) String carDescription
     ) {
-        Response response = shuttleService.updateCar(branchId, carId, carDescription, carType, carPrice, photo);
+        Response response = shuttleService.updateCar(branchId, carId, carDescription, carType, carPrice, photos);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
+
 
     // xoa 1 dich vu xe
     @DeleteMapping("/delete/{carId}")
