@@ -23,4 +23,6 @@ public interface IShuttleService {
     Response getAvailableCarsByDateAndType(Long branchId, LocalDate shuttleCheckInDate, LocalDate shuttleCheckOutDate, String carType);
 
     Response getAllAvailableCars(Long branchId);
+
+    Response getAllShuttles();
 }

@@ -18,4 +18,6 @@ public interface IRestaurantService {
     Response updateRestaurant(Long branchId, Long restaurantId, String restaurantType, String time, BigDecimal restaurantAdultPrice, BigDecimal restaurantChildrenPrice, MultipartFile restaurantPhoto, String restaurantDescription);
 
     Response getRestaurantById(Long branchId, Long restaurantId);
+
+    Response getAllRestaurantsNoBranch();
 }

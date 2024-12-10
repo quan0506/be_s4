@@ -150,4 +150,19 @@ public class SpaService implements ISpaService {
         }
         return response;
     }
+
+    public Response getAllSpas() {
+        Response response = new Response();
+        try {
+            List<Spa> spas = spaRepository.findAll();
+            List<SpaDTO> spaDTOList = Utils.mapSpaListEntityToSpaListDTO(spas);
+            response.setStatusCode(200);
+            response.setMessage("Spas retrieved successfully.");
+            response.setData(spaDTOList);
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error fetching spas: " + e.getMessage());
+        }
+        return response;
+    }
 }

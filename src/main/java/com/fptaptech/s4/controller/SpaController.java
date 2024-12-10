@@ -81,4 +81,13 @@ public class SpaController {
         Response response = spaService.deleteSpaServiceName(spaId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
+
+    @GetMapping("/get-all-spas")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Response> getAllSpas() {
+        Response response = spaService.getAllSpas();
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
 }
+
+

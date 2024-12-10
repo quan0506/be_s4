@@ -49,7 +49,8 @@ public class Utils {
         shuttleDTO.setCarPrice(shuttle.getCarPrice());
         shuttleDTO.setCarPhotoUrl(shuttle.getCarPhotoUrl());
         shuttleDTO.setCarDescription(shuttle.getCarDescription());
-        shuttleDTO.setBranchId(shuttle.getBranch().getId()); // Set branch ID
+        shuttleDTO.setBranchId(shuttle.getBranch().getId());
+        shuttleDTO.setBranchName(shuttle.getBranch().getBranchName());
         return shuttleDTO;
     }
 
@@ -110,9 +111,10 @@ public class Utils {
         spaDTO.setSpaPhotoUrl(spa.getSpaPhotoUrl());
         spaDTO.setSpaDescription(spa.getSpaDescription());
         spaDTO.setBranchId(spa.getBranch().getId());
+        spaDTO.setBranchName(spa.getBranch().getBranchName());
         return spaDTO;
     }
-
+    public static List<SpaDTO> mapSpaListEntityToSpaListDTO(List<Spa> spaList) { return spaList.stream().map(Utils::mapSpaEntityToSpaDTO).collect(Collectors.toList()); }
 
 
     public static SpaBookingDTO mapSpaBookingEntityToSpaBookingDTO(SpaBooking spaBooking) {
@@ -147,7 +149,8 @@ public class Utils {
         restaurantDTO.setRestaurantChildrenPrice(restaurant.getRestaurantChildrenPrice());
         restaurantDTO.setRestaurantPhotoUrl(restaurant.getRestaurantPhotoUrl());
         restaurantDTO.setRestaurantDescription(restaurant.getRestaurantDescription());
-        restaurantDTO.setBranchId(restaurant.getBranch().getId()); // Added branchId
+        restaurantDTO.setBranchId(restaurant.getBranch().getId());
+        restaurantDTO.setBranchName(restaurant.getBranch().getBranchName());
         return restaurantDTO;
     }
 

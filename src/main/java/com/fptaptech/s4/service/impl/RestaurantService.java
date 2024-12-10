@@ -159,4 +159,21 @@ public class RestaurantService implements IRestaurantService {
         }
         return response;
     }
+
+
+    public Response getAllRestaurantsNoBranch() {
+        Response response = new Response();
+        try {
+            List<Restaurant> restaurants = restaurantRepository.findAll();
+            List<RestaurantDTO> restaurantDTOList = Utils.mapRestaurantListEntityToRestaurantListDTO(restaurants);
+            response.setStatusCode(200);
+            response.setMessage("Restaurants retrieved successfully.");
+            response.setData(restaurantDTOList);
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error fetching restaurants: " + e.getMessage());
+        }
+        return response;
+    }
 }
+

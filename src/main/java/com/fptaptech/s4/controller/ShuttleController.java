@@ -120,5 +120,14 @@ public class ShuttleController {
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
+    @GetMapping("/get-all-shuttles")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Response> getAllShuttles() {
+        Response response = shuttleService.getAllShuttles();
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
 
 }
+
+

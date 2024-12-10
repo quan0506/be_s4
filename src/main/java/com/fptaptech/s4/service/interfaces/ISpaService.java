@@ -19,4 +19,6 @@ public interface ISpaService {
     Response getSpaServiceNameById(Long spaId);
 
     Response getSpaServiceByName(String spaServiceName);
+
+    Response getAllSpas();
 }

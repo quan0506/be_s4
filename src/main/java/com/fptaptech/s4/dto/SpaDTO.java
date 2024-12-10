@@ -15,5 +15,6 @@ public class SpaDTO {
     private String spaPhotoUrl;
     private String spaDescription;
     private Long branchId;
+    private String branchName;
 
 }

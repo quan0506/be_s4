@@ -15,5 +15,6 @@ public class ShuttleDTO {
     private String carPhotoUrl;
     private String carDescription;
     private Long branchId;
+    private String branchName;
     private List<ShuttleBookingDTO> shuttleBookings;
 }

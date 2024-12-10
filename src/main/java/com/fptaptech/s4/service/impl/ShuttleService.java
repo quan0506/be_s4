@@ -175,4 +175,20 @@ public class ShuttleService implements IShuttleService {
         }
         return response;
     }
+
+    public Response getAllShuttles() {
+        Response response = new Response();
+        try {
+            List<Shuttle> shuttles = shuttleRepository.findAll();
+            List<ShuttleDTO> shuttleDTOList = Utils.mapShuttleListEntityToShuttleListDTO(shuttles);
+            response.setStatusCode(200);
+            response.setMessage("Shuttles retrieved successfully.");
+            response.setData(shuttleDTOList);
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error fetching shuttles: " + e.getMessage());
+        }
+        return response;
+    }
 }
+
