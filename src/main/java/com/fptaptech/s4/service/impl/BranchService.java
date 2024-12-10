@@ -47,11 +47,6 @@ private final CloudinaryService cloudinaryService;
     }
 
 
-
-
-
-
-
     @Override
     public Branch updateBranch(Long id,Branch branch, List<MultipartFile> photos) {
         Branch existingBranch = branchRepository.findById(branch.getId())

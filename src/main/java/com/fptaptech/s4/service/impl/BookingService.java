@@ -7,6 +7,7 @@ import com.fptaptech.s4.entity.BookedRoom;
 import com.fptaptech.s4.exception.RoomNotAvailableException;
 import com.fptaptech.s4.repository.BookingRepository;
 import com.fptaptech.s4.repository.UserRepository;
+import com.fptaptech.s4.response.BookingResponseDTO;
 import com.fptaptech.s4.service.interfaces.IBookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class BookingService implements IBookingService {
     private final UserRepository userRepository;
 
     @Override
-    public Booking createBooking(Booking booking) {
+    public BookingResponseDTO createBooking(Booking booking) {
         // Tìm kiếm Room với id
         Room room = roomService.getRoomById(booking.getRoom().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Room not found"));
@@ -50,8 +51,23 @@ public class BookingService implements IBookingService {
         BigDecimal totalPrice = calculateTotalPrice(booking);
         booking.setTotalPrice(totalPrice);
 
-        return bookingRepository.save(booking);
+        Booking savedBooking = bookingRepository.save(booking);
+
+        return new BookingResponseDTO(
+                savedBooking.getBookingId(),
+                savedBooking.getUser().getId(),
+                savedBooking.getRoom().getId(),
+                savedBooking.getCheckInDate(),
+                savedBooking.getCheckOutDate(),
+                savedBooking.getAdults(),
+                savedBooking.getChildren(),
+                savedBooking.getTotalPrice(),
+                savedBooking.getPaymentMethod(),
+                savedBooking.getConfirmBookingCode(),
+                savedBooking.getStatus()
+        );
     }
+
 
 
     private BigDecimal calculateTotalPrice(Booking booking) {

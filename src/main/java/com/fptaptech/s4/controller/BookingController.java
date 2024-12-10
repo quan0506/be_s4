@@ -3,6 +3,7 @@ package com.fptaptech.s4.controller;
 import com.fptaptech.s4.Mapper.BookingMapper;
 import com.fptaptech.s4.dto.BookingDTO;
 import com.fptaptech.s4.entity.Booking;
+import com.fptaptech.s4.response.BookingResponseDTO;
 import com.fptaptech.s4.service.interfaces.IBookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,8 +20,8 @@ public class BookingController {
     private final IBookingService bookingService;
 
     @PostMapping("/create")
-    public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
-        Booking newBooking = bookingService.createBooking(booking);
+    public ResponseEntity<BookingResponseDTO> createBooking(@RequestBody Booking booking) {
+        BookingResponseDTO newBooking = bookingService.createBooking(booking);
         return ResponseEntity.status(HttpStatus.CREATED).body(newBooking);
     }
 
