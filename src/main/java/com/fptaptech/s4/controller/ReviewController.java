@@ -34,11 +34,11 @@ public class ReviewController {
             @RequestParam(required = false) Long roomId,
             @RequestParam Integer rating,
             @RequestParam String reviewText,
-            @RequestParam(required = false) List<MultipartFile> reviewImages) {
+            @RequestParam(required = false) List<MultipartFile> photos) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
-        Response response = reviewService.createReview(branchId, roomId, rating, reviewText, reviewImages, userEmail);
+        Response response = reviewService.createReview(branchId, roomId, rating, reviewText, photos, userEmail);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
