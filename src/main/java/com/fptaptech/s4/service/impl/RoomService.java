@@ -1,5 +1,6 @@
 package com.fptaptech.s4.service.impl;
 
+import com.fptaptech.s4.entity.Booking;
 import com.fptaptech.s4.entity.Branch;
 import com.fptaptech.s4.entity.Room;
 import com.fptaptech.s4.exception.ResourceNotFoundException;
@@ -119,6 +120,7 @@ public class RoomService implements IRoomService {
 
     @Override
     public boolean isRoomAvailable(Long roomId, LocalDate checkInDate, LocalDate checkOutDate) {
-        return roomRepository.isRoomAvailable(roomId, checkInDate, checkOutDate);
+        List<Booking> bookings =  roomRepository.findBookingsByRoomIdAndDateRange(roomId, checkInDate, checkOutDate);
+        return bookings.isEmpty();
     }
 }

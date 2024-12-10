@@ -1,5 +1,6 @@
 package com.fptaptech.s4.repository;
 
+import com.fptaptech.s4.entity.Booking;
 import com.fptaptech.s4.entity.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,9 +18,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
             "SELECT br.room.id FROM BookedRoom br WHERE " +
             "(br.checkInDate <= :checkOutDate AND br.checkOutDate >= :checkInDate))")*/
 
-        @Query("SELECT CASE WHEN COUNT(b) > 0 THEN FALSE ELSE TRUE END " +
-                "FROM BookedRoom b WHERE b.room.id = :roomId " +
-                "AND (b.checkInDate < :checkOutDate AND b.checkOutDate > :checkInDate)")
+    @Query("SELECT b FROM Booking b WHERE b.room.id = :roomId AND " + "(b.checkInDate < :checkOutDate AND b.checkOutDate > :checkInDate)")
         boolean isRoomAvailable(@Param("roomId") Long roomId,
                                 @Param("checkInDate") LocalDate checkInDate,
                                 @Param("checkOutDate") LocalDate checkOutDate);
@@ -27,6 +26,15 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     List<Room> findByBranch_Id(Long branchId);
     List<Room> findByRoomTypeAndBranch_Id(String roomType, Long branchId);
     List<Room> findByRoomPriceAndBranch_Id(BigDecimal roomPrice, Long branchId);
+
+
+        @Query("SELECT b FROM Booking b WHERE b.room.id = :roomId AND " +
+                "(b.checkInDate < :checkOutDate AND b.checkOutDate > :checkInDate)")
+        List<Booking> findBookingsByRoomIdAndDateRange(@Param("roomId") Long roomId,
+                                                       @Param("checkInDate") LocalDate checkInDate,
+                                                       @Param("checkOutDate") LocalDate checkOutDate);
+
+
 }
 
 

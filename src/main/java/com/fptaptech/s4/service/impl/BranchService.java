@@ -24,8 +24,6 @@ public class BranchService implements IBranchService {
     private final RoomRepository roomRepository;
 private final CloudinaryService cloudinaryService;
 
-
-
     @Override
     public Branch addBranch(Branch branch, List<MultipartFile> photos) {
         if (photos != null && !photos.isEmpty()) {
@@ -45,7 +43,6 @@ private final CloudinaryService cloudinaryService;
         branch.setCreatedAt(LocalDate.now());
         return branchRepository.save(branch);
     }
-
 
     @Override
     public Branch updateBranch(Long id,Branch branch, List<MultipartFile> photos) {
@@ -81,11 +78,6 @@ private final CloudinaryService cloudinaryService;
         return imageUrls;
     }
 
-
-
-
-
-
     @Override
     public void deleteBranch(Long id) {
         branchRepository.deleteById(id);
@@ -111,4 +103,3 @@ private final CloudinaryService cloudinaryService;
         return branch;
     }
 }
-

@@ -47,7 +47,6 @@ public class BookingController {
     @GetMapping("/all")
     public ResponseEntity<List<BookingDTO>> getAllBookings() {
         List<Booking> bookings = bookingService.getAllBookings();
-        // Chuyển đổi từ List<Booking> sang List<BookingDTO>
         List<BookingDTO> bookingDTOs = bookings.stream()
                 .map(BookingMapper::toDTO)
                 .toList();
