@@ -58,19 +58,20 @@ public class Utils {
         ShuttleDTO shuttleDTO = mapShuttleEntityToShuttleDTO(shuttle);
         if (shuttle.getShuttleBookings() != null) {
             List<ShuttleBookingDTO> shuttleBookingDTOList = shuttle.getShuttleBookings().stream()
-                    .map(Utils::mapShuttleBookingEntityToShuttleBookingDTO)
+                    .map(booking -> mapShuttleBookingEntityToShuttleBookingDTO(booking, shuttle))
                     .collect(Collectors.toList());
             shuttleDTO.setShuttleBookings(shuttleBookingDTOList);
         }
         return shuttleDTO;
     }
 
+
     public static List<ShuttleDTO> mapShuttleListEntityToShuttleListDTO(List<Shuttle> shuttleList) {
         return shuttleList.stream().map(Utils::mapShuttleEntityToShuttleDTO).collect(Collectors.toList());
     }
 
     // ShuttleBooking mappings
-    public static ShuttleBookingDTO mapShuttleBookingEntityToShuttleBookingDTO(ShuttleBooking shuttleBooking) {
+    public static ShuttleBookingDTO mapShuttleBookingEntityToShuttleBookingDTO(ShuttleBooking shuttleBooking, Shuttle shuttle) {
         ShuttleBookingDTO shuttleBookingDTO = new ShuttleBookingDTO();
         shuttleBookingDTO.setId(shuttleBooking.getId());
         shuttleBookingDTO.setShuttleCheckInDate(shuttleBooking.getShuttleCheckInDate());
@@ -78,12 +79,19 @@ public class Utils {
         shuttleBookingDTO.setBookingConfirmationCode(shuttleBooking.getBookingConfirmationCode());
         shuttleBookingDTO.setTotalPrice(shuttleBooking.getTotalPrice());
         shuttleBookingDTO.setUserEmail(shuttleBooking.getUser().getEmail());
-        shuttleBookingDTO.setBranchId(shuttleBooking.getShuttle().getBranch().getId()); // Set branch ID
+
+        shuttleBookingDTO.setCarId(shuttle.getId());
+        shuttleBookingDTO.setCarType(shuttle.getCarType());
+        shuttleBookingDTO.setCarPrice(shuttle.getCarPrice());
+        shuttleBookingDTO.setPhotos(shuttle.getPhotos());
+        shuttleBookingDTO.setCarDescription(shuttle.getCarDescription());
+        shuttleBookingDTO.setBranchId(shuttleBooking.getShuttle().getBranch().getId());
+        shuttleBookingDTO.setBranchName(shuttleBooking.getShuttle().getBranch().getBranchName());
         return shuttleBookingDTO;
     }
 
     public static ShuttleBookingDTO mapShuttleBookingEntityToShuttleBookingDTOPlusShuttle(ShuttleBooking shuttleBooking) {
-        ShuttleBookingDTO shuttleBookingDTO = mapShuttleBookingEntityToShuttleBookingDTO(shuttleBooking);
+        ShuttleBookingDTO shuttleBookingDTO = mapShuttleBookingEntityToShuttleBookingDTO(shuttleBooking, shuttleBooking.getShuttle());
         if (shuttleBooking.getUser() != null) {
             shuttleBookingDTO.setUser(Utils.mapUserEntityToUserDTO(shuttleBooking.getUser()));
         }
@@ -93,9 +101,13 @@ public class Utils {
         return shuttleBookingDTO;
     }
 
+
     public static List<ShuttleBookingDTO> mapShuttleBookingListEntityToShuttleBookingListDTO(List<ShuttleBooking> shuttleBookingList) {
-        return shuttleBookingList.stream().map(Utils::mapShuttleBookingEntityToShuttleBookingDTO).collect(Collectors.toList());
+        return shuttleBookingList.stream()
+                .map(booking -> mapShuttleBookingEntityToShuttleBookingDTO(booking, booking.getShuttle()))
+                .collect(Collectors.toList());
     }
+
 
 
 
