@@ -100,4 +100,12 @@ public class SpaBookingController {
         }
     }
 
+    @GetMapping("/all-bookings")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Response> getAllSpaBookingsGroupedByBranch() {
+        Response response = spaBookingService.getAllSpasGroupedByBranch();
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
 }
+

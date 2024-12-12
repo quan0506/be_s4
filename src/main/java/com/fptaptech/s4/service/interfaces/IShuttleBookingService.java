@@ -13,5 +13,8 @@ public interface IShuttleBookingService {
     Response cancelShuttleBooking(Long branchId, Long shuttleBookingId);
 
     Response getAllShuttleBookingsByUser(Long userId);
+
     String getBookingEmail(Long branchId, Long shuttleBookingId);
+
+    Response getAllShuttlesGroupedByBranch();
 }

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -197,4 +198,36 @@ public class ShuttleBookingService implements IShuttleBookingService {
                 );
     }
 
+
+    @Override
+    public Response getAllShuttlesGroupedByBranch() {
+        Response response = new Response();
+        try {
+            List<ShuttleBooking> shuttleBookingList = shuttleBookingRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+
+            // Group by branch
+            Map<Long, List<ShuttleBookingDTO>> groupedByBranch = shuttleBookingList.stream()
+                    .collect(Collectors.groupingBy(
+                            booking -> booking.getShuttle().getBranch().getId(),
+                            Collectors.mapping(booking -> Utils.mapShuttleBookingEntityToShuttleBookingDTO(booking, booking.getShuttle()), Collectors.toList())
+                    ));
+
+            response.setStatusCode(200);
+            response.setMessage("successful");
+            response.setData(groupedByBranch);
+
+            List<String> userEmails = shuttleBookingList.stream()
+                    .map(booking -> booking.getUser().getEmail())
+                    .distinct()
+                    .collect(Collectors.toList());
+            response.setEmail(String.join(", ", userEmails));
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error fetching shuttle bookings: " + e.getMessage());
+        }
+        return response;
+    }
+
 }
+
+

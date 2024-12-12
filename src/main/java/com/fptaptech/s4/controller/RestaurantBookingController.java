@@ -98,5 +98,11 @@ public class RestaurantBookingController {
         Response response = restaurantBookingService.getRestaurantBookingById(branchId, bookingId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
-}
 
+    @GetMapping("/all-bookings")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Response> getAllRestaurantBookingsGroupedByBranch() {
+        Response response = restaurantBookingService.getAllRestaurantsGroupedByBranch();
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+}

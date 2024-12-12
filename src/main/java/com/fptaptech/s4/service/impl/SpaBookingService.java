@@ -22,6 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -162,4 +163,38 @@ public class SpaBookingService implements ISpaBookingService {
         }
         return response;
     }
+
+
+    @Override
+    public Response getAllSpasGroupedByBranch() {
+        Response response = new Response();
+        try {
+            List<SpaBooking> spaBookingList = spaBookingRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+
+            // Group by branch
+            Map<Long, List<SpaBookingDTO>> groupedByBranch = spaBookingList.stream()
+                    .collect(Collectors.groupingBy(
+                            booking -> booking.getSpa().getBranch().getId(),
+                            Collectors.mapping(booking -> Utils.mapSpaBookingEntityToSpaBookingDTO(booking), Collectors.toList())
+                    ));
+
+            response.setStatusCode(200);
+            response.setMessage("successful");
+            response.setData(groupedByBranch);
+
+            List<String> userEmails = spaBookingList.stream()
+                    .map(booking -> booking.getUser().getEmail())
+                    .distinct()
+                    .collect(Collectors.toList());
+            response.setEmail(String.join(", ", userEmails));
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error fetching spa bookings: " + e.getMessage());
+        }
+        return response;
+    }
+
 }
+
+
+

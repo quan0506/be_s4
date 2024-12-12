@@ -15,4 +15,6 @@ public interface IRestaurantBookingService {
     Response getRestaurantBookingById(Long branchId, Long restaurantBookingId);
 
     Response getAllRestaurantBookingsByUser(Long userId);
+
+    Response getAllRestaurantsGroupedByBranch();
 }

@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -178,4 +179,35 @@ public class RestaurantBookingService implements IRestaurantBookingService {
         }
         return response;
     }
+
+
+    public Response getAllRestaurantsGroupedByBranch() {
+        Response response = new Response();
+        try {
+            List<RestaurantBooking> restaurantBookingList = restaurantBookingRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+
+            // Group by branch
+            Map<Long, List<RestaurantBookingDTO>> groupedByBranch = restaurantBookingList.stream()
+                    .collect(Collectors.groupingBy(
+                            booking -> booking.getRestaurant().getBranch().getId(),
+                            Collectors.mapping(booking -> Utils.mapRestaurantBookingEntityToRestaurantBookingDTO(booking), Collectors.toList())
+                    ));
+
+            response.setStatusCode(200);
+            response.setMessage("successful");
+            response.setData(groupedByBranch);
+
+            List<String> userEmails = restaurantBookingList.stream()
+                    .map(booking -> booking.getUser().getEmail())
+                    .distinct()
+                    .collect(Collectors.toList());
+            response.setEmail(String.join(", ", userEmails));
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error fetching restaurant bookings: " + e.getMessage());
+        }
+        return response;
+    }
 }
+
+

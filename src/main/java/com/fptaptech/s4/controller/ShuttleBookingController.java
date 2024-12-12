@@ -97,4 +97,12 @@ public class ShuttleBookingController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
         }
     }
+
+    @GetMapping("/all-bookings")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Response> getAllShuttleBookingsGroupedByBranch() {
+        Response response = shuttleBookingService.getAllShuttlesGroupedByBranch();
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
 }
