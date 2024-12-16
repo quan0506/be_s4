@@ -18,14 +18,14 @@ public class HotelController {
     private final HotelServices hotelService;
 
     @PostMapping("/add")
-    @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<Hotel> addHotel(@RequestBody Hotel hotel) {
         Hotel newHotel = hotelService.addHotel(hotel);
         return ResponseEntity.status(HttpStatus.CREATED).body(newHotel);
     }
 
     @PutMapping("/update/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
     public ResponseEntity<Hotel> updateHotel(@PathVariable Long id, @RequestBody Hotel hotel) {
         Hotel updatedHotel = hotelService.updateHotel(id, hotel);
         return ResponseEntity.ok(updatedHotel);

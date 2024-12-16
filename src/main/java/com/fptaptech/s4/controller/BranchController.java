@@ -21,7 +21,7 @@ public class BranchController {
     private final BranchService branchService;
 
     @PostMapping("/add")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Branch> addBranch(@RequestParam String branchName,
                                             @RequestParam String location,
                                             @RequestParam List<MultipartFile> photos,
@@ -38,7 +38,7 @@ public class BranchController {
     }
 
     @PutMapping("/update/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Branch> updateBranch(@PathVariable Long id,
                                                @RequestParam String branchName,
                                                @RequestParam String location,
@@ -57,7 +57,7 @@ public class BranchController {
     }
 
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteBranch(@PathVariable Long id) {
         branchService.deleteBranch(id);
         return ResponseEntity.ok("Branch deleted successfully.");
