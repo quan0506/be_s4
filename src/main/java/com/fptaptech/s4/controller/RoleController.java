@@ -3,7 +3,7 @@ package com.fptaptech.s4.controller;
 import com.fptaptech.s4.exception.RoleAlreadyExistException;
 import com.fptaptech.s4.entity.Role;
 import com.fptaptech.s4.entity.User;
-import com.fptaptech.s4.service.interfaces.IRoleService;
+import com.fptaptech.s4.service.impl.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,16 +18,16 @@ import static org.springframework.http.HttpStatus.FOUND;
 @RequestMapping("/roles")
 @RequiredArgsConstructor
 public class RoleController {
-    private final IRoleService roleService;
+    private final RoleService roleService;
 
     @GetMapping("/all-roles")
-    @PreAuthorize("hasRole('MANAGER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<Role>> getAllRoles(){
         return new ResponseEntity<>(roleService.getRoles(), FOUND);
     }
 
     @PostMapping("/create-new-role")
-    @PreAuthorize("hasRole('MANAGER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> createRole(@RequestBody Role theRole){
         try{
             roleService.createRole(theRole);
@@ -37,25 +37,25 @@ public class RoleController {
         }
     }
     @DeleteMapping("/delete/{roleId}")
-    @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public void deleteRole(@PathVariable("roleId") Long roleId){
         roleService.deleteRole(roleId);
     }
     @PostMapping("/remove-all-users-from-role/{roleId}")
-    @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public Role removeAllUsersFromRole(@PathVariable("roleId") Long roleId){
         return roleService.removeAllUsersFromRole(roleId);
     }
 
     @PostMapping("/remove-user-from-role")
-    @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public User removeUserFromRole(
             @RequestParam("userId") Long userId,
             @RequestParam("roleId") Long roleId){
         return roleService.removeUserFromRole(userId, roleId);
     }
     @PostMapping("/assign-user-to-role")
-    @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public User assignUserToRole(
             @RequestParam("userId") Long userId,
             @RequestParam("roleId") Long roleId){

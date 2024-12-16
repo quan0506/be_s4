@@ -21,11 +21,11 @@ public class hotelbes4 {
     @Bean
     CommandLineRunner initRoles() {
         return args -> {
-            if (!roleRepository.existsByName("ADMIN")) {
+            if (!roleRepository.existsByName("ROLE_MANAGER")) {
                 Role adminRole = new Role();
-                adminRole.setName("ADMIN");
+                adminRole.setName("ROLE_MANAGER");
                 roleRepository.save(adminRole);
-                System.out.println("Role ADMIN has been created");
+                System.out.println("Role MANAGER has been created");
             }
         };
     }
