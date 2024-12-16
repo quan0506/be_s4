@@ -20,14 +20,17 @@ public class BookedService implements IBookedService {
     private final BookedRepository bookedRepository;
     private final IRoomService roomService;
     private final RoomRepository roomRepository;
+
     @Override
     public List<BookedRoom> getAllBookings() {
         return bookedRepository.findAll();
     }
+
     @Override
     public List<BookedRoom> getBookingsByUserEmail(String email) {
         return bookedRepository.findByGuestEmail(email);
     }
+
     @Override
     public void cancelBooking(Long bookingId) {
         Optional<BookedRoom> booking = bookedRepository.findById(bookingId);
@@ -47,6 +50,7 @@ public class BookedService implements IBookedService {
             throw new ResourceNotFoundException("Room not found with ID: " + roomId);
         }
     }
+
     @Override
     public String saveBooking(Long roomId, BookedRoom bookingRequest) {
         if (bookingRequest.getCheckOutDate().isBefore(bookingRequest.getCheckInDate())){
@@ -55,11 +59,13 @@ public class BookedService implements IBookedService {
         Room room = roomService.getRoomById(roomId).get();
         return bookingRequest.getBookingConfirmationCode();
     }
+
     @Override
     public BookedRoom findByBookingConfirmationCode(String confirmationCode) {
         return bookedRepository.findByBookingConfirmationCode(confirmationCode)
                 .orElseThrow(() -> new ResourceNotFoundException("No booking found with booking code :"+confirmationCode));
     }
+
     private boolean roomIsAvailable(BookedRoom bookingRequest, List<BookedRoom> existingBookings) {
         return existingBookings.stream()
                 .noneMatch(existingBooking ->

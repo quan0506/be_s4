@@ -19,7 +19,6 @@ public class BookingDTO {
     private int adults;
     private int children;
     private BigDecimal totalPrice;
-    private String paymentMethod;
     private String confirmBookingCode;
     private String status;
 }

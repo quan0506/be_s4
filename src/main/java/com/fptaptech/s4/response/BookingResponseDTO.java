@@ -20,12 +20,11 @@ public class BookingResponseDTO {
     private int adults;
     private int children;
     private BigDecimal totalPrice;
-    private String paymentMethod;
     private String confirmBookingCode;
     private String status;
 
     // Constructors, Getters and Setters
-    public BookingResponseDTO(Long bookingId, Long userId, Long roomId, LocalDate checkInDate, LocalDate checkOutDate, int adults, int children, BigDecimal totalPrice, String paymentMethod, String confirmBookingCode, String status) {
+    public BookingResponseDTO(Long bookingId, Long userId, Long roomId, LocalDate checkInDate, LocalDate checkOutDate, int adults, int children, BigDecimal totalPrice, String confirmBookingCode, String status) {
         this.bookingId = bookingId;
         this.userId = userId;
         this.roomId = roomId;
@@ -34,7 +33,6 @@ public class BookingResponseDTO {
         this.adults = adults;
         this.children = children;
         this.totalPrice = totalPrice;
-        this.paymentMethod = paymentMethod;
         this.confirmBookingCode = confirmBookingCode;
         this.status = status;
     }

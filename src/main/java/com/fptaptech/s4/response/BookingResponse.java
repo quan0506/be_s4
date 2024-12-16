@@ -3,6 +3,7 @@ package com.fptaptech.s4.response;
 import com.fptaptech.s4.entity.BookedRoom;
 import com.fptaptech.s4.entity.Booking;
 import jakarta.persistence.Column;
+import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -39,6 +40,7 @@ public class BookingResponse {
     private int totalNumOfGuests;
 
     @Column(nullable = false,length = 4,unique = true)
+    @SequenceGenerator(name ="bookingConfirmationCode", allocationSize = 4)
     private String bookingConfirmationCode;
 
     @Column(nullable = false)
