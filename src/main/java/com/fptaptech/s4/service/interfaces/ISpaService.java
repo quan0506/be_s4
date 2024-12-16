@@ -10,7 +10,7 @@ import java.util.List;
 public interface ISpaService {
     Response addNewSpa(Long branchId, List<MultipartFile> photos, String spaServiceName, BigDecimal spaServicePrice, String spaDescription);
 
-    List<SpaDTO> getAllSpaServices();
+    Response getAllSpaServices(Long branchId);
 
     Response deleteSpaServiceName(Long spaId);
 

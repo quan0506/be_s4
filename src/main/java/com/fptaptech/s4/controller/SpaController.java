@@ -45,12 +45,10 @@ public class SpaController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Response> getAllSpaServices() {
-        List<SpaDTO> spaDTOList = spaService.getAllSpaServices();
-        Response response = new Response();
+    public ResponseEntity<Response> getAllSpaServices(@RequestParam("branchId") Long branchId) {
+        Response response = spaService.getAllSpaServices(branchId);
         response.setStatusCode(200);
         response.setMessage("successful");
-        response.setData(spaDTOList);  // Set the list of spa services in the response
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 

@@ -56,12 +56,21 @@ public class SpaService implements ISpaService {
 
 
     @Override
-    public List<SpaDTO> getAllSpaServices() {
-        List<Spa> spaList = spaRepository.findAll();
-        return spaList.stream()
-                .map(Utils::mapSpaEntityToSpaDTO)
-                .collect(Collectors.toList());
+    public Response getAllSpaServices(Long branchId) {
+        Response response = new Response();
+        try {
+            List<Spa> spaList = spaRepository.findByBranchId(branchId);
+            List<SpaDTO> spaDTOList = Utils.mapSpaListEntityToSpaListDTO(spaList);
+            response.setStatusCode(200);
+            response.setMessage("successful");
+            response.setSpaList(spaDTOList);
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error fetching spa services: " + e.getMessage());
+        }
+        return response;
     }
+
 
 
     @Override
