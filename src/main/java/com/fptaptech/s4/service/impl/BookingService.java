@@ -2,18 +2,23 @@ package com.fptaptech.s4.service.impl;
 
 import com.fptaptech.s4.entity.Booking;
 import com.fptaptech.s4.entity.Room;
+import com.fptaptech.s4.entity.User;
 import com.fptaptech.s4.exception.ResourceNotFoundException;
 import com.fptaptech.s4.entity.BookedRoom;
 import com.fptaptech.s4.exception.RoomNotAvailableException;
 import com.fptaptech.s4.repository.BookingRepository;
+import com.fptaptech.s4.repository.RoomRepository;
 import com.fptaptech.s4.repository.UserRepository;
 import com.fptaptech.s4.response.BookingResponseDTO;
 import com.fptaptech.s4.service.interfaces.IBookingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +27,7 @@ public class BookingService implements IBookingService {
     private final BookingRepository bookingRepository;
     private final RoomService roomService;
     private final UserRepository userRepository;
+    private final RoomRepository roomRepository;
 
     @Override
     public BookingResponseDTO createBooking(Booking booking) {
@@ -32,11 +38,6 @@ public class BookingService implements IBookingService {
         // Kiểm tra tình trạng phòng trước khi tạo booking
         if (!roomService.isRoomAvailable(room.getId(), booking.getCheckInDate(), booking.getCheckOutDate())) {
             throw new RoomNotAvailableException("Phòng đã được đặt hoặc đang trong thời gian sử dụng");
-        }
-
-        // Đảm bảo Room có Branch không bị null
-        if (room.getBranch() == null) {
-            throw new ResourceNotFoundException("Branch not found for the given room");
         }
 
         booking.setRoom(room);
@@ -53,6 +54,12 @@ public class BookingService implements IBookingService {
 
         Booking savedBooking = bookingRepository.save(booking);
 
+        // Cập nhật trạng thái phòng sau khi tạo booking
+        room.addBooking(savedBooking);
+        room.setBooked(true);
+        room.updateStatus();
+        roomService.saveRoom(room);
+
         return new BookingResponseDTO(
                 savedBooking.getBookingId(),
                 savedBooking.getUser().getId(),
@@ -68,8 +75,6 @@ public class BookingService implements IBookingService {
         );
     }
 
-
-
     private BigDecimal calculateTotalPrice(Booking booking) {
         Room room = booking.getRoom();
         BigDecimal basePrice = room.getRoomPrice();
@@ -77,11 +82,11 @@ public class BookingService implements IBookingService {
         int children = booking.getChildren();
 
         if (adults > 2) {
-            basePrice = basePrice.add(basePrice.multiply(BigDecimal.valueOf(0.30)));
+            basePrice = basePrice.add(basePrice.multiply(BigDecimal.valueOf(0.0)));
         }
 
         if (children > 0) {
-            basePrice = basePrice.add(basePrice.multiply(BigDecimal.valueOf(0.15)));
+            basePrice = basePrice.add(basePrice.multiply(BigDecimal.valueOf(0.0)));
         }
 
         return basePrice;
@@ -135,6 +140,79 @@ public class BookingService implements IBookingService {
 
     private String generateConfirmCode() {
         // Generate random booking confirmation code
-        return "BOOK" + System.currentTimeMillis();
+        return "BOOK" + System.nanoTime();
+    }
+
+    @Override
+    public List<BookingResponseDTO> getBookingsByUserId(Long userId, Authentication authentication) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        boolean isAdminOrEmployee = authentication.getAuthorities().stream()
+                .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN") || role.getAuthority().equals("ROLE_EMPLOYEE"));
+
+        List<Booking> bookings;
+        if (isAdminOrEmployee) {
+            bookings = bookingRepository.findAll();
+        } else {
+            bookings = bookingRepository.findByUser_Id(userId);
+        }
+
+        return bookings.stream()
+                .map(booking -> new BookingResponseDTO(
+                        booking.getBookingId(),
+                        booking.getUser().getId(),
+                        booking.getRoom().getId(),
+                        booking.getCheckInDate(),
+                        booking.getCheckOutDate(),
+                        booking.getAdults(),
+                        booking.getChildren(),
+                        booking.getTotalPrice(),
+                        booking.getPaymentMethod(),
+                        booking.getConfirmBookingCode(),
+                        booking.getStatus()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void cancelBooking(Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+
+        LocalDate currentDate = LocalDate.now();
+        if (booking.getCheckInDate().minusDays(1).isBefore(currentDate)) {
+            throw new IllegalStateException("Cannot cancel booking less than 1 day before check-in date");
+        }
+
+        BigDecimal cancellationFee;
+        if (booking.getCheckInDate().minusDays(1).isAfter(currentDate)) {
+            cancellationFee = booking.getTotalPrice().multiply(BigDecimal.valueOf(0.50));
+        } else {
+            cancellationFee = booking.getTotalPrice().multiply(BigDecimal.valueOf(1.00));
+        }
+
+        booking.setStatus("Cancelled");
+        bookingRepository.save(booking);
+
+        // Logic để trừ tiền phạt từ tài khoản người dùng hoặc trả lại tiền cọc
+        processCancellationFee(booking, cancellationFee);
+    }
+
+    private void processCancellationFee(Booking booking, BigDecimal cancellationFee) {
+        // Thực hiện logic xử lý tiền phạt khi hủy đặt phòng
+        // Ví dụ: trừ tiền từ tài khoản người dùng hoặc trả lại tiền cọc nếu có
+        // Ở đây chỉ cần in ra thông tin để minh họa
+        User user = booking.getUser();
+        BigDecimal newBalance = user.getAccountBalance().subtract(cancellationFee);
+        if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalStateException("Not enough balance to to cover the cancellation fee");
+        }
+        user.setAccountBalance(newBalance);
+        userRepository.save(user);
+        System.out.println("Cancellation fee for booking ID " + booking.getBookingId() + ": " + cancellationFee);
+        System.out.println("New account balance for user ID: " + user.getId() + ": " + newBalance);
     }
 }
+
+

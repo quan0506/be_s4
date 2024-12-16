@@ -1,15 +1,18 @@
 package com.fptaptech.s4.response;
 
 import com.fptaptech.s4.entity.Room;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class RoomResponse {
     private Long id;
@@ -18,6 +21,8 @@ public class RoomResponse {
     private boolean isBooked;
     private List<String> photos;
     private String description;
+    private String status;
+
     private Long branchId;
     private List<BookingResponse> bookings;
 
@@ -41,6 +46,7 @@ public class RoomResponse {
         this.roomPrice = room.getRoomPrice();
         this.photos = room.getPhotos();
         this.description = room.getDescription();
+        this.status = room.getStatus();
         this.isBooked = room.isBooked();
         this.branchId = room.getBranch()!=null? room.getBranch().getId() : null;
         this.bookings = room.getBookings().stream()

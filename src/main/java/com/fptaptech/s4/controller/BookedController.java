@@ -6,7 +6,7 @@ import com.fptaptech.s4.exception.InvalidBookingRequestException;
 import com.fptaptech.s4.exception.ResourceNotFoundException;
 import com.fptaptech.s4.response.BookingResponse;
 import com.fptaptech.s4.response.RoomResponse;
-import com.fptaptech.s4.service.interfaces.IBookedService;
+import com.fptaptech.s4.service.impl.BookedService;
 import com.fptaptech.s4.service.interfaces.IRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/booked")
 public class BookedController {
-    private final IBookedService bookedService;
+    private final BookedService bookedService;
     private final IRoomService roomService;
 
     @PostMapping("/create/{roomId}")

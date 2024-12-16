@@ -46,7 +46,7 @@ public class Booking {
     @Column(name = "payment_method", nullable = false)
     private String paymentMethod;
 
-    @Column(name = "confirm_booking_code", nullable = false, unique = true)
+    @Column(name = "confirm_booking_code", nullable = false, unique = true,length = 4)
     private String confirmBookingCode;
 
     @Column(name = "status", nullable = false)

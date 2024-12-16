@@ -11,6 +11,7 @@ import org.hibernate.annotations.NaturalId;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -43,6 +44,9 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String phone;
+
+    @Column(nullable = false)
+    private BigDecimal accountBalance;
 
     private boolean enabled =false;
     @ManyToMany(fetch = FetchType.EAGER,

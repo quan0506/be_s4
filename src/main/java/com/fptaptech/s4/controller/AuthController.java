@@ -3,11 +3,13 @@ package com.fptaptech.s4.controller;
 import com.fptaptech.s4.dto.ResetPasswordDTO;
 import com.fptaptech.s4.exception.UserAlreadyExistsException;
 import com.fptaptech.s4.entity.User;
+import com.fptaptech.s4.repository.TokenRepository;
 import com.fptaptech.s4.request.LoginRequest;
 import com.fptaptech.s4.response.JwtResponse;
 import com.fptaptech.s4.security.jwt.JwtUtils;
 import com.fptaptech.s4.security.user.HotelUserDetails;
 import com.fptaptech.s4.service.impl.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,26 +32,22 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private final UserService userService;
+    private final TokenRepository tokenRepository;
+
     @PostMapping("/register-user")
-    public ResponseEntity<?> registerUser( @Valid @RequestBody User user, @RequestParam String role){
-        try{
+    public ResponseEntity<?> registerUser(@Valid @RequestBody User user, @RequestParam String role) {
+        try {
             userService.registerUser(user, role);
             return ResponseEntity.ok("Registration successful!");
-        }catch (UserAlreadyExistsException e){
+        } catch (UserAlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
 
-    /*@GetMapping("/confirm-account")
-    public ResponseEntity<?> confirmAccount(@RequestParam("token") String confirmationToken){
-        return userService.confirmEmail(confirmationToken);
-    }*/
-
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest request){
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest request) {
         Authentication authentication =
-                authenticationManager
-                        .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtTokenForUser(authentication);
         HotelUserDetails userDetails = (HotelUserDetails) authentication.getPrincipal();
@@ -74,7 +72,7 @@ public class AuthController {
     }
 
     @PostMapping("/reset-password")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_EMPLOYEE')")
     public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordDTO resetPasswordDTO, Principal principal) {
         try {
             userService.resetPassword(principal.getName(), resetPasswordDTO);
@@ -84,4 +82,23 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/logout")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_EMPLOYEE')")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        String jwt = parseJwt(request);
+        if (jwt != null) {
+            tokenRepository.revokeToken(jwt);
+        }
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok("Logout successful");
+    }
+
+    private String parseJwt(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
 }
+

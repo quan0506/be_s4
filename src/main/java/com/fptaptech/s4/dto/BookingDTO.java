@@ -12,8 +12,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class BookingDTO {
     private Long bookingId;
-    private String userName;        // Tên người dùng (lấy từ User)
-    private String roomName;        // Tên phòng (lấy từ Room)
+    private String userName;
+    private String roomName;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
     private int adults;

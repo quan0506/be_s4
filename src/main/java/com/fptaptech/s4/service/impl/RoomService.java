@@ -72,29 +72,40 @@ public class RoomService implements IRoomService {
     }
 
     @Override
-    public List<String> getAllRoomTypes() {
-        return roomRepository.findDistinctRoomTypes();
+    public List<Room> getAllRooms() {
+        List<Room> rooms = roomRepository.findAll();
+        rooms.forEach(Room::updateStatus);  // Cập nhật trạng thái phòng
+        return rooms;
     }
 
     @Override
-    public List<Room> getAllRooms() {
-        return roomRepository.findAll();
+    public Optional<Room> getRoomById(Long roomId) {
+        Optional<Room> room = roomRepository.findById(roomId);
+        room.ifPresent(Room::updateStatus);  // Cập nhật trạng thái phòng
+        return room;
     }
 
     @Override
     public List<Room> getRoomsByBranch(Long branchId) {
-        return roomRepository.findByBranch_Id(branchId);
+        List<Room> rooms = roomRepository.findByBranch_Id(branchId);
+        rooms.forEach(Room::updateStatus);  // Cập nhật trạng thái phòng
+        return rooms;
     }
 
     @Override
     public List<Room> getRoomsByTypeAndBranch(String roomType, Long branchId) {
-        return roomRepository.findByRoomTypeAndBranch_Id(roomType, branchId);
+        List<Room> rooms = roomRepository.findByRoomTypeAndBranch_Id(roomType, branchId);
+        rooms.forEach(Room::updateStatus);  // Cập nhật trạng thái phòng
+        return rooms;
     }
 
     @Override
     public List<Room> getRoomsByPriceAndBranch(BigDecimal roomPrice, Long branchId) {
-        return roomRepository.findByRoomPriceAndBranch_Id(roomPrice, branchId);
+        List<Room> rooms = roomRepository.findByRoomPriceAndBranch_Id(roomPrice, branchId);
+        rooms.forEach(Room::updateStatus);  // Cập nhật trạng thái phòng
+        return rooms;
     }
+
 
     @Override
     public byte[] getRoomPhotoByRoomId(Long roomId) {
@@ -107,20 +118,20 @@ public class RoomService implements IRoomService {
         return new byte[0]; // Placeholder
     }
 
+
+
+    @Override
+    public boolean isRoomAvailable(Long roomId, LocalDate checkInDate, LocalDate checkOutDate) {
+        List<Booking> bookings =  roomRepository.findBookingsByRoomIdAndDateRange(roomId, checkInDate, checkOutDate);
+        return bookings.isEmpty();
+    }
+
     @Override
     public void deleteRoom(Long roomId) {
         Optional<Room> theRoom = roomRepository.findById(roomId);
         theRoom.ifPresent(room -> roomRepository.deleteById(roomId));
     }
 
-    @Override
-    public Optional<Room> getRoomById(Long roomId) {
-        return roomRepository.findById(roomId);
-    }
-
-    @Override
-    public boolean isRoomAvailable(Long roomId, LocalDate checkInDate, LocalDate checkOutDate) {
-        List<Booking> bookings =  roomRepository.findBookingsByRoomIdAndDateRange(roomId, checkInDate, checkOutDate);
-        return bookings.isEmpty();
+    public void saveRoom(Room room) { roomRepository.save(room);
     }
 }

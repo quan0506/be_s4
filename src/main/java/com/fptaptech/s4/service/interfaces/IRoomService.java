@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface IRoomService {
     Room addNewRoom(List<MultipartFile> photos, String roomType, BigDecimal roomPrice, Long branchId, String description) throws IOException;
-    List<String> getAllRoomTypes();
+
     List<Room> getAllRooms();
     List<Room> getRoomsByBranch(Long branchId);
     List<Room> getRoomsByTypeAndBranch(String roomType, Long branchId);

@@ -38,7 +38,7 @@ public class BookingResponse {
     @Column(nullable = false)
     private int totalNumOfGuests;
 
-    @Column(nullable = false)
+    @Column(nullable = false,length = 4,unique = true)
     private String bookingConfirmationCode;
 
     @Column(nullable = false)
@@ -63,6 +63,17 @@ public class BookingResponse {
         this.totalNumOfGuests = bookedRoom.getTotalNumOfGuest();
         this.bookingConfirmationCode = bookedRoom.getBookingConfirmationCode();
     }
-}
 
+    public BookingResponse(Booking booking) {
+        this.id = booking.getBookingId();
+        this.checkInDate = booking.getCheckInDate();
+        this.checkOutDate=booking.getCheckOutDate();
+        this.guestName=booking.getUser().getFirstName();
+        this.guestEmail=booking.getUser().getEmail();
+        this.numOfAdults = booking.getAdults();
+        this.numOfChildren = booking.getChildren();
+        this.totalNumOfGuests = booking.getAdults() + booking.getChildren();
+        this.bookingConfirmationCode = booking.getConfirmBookingCode();
+    }
+}
 
