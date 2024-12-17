@@ -62,7 +62,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/spas/all","/spas/spa-by-id/{spaId}","/spas//spa-by-name","/spas/all").permitAll()
                         .requestMatchers("/restaurants/all","/restaurants/restaurant-by-id/{restaurantId}","/restaurants/types").permitAll()
                         .requestMatchers("/reviews/branch/{branchId}","reviews/room/{roomId}").permitAll()
-                        .requestMatchers("/auth/**", "/rooms/**", "/booked/**", "/bookings/**","/shuttles/**","/spas/**","/restaurants/**").permitAll()
+                        .requestMatchers("/auth/**", "/rooms/**", "/booked/**", "/bookings/**","/shuttles/**","/spas/**","/restaurants/**","/auth/reset-password").permitAll()
                         .requestMatchers("/admin/hotels/all", "/admin/hotels/{id}").permitAll()  // Public cho Hotel
                         .requestMatchers("/roles/**").hasRole("ADMIN")  // Chỉ ADMIN
                         .anyRequest().authenticated());  // Các API còn lại yêu cầu xác thực

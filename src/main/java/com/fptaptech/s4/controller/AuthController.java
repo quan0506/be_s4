@@ -100,5 +100,30 @@ public class AuthController {
         }
         return null;
     }
+
+    @PostMapping("/send-forgot-password-code")
+    public ResponseEntity<?> sendForgotPasswordCode(@RequestParam String email) {
+        try {
+            userService.sendForgotPasswordCode(email);
+            return ResponseEntity.ok("Verification code sent successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error sending verification code: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/reset-password-no-auth")
+    public ResponseEntity<?> resetPasswordNoAuth(@Valid @RequestBody ResetPasswordDTO resetPasswordDTO) {
+        try {
+            userService.resetPasswordNoAuth(resetPasswordDTO);
+            return ResponseEntity.ok("Password reset successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error resetting password: " + e.getMessage());
+        }
+    }
+
 }
+
+
+
+
 

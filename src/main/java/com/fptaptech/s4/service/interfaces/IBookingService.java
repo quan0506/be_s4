@@ -18,8 +18,8 @@ public interface IBookingService {
     List<Booking> getAllBookings();
     void processPayment(Long bookingId, String paymentMethod);
     List<BookedRoom> getAllBookingsByRoomId(Long roomId);
-
-    void cancelBooking(Long bookingId);
+/*
+    void cancelBooking(Long bookingId);*/
 }
 
 

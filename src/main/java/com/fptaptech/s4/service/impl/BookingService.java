@@ -170,7 +170,7 @@ public class BookingService implements IBookingService {
                 .collect(Collectors.toList());
     }
 
-    @Override
+    /*@Override
     public void cancelBooking(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
@@ -207,7 +207,7 @@ public class BookingService implements IBookingService {
         userRepository.save(user);
         System.out.println("Cancellation fee for booking ID " + booking.getBookingId() + ": " + cancellationFee);
         System.out.println("New account balance for user ID: " + user.getId() + ": " + newBalance);
-    }
+    }*/
 }
 
 
