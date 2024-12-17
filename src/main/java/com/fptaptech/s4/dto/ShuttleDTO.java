@@ -14,7 +14,11 @@ public class ShuttleDTO {
     private BigDecimal carPrice;
     private List<String> photos;
     private String carDescription;
+
     private Long branchId;
     private String branchName;
+    private String branchAddress;
+
+
     private List<ShuttleBookingDTO> shuttleBookings;
 }

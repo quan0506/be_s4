@@ -2,18 +2,19 @@ package com.fptaptech.s4.service.impl;
 
 
 import com.fptaptech.s4.config.VNPayConfig;
+import com.fptaptech.s4.entity.Booking;
+import com.fptaptech.s4.repository.BookingRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-
 @Service
 public class VNPayService {
-
     public String createOrder(int total, String orderInfor, String urlReturn){
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
@@ -26,17 +27,18 @@ public class VNPayService {
         vnp_Params.put("vnp_Version", vnp_Version);
         vnp_Params.put("vnp_Command", vnp_Command);
         vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
-        vnp_Params.put("vnp_Amount", String.valueOf(total * 100));
+        vnp_Params.put("vnp_Amount", String.valueOf(total * 100));  // VNPay expects amounts in cents
         vnp_Params.put("vnp_CurrCode", "VND");
 
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
-        vnp_Params.put("vnp_OrderInfo", orderInfor);
+        vnp_Params.put("vnp_OrderInfo", orderInfor);  // This can be bookingId + other info
         vnp_Params.put("vnp_OrderType", orderType);
 
         String locate = "vn";
         vnp_Params.put("vnp_Locale", locate);
 
-        urlReturn += VNPayConfig.vnp_Returnurl;
+//        urlReturn += VNPayConfig.vnp_Returnurl;
+        urlReturn = VNPayConfig.vnp_Returnurl;
         vnp_Params.put("vnp_ReturnUrl", urlReturn);
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
@@ -93,12 +95,13 @@ public class VNPayService {
         String signValue = VNPayConfig.hashAllFields(fields);
         if (signValue.equals(vnp_SecureHash)) {
             if ("00".equals(request.getParameter("vnp_TransactionStatus"))) {
-                return 1;
+                return 1;  // Success
             } else {
-                return 0;
+                return 0;  // Failed
             }
         } else {
-            return -1;
+            return -1;  // Invalid signature
         }
     }
 }
+

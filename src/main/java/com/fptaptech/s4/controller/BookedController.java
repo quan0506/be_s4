@@ -25,7 +25,7 @@ public class BookedController {
     private final IRoomService roomService;
 
     @PostMapping("/create/{roomId}")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') ")
     public ResponseEntity<String> createBooking(@PathVariable Long roomId, @RequestBody BookedRoom bookingRequest) {
         String confirmationCode = bookedService.saveBooking(roomId, bookingRequest);
         return ResponseEntity.ok("Booking created with confirmation code: " + confirmationCode);

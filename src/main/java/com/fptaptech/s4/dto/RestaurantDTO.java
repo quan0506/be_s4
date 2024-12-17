@@ -16,6 +16,8 @@ public class RestaurantDTO {
     private BigDecimal restaurantChildrenPrice;
     private List<String> photos;
     private String restaurantDescription;
+
     private Long branchId;
     private String branchName;
+    private String branchAddress;
 }

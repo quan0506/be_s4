@@ -7,16 +7,15 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "Payment")
 public class Payment {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long paymentID;
+    private Long paymentID;  // Use camelCase
 
     @Column(nullable = false)
     private Long bookingID;
 
     @Column(nullable = false)
-    private Long paymentMethodID;
+    private Long paymentMethodID;  // method : "PayPal", "VNPay", "Offline"
 
     @Column(nullable = false)
     private LocalDateTime paymentDate = LocalDateTime.now();
@@ -25,10 +24,10 @@ public class Payment {
     private BigDecimal amount;
 
     @Column(length = 50)
-    private String paymentStatus = "Pending";  // Pending, Approved, Failed, ...
+    private String paymentStatus = "Pending";  // Pending, Approved, Failed, etc.
 
     @Column(length = 100)
-    private String transactionCode;
+    private String transactionCode;  // This will be the PayPal paymentId
 
     @Column(name = "Currency", length = 10, nullable = false)
     private String currency;
