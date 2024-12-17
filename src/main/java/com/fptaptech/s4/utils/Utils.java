@@ -51,6 +51,7 @@ public class Utils {
         shuttleDTO.setCarDescription(shuttle.getCarDescription());
         shuttleDTO.setBranchId(shuttle.getBranch().getId());
         shuttleDTO.setBranchName(shuttle.getBranch().getBranchName());
+        shuttleDTO.setBranchAddress(shuttle.getBranch().getAddress());
         return shuttleDTO;
     }
 
@@ -124,6 +125,7 @@ public class Utils {
         spaDTO.setSpaDescription(spa.getSpaDescription());
         spaDTO.setBranchId(spa.getBranch().getId());
         spaDTO.setBranchName(spa.getBranch().getBranchName());
+        spaDTO.setBranchAddress(spa.getBranch().getAddress());
         return spaDTO;
     }
     public static List<SpaDTO> mapSpaListEntityToSpaListDTO(List<Spa> spaList) { return spaList.stream().map(Utils::mapSpaEntityToSpaDTO).collect(Collectors.toList()); }
@@ -163,6 +165,7 @@ public class Utils {
         restaurantDTO.setRestaurantDescription(restaurant.getRestaurantDescription());
         restaurantDTO.setBranchId(restaurant.getBranch().getId());
         restaurantDTO.setBranchName(restaurant.getBranch().getBranchName());
+        restaurantDTO.setBranchAddress(restaurant.getBranch().getAddress());
         return restaurantDTO;
     }
 

@@ -18,4 +18,5 @@ public class RestaurantDTO {
     private String restaurantDescription;
     private Long branchId;
     private String branchName;
+    private String branchAddress;
 }
