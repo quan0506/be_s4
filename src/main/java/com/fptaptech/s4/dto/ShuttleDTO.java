@@ -18,10 +18,6 @@ public class ShuttleDTO {
     private Long branchId;
     private String branchName;
     private String branchAddress;
-<<<<<<< HEAD
 
-
-=======
->>>>>>> e8b5063760eacc32b9abc1bd030145adcafc8060
     private List<ShuttleBookingDTO> shuttleBookings;
 }
