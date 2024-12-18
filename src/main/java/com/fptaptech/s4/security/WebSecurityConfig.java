@@ -54,6 +54,7 @@ public class WebSecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+<<<<<<< HEAD
 //                        .requestMatchers("/auth/register-user", "/auth/login").permitAll()  // Public API cho auth
 //                        .requestMatchers("/api/user/update").authenticated() // Yêu cầu đăng nhập cho endpoint cập nhật
 //                        .requestMatchers("/api/user/**").authenticated()
@@ -67,6 +68,19 @@ public class WebSecurityConfig {
 //                        .requestMatchers("/admin/hotels/all", "/admin/hotels/{id}").permitAll()  // Public cho Hotel
 //                        .requestMatchers("/roles/**").hasRole("ADMIN")  // Chỉ ADMIN
                         .requestMatchers("/**").permitAll()
+=======
+                        .requestMatchers("/auth/register-user", "/auth/login").permitAll()  // Public API cho auth
+                        .requestMatchers("/api/user/update").authenticated() // Yêu cầu đăng nhập cho endpoint cập nhật
+                        .requestMatchers("/api/user/**").authenticated()
+                        .requestMatchers("/admin/branches/all", "/admin/branches/{id}", "/admin/branches/hotel/**").permitAll()  // Public cho Branch
+                        .requestMatchers("/shuttles/all","/shuttles/types","/shuttles/car-by-id/{carId}","/shuttles/all","/shuttles/all-available-cars","/shuttles/all","/shuttles/available-cars-by-date-and-type").permitAll()
+                        .requestMatchers("/spas/all","/spas/spa-by-id/{spaId}","/spas//spa-by-name","/spas/all").permitAll()
+                        .requestMatchers("/restaurants/all","/restaurants/restaurant-by-id/{restaurantId}","/restaurants/types").permitAll()
+                        .requestMatchers("/reviews/branch/{branchId}","reviews/room/{roomId}").permitAll()
+                        .requestMatchers("/auth/**", "/rooms/**", "/booked/**", "/bookings/**","/shuttles/**","/spas/**","/restaurants/**","/auth/reset-password").permitAll()
+                        .requestMatchers("/admin/hotels/all", "/admin/hotels/{id}").permitAll()  // Public cho Hotel
+                        .requestMatchers("/roles/**").hasRole("ADMIN")  // Chỉ ADMIN
+>>>>>>> e8b5063760eacc32b9abc1bd030145adcafc8060
                         .anyRequest().authenticated());  // Các API còn lại yêu cầu xác thực
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authenticationTokenFilter(),

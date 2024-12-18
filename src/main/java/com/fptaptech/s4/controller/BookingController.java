@@ -58,12 +58,12 @@ public class BookingController {
         return ResponseEntity.ok(bookings);
     }
 
-    @PostMapping("/cancel/{id}")
+    /*@PostMapping("/cancel/{id}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_EMPLOYEE')")
     public ResponseEntity<String> cancelBooking(@PathVariable Long id) {
         bookingService.cancelBooking(id);
         return ResponseEntity.ok("Booking cancelled successfully.");
-    }
+    }*/
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('ROLE_ADMIN')")

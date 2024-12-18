@@ -27,7 +27,6 @@ public class BookingService implements IBookingService {
     private final BookingRepository bookingRepository;
     private final RoomService roomService;
     private final UserRepository userRepository;
-    private final RoomRepository roomRepository;
 
     @Override
     public BookingResponseDTO createBooking(Booking booking) {
@@ -69,7 +68,6 @@ public class BookingService implements IBookingService {
                 savedBooking.getAdults(),
                 savedBooking.getChildren(),
                 savedBooking.getTotalPrice(),
-                savedBooking.getPaymentMethod(),
                 savedBooking.getConfirmBookingCode(),
                 savedBooking.getStatus()
         );
@@ -100,7 +98,6 @@ public class BookingService implements IBookingService {
         existingBooking.setCheckOutDate(booking.getCheckOutDate());
         existingBooking.setAdults(booking.getAdults());
         existingBooking.setChildren(booking.getChildren());
-        existingBooking.setPaymentMethod(booking.getPaymentMethod());
         existingBooking.setStatus(booking.getStatus());
         return bookingRepository.save(existingBooking);
     }
@@ -128,7 +125,6 @@ public class BookingService implements IBookingService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
         // Xử lý thanh toán theo phương thức (Online/Offline)
-        booking.setPaymentMethod(paymentMethod);
         booking.setStatus("Confirmed");
         bookingRepository.save(booking);
     }
@@ -168,14 +164,13 @@ public class BookingService implements IBookingService {
                         booking.getAdults(),
                         booking.getChildren(),
                         booking.getTotalPrice(),
-                        booking.getPaymentMethod(),
                         booking.getConfirmBookingCode(),
                         booking.getStatus()
                 ))
                 .collect(Collectors.toList());
     }
 
-    @Override
+    /*@Override
     public void cancelBooking(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
@@ -212,7 +207,7 @@ public class BookingService implements IBookingService {
         userRepository.save(user);
         System.out.println("Cancellation fee for booking ID " + booking.getBookingId() + ": " + cancellationFee);
         System.out.println("New account balance for user ID: " + user.getId() + ": " + newBalance);
-    }
+    }*/
 }
 
 

@@ -16,9 +16,8 @@ public class SpaBookingDTO {
     private int numberOfPeople;
     private String fullName;
     private String description;
-    private String spaServiceName;
-    private BigDecimal spaServicePrice;
-    private String spaDescription;
+
+
     private String userEmail;
 
     private UserDTO user;

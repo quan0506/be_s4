@@ -19,8 +19,14 @@ public interface IUserService {
 
     UserDTO getCurrentUser(Authentication authentication);
 
+    void sendVerificationCode(String email);
+
     void resetPassword(String email, ResetPasswordDTO resetPasswordDTO);
+
+    void resetPasswordNoAuth(ResetPasswordDTO resetPasswordDTO);
 
     @Transactional
     void updateUser(UserUpdateDTO userUpdateDTO, String email);
+
+    void sendForgotPasswordCode(String email);
 }

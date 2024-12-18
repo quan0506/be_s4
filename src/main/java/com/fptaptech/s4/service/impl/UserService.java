@@ -14,6 +14,7 @@ import com.fptaptech.s4.repository.VerificationCodeRepository;
 import com.fptaptech.s4.service.interfaces.IUserService;
 import com.fptaptech.s4.utils.Utils;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,6 +25,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 @RequiredArgsConstructor
 public class UserService implements IUserService {
@@ -33,6 +37,7 @@ public class UserService implements IUserService {
     private final EmailService emailService;
     private final VerificationCodeRepository verificationCodeRepository;
 
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
         @Override
         public UserDTO findById(Long userId) {
             User user = userRepository.findById(userId).orElseThrow(() -> new OurException("User Not Found"));
@@ -127,6 +132,7 @@ public class UserService implements IUserService {
                     .orElseThrow(() -> new OurException("User Not Found"));
             return Utils.mapUserEntityToUserDTO(user); }
 
+    @Override
     public void sendVerificationCode(String email) {
         String code = generateVerificationCode();
         VerificationCode verificationCode = new VerificationCode();
@@ -135,30 +141,133 @@ public class UserService implements IUserService {
         verificationCode.setExpiryDate(LocalDateTime.now().plusMinutes(10));
         verificationCodeRepository.save(verificationCode);
         emailService.sendSimpleMessage(email, "Your verification code", "Your code is: " + code);
+        logger.info("Verification code sent to email: {}", email);
     }
 
     @Transactional
     public void resetPassword(String email, ResetPasswordDTO resetPasswordDTO) {
-        // Lấy code từ resetPasswordDTO
-        String code = resetPasswordDTO.getCode();
+        try {
+            logger.info("Starting password reset process for email: {}", email);
 
-        VerificationCode verificationCode = verificationCodeRepository.findByEmailAndCode(email, code)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid or expired verification code"));
+            // Lấy code từ resetPasswordDTO
+            String code = resetPasswordDTO.getCode();
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            // Tìm mã xác thực
+            VerificationCode verificationCode = verificationCodeRepository.findByEmailAndCode(email, code)
+                    .orElseThrow(() -> {
+                        logger.error("Invalid or expired verification code for email: {}", email);
+                        return new IllegalArgumentException("Invalid or expired verification code");
+                    });
 
-        if (!resetPasswordDTO.getNewPassword().equals(resetPasswordDTO.getConfirmNewPassword())) {
-            throw new IllegalArgumentException("New passwords do not match");
+            // Kiểm tra xem mã xác thực đã hết hạn chưa
+            if (verificationCode.getExpiryDate().isBefore(LocalDateTime.now())) {
+                logger.error("Verification code expired for email: {}", email);
+                throw new IllegalArgumentException("Verification code expired");
+            }
+
+            // Tìm người dùng
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> {
+                        logger.error("User not found for email: {}", email);
+                        return new UsernameNotFoundException("User not found");
+                    });
+
+            // Kiểm tra xem mật khẩu mới có khớp nhau không
+            if (!resetPasswordDTO.getNewPassword().equals(resetPasswordDTO.getConfirmNewPassword())) {
+                logger.error("New passwords do not match for email: {}", email);
+                throw new IllegalArgumentException("New passwords do not match");
+            }
+
+            // Cập nhật mật khẩu mới cho người dùng
+            user.setPassword(passwordEncoder.encode(resetPasswordDTO.getNewPassword()));
+            userRepository.save(user);
+
+            // Xóa mã xác thực sau khi sử dụng
+            verificationCodeRepository.delete(verificationCode);
+
+            logger.info("Password reset successfully for email: {}", email);
+        } catch (Exception e) {
+            logger.error("Error during password reset for email: {}", email, e);
+            throw e;
         }
+    }
 
-        user.setPassword(passwordEncoder.encode(resetPasswordDTO.getNewPassword()));
-        userRepository.save(user);
-        verificationCodeRepository.delete(verificationCode);
+    @Transactional
+    public void resetPasswordNoAuth(ResetPasswordDTO resetPasswordDTO) {
+        try {
+            String email = resetPasswordDTO.getEmail();
+            logger.info("Starting password reset process for email: {}", email);
+
+            // Lấy code từ resetPasswordDTO
+            String code = resetPasswordDTO.getCode();
+
+            // Tìm mã xác thực
+            VerificationCode verificationCode = verificationCodeRepository.findByEmailAndCode(email, code)
+                    .orElseThrow(() -> {
+                        logger.error("Invalid or expired verification code for email: {}", email);
+                        return new IllegalArgumentException("Invalid or expired verification code");
+                    });
+
+            // Kiểm tra xem mã xác thực đã hết hạn chưa
+            if (verificationCode.getExpiryDate().isBefore(LocalDateTime.now())) {
+                logger.error("Verification code expired for email: {}", email);
+                throw new IllegalArgumentException("Verification code expired");
+            }
+
+            // Tìm người dùng
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> {
+                        logger.error("User not found for email: {}", email);
+                        return new UsernameNotFoundException("User not found");
+                    });
+
+            // Kiểm tra xem mật khẩu mới có khớp nhau không
+            if (!resetPasswordDTO.getNewPassword().equals(resetPasswordDTO.getConfirmNewPassword())) {
+                logger.error("New passwords do not match for email: {}", email);
+                throw new IllegalArgumentException("New passwords do not match");
+            }
+
+            // Cập nhật mật khẩu mới cho người dùng
+            user.setPassword(passwordEncoder.encode(resetPasswordDTO.getNewPassword()));
+            userRepository.save(user);
+
+            // Xóa mã xác thực sau khi sử dụng
+            verificationCodeRepository.delete(verificationCode);
+
+            logger.info("Password reset successfully for email: {}", email);
+        } catch (Exception e) {
+            logger.error("Error during password reset for email: {}", resetPasswordDTO.getEmail(), e);
+            throw e;
+        }
+    }
+
+
+    @Override
+    public void sendForgotPasswordCode(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+        String code = generateVerificationCode();
+        VerificationCode verificationCode = new VerificationCode();
+        verificationCode.setEmail(email);
+        verificationCode.setCode(code);
+        verificationCode.setExpiryDate(LocalDateTime.now().plusMinutes(10));  // Mã hết hạn sau 10 phút
+        verificationCodeRepository.save(verificationCode);
+        emailService.sendSimpleMessage(email, "Your verification code", "Your code is: " + code);
+        logger.info("Verification code sent to email: {}", email);
     }
 
     private String generateVerificationCode() {
         return UUID.randomUUID().toString().substring(0, 6);
     }
+
 }
+
+
+
+
+
+
+
+
 

@@ -45,9 +45,6 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String phone;
 
-    @Column(nullable = false)
-    private BigDecimal accountBalance;
-
     private boolean enabled =false;
     @ManyToMany(fetch = FetchType.EAGER,
             cascade = {CascadeType.PERSIST,

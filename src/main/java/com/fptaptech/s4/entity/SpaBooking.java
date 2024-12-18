@@ -1,6 +1,7 @@
 package com.fptaptech.s4.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -16,6 +17,8 @@ public class SpaBooking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    @Future(message = "Appointment time must be in the future")
     @NotNull(message = "Appointment time is required")
     private LocalDateTime appointmentTime; // Combination of date and time
 
@@ -24,9 +27,7 @@ public class SpaBooking {
     private int numberOfPeople;
     private String fullName;
     private String description;
-    private String spaServiceName;
-    private BigDecimal spaServicePrice;
-    private String spaDescription;
+
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
@@ -35,6 +36,7 @@ public class SpaBooking {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "spa_id")
     private Spa spa;
+
 
     @Override
     public String toString() {
@@ -46,9 +48,6 @@ public class SpaBooking {
                 ", numberOfPeople=" + numberOfPeople +
                 ", fullName='" + fullName + '\'' +
                 ", description='" + description + '\'' +
-                ", spaServiceName='" + spaServiceName + '\'' +
-                ", spaServicePrice=" + spaServicePrice +
-                ", spaDescription='" + spaDescription + '\'' +
                 ", user=" + user +
                 ", spa=" + spa +
                 '}';
