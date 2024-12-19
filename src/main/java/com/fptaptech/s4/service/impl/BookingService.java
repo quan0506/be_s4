@@ -169,9 +169,10 @@ public class BookingService implements IBookingService {
                         booking.getConfirmBookingCode(),
                         booking.getStatus(),
                         booking.getUser().getEmail(),
+                        booking.getUser().getPhone(),
                         booking.getUser().getFirstName(),
-                        booking.getUser().getLastName(),
-                        booking.getUser().getPhone()
+                        booking.getUser().getLastName()
+
                 ))
                 .collect(Collectors.toList());
     }
