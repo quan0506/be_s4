@@ -78,5 +78,9 @@ public class Room {
     public Long getBranchId() {
         return branch.getId();
     }
+
+    public String getBranchName() {
+        return branch.getBranchName();
+    }
 }
 

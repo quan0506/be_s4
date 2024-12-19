@@ -22,12 +22,39 @@ public class BookingResponseDTO {
     private BigDecimal totalPrice;
     private String confirmBookingCode;
     private String status;
+    private String branchName;
+    private String email;
+    private String firstName;
+    private String lastName;
+    private String phone;
 
     // Constructors, Getters and Setters
-    public BookingResponseDTO(Long bookingId, Long userId, Long roomId, LocalDate checkInDate, LocalDate checkOutDate, int adults, int children, BigDecimal totalPrice, String confirmBookingCode, String status) {
+    public BookingResponseDTO(Long bookingId, Long userId, Long roomId, String branchName
+            ,LocalDate checkInDate, LocalDate checkOutDate, int adults, int children,
+                              BigDecimal totalPrice, String confirmBookingCode,
+                              String status, String email, String phone,String firstName, String lastName) {
         this.bookingId = bookingId;
         this.userId = userId;
         this.roomId = roomId;
+        this. branchName= branchName;
+        this.checkInDate = checkInDate.toString();
+        this.checkOutDate = checkOutDate.toString();
+        this.adults = adults;
+        this.children = children;
+        this.totalPrice = totalPrice;
+        this.confirmBookingCode = confirmBookingCode;
+        this.status = status;
+        this.email = email;
+        this.phone = phone;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public BookingResponseDTO(Long bookingId, Long userId, Long roomId, String branchName, LocalDate checkInDate, LocalDate checkOutDate, int adults, int children, BigDecimal totalPrice, String confirmBookingCode, String status) {
+        this.bookingId = bookingId;
+        this.userId = userId;
+        this.roomId = roomId;
+        this.branchName = branchName;
         this.checkInDate = checkInDate.toString();
         this.checkOutDate = checkOutDate.toString();
         this.adults = adults;

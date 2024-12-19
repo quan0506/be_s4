@@ -11,10 +11,5 @@ import java.util.Optional;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
-//    @Query(
-//            value = "SELECT c from Booking c inner join User u on c.userId = u.id " +
-//                    "where c.userId =: userId "
-//    )
-    Optional<Booking> findBookingByUserId(Long userId);
     List<Booking> findByUser_Id(Long userId);
 }

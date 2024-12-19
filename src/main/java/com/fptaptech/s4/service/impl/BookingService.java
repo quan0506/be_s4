@@ -63,6 +63,7 @@ public class BookingService implements IBookingService {
                 savedBooking.getBookingId(),
                 savedBooking.getUser().getId(),
                 savedBooking.getRoom().getId(),
+                booking.getRoom().getBranchName(),
                 savedBooking.getCheckInDate(),
                 savedBooking.getCheckOutDate(),
                 savedBooking.getAdults(),
@@ -159,13 +160,18 @@ public class BookingService implements IBookingService {
                         booking.getBookingId(),
                         booking.getUser().getId(),
                         booking.getRoom().getId(),
+                        booking.getRoom().getBranchName(),
                         booking.getCheckInDate(),
                         booking.getCheckOutDate(),
                         booking.getAdults(),
                         booking.getChildren(),
                         booking.getTotalPrice(),
                         booking.getConfirmBookingCode(),
-                        booking.getStatus()
+                        booking.getStatus(),
+                        booking.getUser().getEmail(),
+                        booking.getUser().getFirstName(),
+                        booking.getUser().getLastName(),
+                        booking.getUser().getPhone()
                 ))
                 .collect(Collectors.toList());
     }
