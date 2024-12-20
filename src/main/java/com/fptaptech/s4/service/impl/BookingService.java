@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -136,9 +138,12 @@ public class BookingService implements IBookingService {
     }
 
     private String generateConfirmCode() {
-        // Generate random booking confirmation code
-        return "BOOK" + System.nanoTime();
+        // Generate a random 5-digit number
+        Random random = new Random();
+        int number = random.nextInt(90000) + 10000; // Generates a number between 10000 and 99999
+        return String.valueOf(number);
     }
+
 
     @Override
     public List<BookingResponseDTO> getBookingsByUserId(Long userId, Authentication authentication) {

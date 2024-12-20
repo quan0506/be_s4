@@ -43,8 +43,7 @@ public class Booking {
     @Column(name = "total_price", nullable = false)
     private BigDecimal totalPrice;
 
-    @Column(name = "confirm_booking_code", nullable = false, unique = true,length = 4)
-    @SequenceGenerator(name = "confirmBookingCode", allocationSize = 4)
+    @Column(name = "confirm_booking_code", nullable = false, unique = true, length = 5)
     private String confirmBookingCode;
 
     @Column(name = "status", nullable = false)
