@@ -10,7 +10,7 @@ public class BookingMapper {
         dto.setBookingId(booking.getBookingId());
         dto.setUserName(booking.getUser().getFirstName());
         dto.setUserName(booking.getUser().getLastName());
-        dto.setRoomName(booking.getRoom().getRoomType());
+        dto.setRoomType(booking.getRoom().getRoomType());
         dto.setCheckInDate(booking.getCheckInDate());
         dto.setCheckOutDate(booking.getCheckOutDate());
         dto.setAdults(booking.getAdults());

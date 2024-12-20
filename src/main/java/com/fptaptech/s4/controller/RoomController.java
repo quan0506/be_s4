@@ -42,7 +42,7 @@ public class RoomController {
     }
 
     @GetMapping("/all-rooms")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('EMPLOYEE')")
+    /*@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('EMPLOYEE')")*/
     public ResponseEntity<List<RoomResponse>> getAllRooms() {
         List<Room> rooms = roomService.getAllRooms();
         List<RoomResponse> roomResponses = rooms.stream()
