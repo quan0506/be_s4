@@ -54,7 +54,7 @@ public class ShuttleBookingService implements IShuttleBookingService {
             shuttleBooking.setShuttleCheckInDate(shuttleBookingRequest.getShuttleCheckInDate());
             shuttleBooking.setShuttleCheckOutDate(shuttleBookingRequest.getShuttleCheckOutDate());
             shuttleBooking.setTotalPrice(totalPrice);
-            String bookingConfirmationCode = Utils.generateRandomConfirmationCode(10);
+            String bookingConfirmationCode = Utils.generateRandomConfirmationCode(5);
             shuttleBooking.setBookingConfirmationCode(bookingConfirmationCode);
             shuttleBookingRepository.save(shuttleBooking);
 

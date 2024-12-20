@@ -29,9 +29,17 @@ public class BookingService implements IBookingService {
     private final BookingRepository bookingRepository;
     private final RoomService roomService;
     private final UserRepository userRepository;
+    private final EmailService emailService;
 
     @Override
     public BookingResponseDTO createBooking(Booking booking) {
+        LocalDate now = LocalDate.now();
+
+        //Chekc thời gian
+        if(booking.getCheckInDate().isBefore(now) || booking.getCheckOutDate().isBefore(now)){
+            throw new RoomNotAvailableException("Check in date cannot be before check out date");
+        }
+
         // Tìm kiếm Room với id
         Room room = roomService.getRoomById(booking.getRoom().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Room not found"));
@@ -43,13 +51,17 @@ public class BookingService implements IBookingService {
 
         booking.setRoom(room);
         booking.setConfirmBookingCode(generateConfirmCode());
+
+        //Tìm kiếm người dùng với id
         var userId = booking.getUser().getId();
         var newUser = userRepository.findById(userId);
+
         booking.getUser().setFirstName(newUser.get().getFirstName());
         booking.getUser().setLastName(newUser.get().getLastName());
         booking.getUser().setEmail(newUser.get().getEmail());
         booking.getUser().setPhone(newUser.get().getPhone());
 
+        //Tính tổng giá tiền
         BigDecimal totalPrice = calculateTotalPrice(booking);
         booking.setTotalPrice(totalPrice);
 
@@ -60,6 +72,11 @@ public class BookingService implements IBookingService {
         room.setBooked(true);
         room.updateStatus();
         roomService.saveRoom(room);
+
+        //Gửi email xác nhận
+        String subject = "Booking Confirmation";
+        String text = "Your booking is confirmed. You confirmation code is:" + savedBooking.getConfirmBookingCode();
+        emailService.sendSimpleMessage(newUser.get().getEmail(), subject, text);
 
         return new BookingResponseDTO(
                 savedBooking.getBookingId(),
@@ -91,6 +108,13 @@ public class BookingService implements IBookingService {
         }
 
         return basePrice;
+    }
+
+    private String generateConfirmCode() {
+        // Generate a random 5-digit number
+        Random random = new Random();
+        int number = random.nextInt(90000) + 10000; // Generates a number between 10000 and 99999
+        return String.valueOf(number);
     }
 
     @Override
@@ -137,12 +161,7 @@ public class BookingService implements IBookingService {
         return List.of();
     }
 
-    private String generateConfirmCode() {
-        // Generate a random 5-digit number
-        Random random = new Random();
-        int number = random.nextInt(90000) + 10000; // Generates a number between 10000 and 99999
-        return String.valueOf(number);
-    }
+
 
 
     @Override

@@ -63,7 +63,7 @@ public class Room {
         bookings.add(booking);
         booking.setRoom(this);
         isBooked = true;
-        String bookingCode = RandomStringUtils.randomNumeric(10);
+        String bookingCode = RandomStringUtils.randomNumeric(5);
         booking.setConfirmBookingCode(bookingCode);
         updateStatus();
     }
