@@ -1,5 +1,7 @@
 package com.fptaptech.s4.controller;
 
+import com.fptaptech.s4.dto.Response;
+import com.fptaptech.s4.dto.RoomPaymentDTO;
 import com.fptaptech.s4.entity.Booking;
 import com.fptaptech.s4.entity.Payment;
 import com.fptaptech.s4.repository.BookingRepository;
@@ -28,6 +30,8 @@ public class VNPayController {
     private final PaymentRepository paymentRepository;
     private final BookingRepository bookingRepository;
 
+
+    // THANH TOAN PHONG
     @PostMapping("/submitOrder")
     public ResponseEntity<Map<String, String>> submitOrder(
             @RequestParam("bookingId") Long bookingId,
@@ -41,9 +45,9 @@ public class VNPayController {
         // Calculate total based on mode of payment
         BigDecimal totalAmount = booking.getTotalPrice();
         if ("Deposit".equalsIgnoreCase(modeOfPayment)) {
-            totalAmount = totalAmount.multiply(BigDecimal.valueOf(0.50));
+            totalAmount = totalAmount.multiply(BigDecimal.valueOf(0.50)); // 50% deposit
         } else {
-            totalAmount = totalAmount.multiply(BigDecimal.valueOf(0.95));
+            totalAmount = totalAmount.multiply(BigDecimal.valueOf(0.95)); // 95% full payment
         }
 
         // Automatically determine chooseMethod
@@ -118,4 +122,25 @@ public class VNPayController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/payments")
+    public ResponseEntity<Response> getAllPayments() {
+        return ResponseEntity.ok(vnPayService.getAllPayments());
+    }
+
+    @GetMapping("/payments/{id}")
+    public ResponseEntity<Response> getPaymentById(@PathVariable Long id) {
+        return ResponseEntity.ok(vnPayService.getPaymentById(id));
+    }
+
+    @PutMapping("/payments/{id}")
+    public ResponseEntity<Response> updatePayment(@PathVariable Long id, @RequestBody RoomPaymentDTO paymentDetails) {
+        return ResponseEntity.ok(vnPayService.updatePayment(id, paymentDetails));
+    }
+    @DeleteMapping("/payments/{id}")
+    public ResponseEntity<Response> deletePayment(@PathVariable Long id){
+        return ResponseEntity.ok(vnPayService.deletePayment(id));
+    }
+
 }
+

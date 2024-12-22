@@ -2,9 +2,16 @@ package com.fptaptech.s4.service.impl;
 
 
 import com.fptaptech.s4.config.VNPayConfig;
+import com.fptaptech.s4.dto.Response;
+import com.fptaptech.s4.dto.RoomPaymentDTO;
 import com.fptaptech.s4.entity.Booking;
+import com.fptaptech.s4.entity.Payment;
+import com.fptaptech.s4.exception.OurException;
 import com.fptaptech.s4.repository.BookingRepository;
+import com.fptaptech.s4.repository.PaymentRepository;
+import com.fptaptech.s4.utils.Utils;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +21,12 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 @Service
+@RequiredArgsConstructor
 public class VNPayService {
+
+    private final PaymentRepository paymentRepository;
+    private final BookingRepository bookingRepository;
+
 
     public String createOrder(int total, String orderInfor, String urlReturn){
         String vnp_Version = "2.1.0";
@@ -103,6 +115,110 @@ public class VNPayService {
         }
     }
 
+
+
+    // getAll, delete, update
+    public Response getAllPayments() {
+        Response response = new Response();
+        try {
+            List<Payment> payments = paymentRepository.findAll();
+            List<RoomPaymentDTO> paymentDTOs = Utils.mapPaymentListEntityToPaymentListDTO(payments);
+            response.setStatusCode(200);
+            response.setMessage("Payments retrieved successfully.");
+            response.setData(paymentDTOs);
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error fetching payments: " + e.getMessage());
+        }
+        return response;
+    }
+
+    public Response updatePayment(Long id, RoomPaymentDTO paymentDetails) {
+        Response response = new Response();
+        try {
+            Payment payment = paymentRepository.findById(id)
+                    .orElseThrow(() -> new OurException("Payment Not Found"));
+
+            // Update only the provided fields
+            if (paymentDetails.getAmount() != null) {
+                payment.setAmount(paymentDetails.getAmount());
+            }
+            if (paymentDetails.getTransactionCode() != null) {
+                payment.setTransactionCode(paymentDetails.getTransactionCode());
+            }
+            if (paymentDetails.getPaymentMethodId() != null) {
+                payment.setPaymentMethodID(paymentDetails.getPaymentMethodId());
+            }
+            if (paymentDetails.getPaymentDate() != null) {
+                payment.setPaymentDate(paymentDetails.getPaymentDate());
+            }
+            if (paymentDetails.getPaymentStatus() != null) {
+                payment.setPaymentStatus(paymentDetails.getPaymentStatus());
+            }
+            if (paymentDetails.getModeOfPayment() != null) {
+                payment.setModeOfPayment(paymentDetails.getModeOfPayment());
+            }
+            if (paymentDetails.getCurrency() != null) {
+                payment.setCurrency(paymentDetails.getCurrency());
+            }
+            if (paymentDetails.getChooseMethod() != null) {
+                payment.setChooseMethod(paymentDetails.getChooseMethod());
+            }
+            if (paymentDetails.getDescription() != null) {
+                payment.setDescription(paymentDetails.getDescription());
+            }
+
+            Payment updatedPayment = paymentRepository.save(payment);
+            RoomPaymentDTO updatedPaymentDTO = Utils.mapPaymentEntityToPaymentDTO(updatedPayment);
+            response.setStatusCode(200);
+            response.setMessage("Payment updated successfully.");
+            response.setData(updatedPaymentDTO);
+        } catch (OurException e) {
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error updating payment: " + e.getMessage());
+        }
+        return response;
+    }
+
+    public Response deletePayment(Long id) {
+        Response response = new Response();
+        try {
+            Payment payment = paymentRepository.findById(id)
+                    .orElseThrow(() -> new OurException("Payment Not Found"));
+            paymentRepository.delete(payment);
+            response.setStatusCode(200);
+            response.setMessage("Payment deleted successfully.");
+        } catch (OurException e) {
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error deleting payment: " + e.getMessage());
+        }
+        return response;
+    }
+
+    public Response getPaymentById(Long id) {
+        Response response = new Response();
+        try {
+            Payment payment = paymentRepository.findById(id)
+                    .orElseThrow(() -> new OurException("Payment Not Found"));
+            RoomPaymentDTO paymentDTO = Utils.mapPaymentEntityToPaymentDTO(payment);
+            response.setStatusCode(200);
+            response.setMessage("Payment retrieved successfully.");
+            response.setData(paymentDTO);
+        } catch (OurException e) {
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error fetching payment: " + e.getMessage());
+        }
+        return response;
+    }
 
 }
 

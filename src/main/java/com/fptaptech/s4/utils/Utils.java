@@ -223,5 +223,32 @@ public class Utils {
     public static List<ReviewDTO> mapReviewListEntityToReviewListDTO(List<Review> reviewList) {
         return reviewList.stream().map(Utils::mapReviewEntityToReviewDTO).collect(Collectors.toList());
     }
+
+
+    // Payment
+
+    public static RoomPaymentDTO mapPaymentEntityToPaymentDTO(Payment payment) {
+        RoomPaymentDTO roomPaymentDTO = new RoomPaymentDTO();
+        roomPaymentDTO.setPaymentID(payment.getPaymentID());
+        roomPaymentDTO.setChooseMethod(payment.getChooseMethod());
+        roomPaymentDTO.setPaymentMethodId(payment.getPaymentMethodID());
+        roomPaymentDTO.setPaymentDate(payment.getPaymentDate());
+        roomPaymentDTO.setAmount(payment.getAmount());
+        roomPaymentDTO.setPaymentStatus(payment.getPaymentStatus());
+        roomPaymentDTO.setTransactionCode(payment.getTransactionCode());
+        roomPaymentDTO.setCurrency(payment.getCurrency());
+        roomPaymentDTO.setDescription(payment.getDescription());
+        roomPaymentDTO.setModeOfPayment(payment.getModeOfPayment());
+        roomPaymentDTO.setBookingId(payment.getBooking().getBookingId());
+        roomPaymentDTO.setUserId(payment.getUser().getId());
+
+        return roomPaymentDTO;
+    }
+
+    public static List<RoomPaymentDTO> mapPaymentListEntityToPaymentListDTO(List<Payment> paymentList) {
+        return paymentList.stream()
+                .map(Utils::mapPaymentEntityToPaymentDTO)
+                .collect(Collectors.toList());
+    }
 }
 
