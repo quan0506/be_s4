@@ -67,12 +67,14 @@ public class BookingController {
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<BookingDTO>> getAllBookings() {
+    public ResponseEntity<BookingResponse> getAllBookings() {
         List<Booking> bookings = bookingService.getAllBookings();
         List<BookingDTO> bookingDTOs = bookings.stream()
                 .map(BookingMapper::toDTO)
                 .toList();
-        return ResponseEntity.ok(bookingDTOs);
+        BookingResponse response = new BookingResponse();
+        response.setBookings(bookingDTOs);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/payment/{id}")
