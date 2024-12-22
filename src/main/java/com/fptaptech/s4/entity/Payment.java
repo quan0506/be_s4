@@ -12,7 +12,7 @@ public class Payment {
     private Long paymentID;  // Use camelCase
 
     @Column(nullable = false)
-    private Long bookingID;
+    private String chooseMethod;
 
     @Column(nullable = false)
     private Long paymentMethodID;  // method : "PayPal", "VNPay", "Offline"
@@ -35,18 +35,34 @@ public class Payment {
     @Column(name = "Description", length = 255)
     private String description;
 
+    @Column(name = "ModeOfPayment", length = 50)
+    private String modeOfPayment;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "booking_id", nullable = false)
+    private Booking booking;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     public Payment() {
     }
 
-    public Payment(Long bookingID, Long paymentMethodID, BigDecimal amount, String currency, String description, String transactionCode, String paymentStatus) {
-        this.bookingID = bookingID;
+
+    public Payment(Long paymentID, String chooseMethod, Long paymentMethodID, LocalDateTime paymentDate, BigDecimal amount, String paymentStatus, String transactionCode, String currency, String description, String modeOfPayment, Booking booking, User user) {
+        this.paymentID = paymentID;
+        this.chooseMethod = chooseMethod;
         this.paymentMethodID = paymentMethodID;
+        this.paymentDate = paymentDate;
         this.amount = amount;
+        this.paymentStatus = paymentStatus;
+        this.transactionCode = transactionCode;
         this.currency = currency;
         this.description = description;
-        this.transactionCode = transactionCode;
-        this.paymentStatus = paymentStatus;
-        this.paymentDate = LocalDateTime.now();
+        this.modeOfPayment = modeOfPayment;
+        this.booking = booking;
+        this.user = user;
     }
 
     public Long getPaymentID() {
@@ -55,14 +71,6 @@ public class Payment {
 
     public void setPaymentID(Long paymentID) {
         this.paymentID = paymentID;
-    }
-
-    public Long getBookingID() {
-        return bookingID;
-    }
-
-    public void setBookingID(Long bookingID) {
-        this.bookingID = bookingID;
     }
 
     public Long getPaymentMethodID() {
@@ -119,5 +127,37 @@ public class Payment {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getChooseMethod() {
+        return chooseMethod;
+    }
+
+    public void setChooseMethod(String chooseMethod) {
+        this.chooseMethod = chooseMethod;
+    }
+
+    public String getModeOfPayment() {
+        return modeOfPayment;
+    }
+
+    public void setModeOfPayment(String modeOfPayment) {
+        this.modeOfPayment = modeOfPayment;
+    }
+
+    public Booking getBooking() {
+        return booking;
+    }
+
+    public void setBooking(Booking booking) {
+        this.booking = booking;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

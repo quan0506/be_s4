@@ -19,24 +19,43 @@ import java.util.HashMap;
 import java.util.Map;
 
 @org.springframework.stereotype.Controller
-
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class VNPayController {
 
-    @Autowired
-    private VNPayService vnPayService;
-
-    @Autowired
-    private PaymentRepository paymentRepository;
+    private final VNPayService vnPayService;
+    private final PaymentRepository paymentRepository;
+    private final BookingRepository bookingRepository;
 
     @PostMapping("/submitOrder")
-    public ResponseEntity<Map<String, String>> submitOrder(@RequestParam("amount") int orderTotal,
-                                                           @RequestParam("orderInfo") String orderInfo,
-                                                           @RequestParam("bookingId") Long bookingId,
-                                                           HttpServletRequest request) {
+    public ResponseEntity<Map<String, String>> submitOrder(
+            @RequestParam("bookingId") Long bookingId,
+            @RequestParam("modeOfPayment") String modeOfPayment,
+            HttpServletRequest request) {
+
+        // Retrieve booking details
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        // Calculate total based on mode of payment
+        BigDecimal totalAmount = booking.getTotalPrice();
+        if ("Deposit".equalsIgnoreCase(modeOfPayment)) {
+            totalAmount = totalAmount.multiply(BigDecimal.valueOf(0.50));
+        } else {
+            totalAmount = totalAmount.multiply(BigDecimal.valueOf(0.95));
+        }
+
+        // Automatically determine chooseMethod
+        String chooseMethod = "Deposit".equalsIgnoreCase(modeOfPayment) ? "HalfPaid" : "Paid";
+
+        // Create order info string
+        String orderInfo = bookingId + "-" + booking.getUser().getId() + "-" + modeOfPayment + "-" + chooseMethod;
+
+        // Generate VNPAY URL
         String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-        String vnpayUrl = vnPayService.createOrder(orderTotal, orderInfo, baseUrl);
+        String vnpayUrl = vnPayService.createOrder(totalAmount.intValue(), orderInfo, baseUrl);
+
         Map<String, String> response = new HashMap<>();
         response.put("vnpayUrl", vnpayUrl);
         return ResponseEntity.ok(response);
@@ -44,45 +63,59 @@ public class VNPayController {
 
     @GetMapping("/vnpay-payment")
     public ResponseEntity<Map<String, Object>> getPaymentStatus(HttpServletRequest request) {
-        Map<String, String[]> params = request.getParameterMap();
-        params.forEach((key, value) -> {
-            System.out.println("Key: " + key + ", Value: " + Arrays.toString(value));
-        });
-
         int paymentStatus = vnPayService.orderReturn(request);
 
+        // Retrieve necessary parameters from the request
         String orderInfo = request.getParameter("vnp_OrderInfo");
         String paymentTime = request.getParameter("vnp_PayDate");
         String transactionId = request.getParameter("vnp_TransactionNo");
         String totalPrice = request.getParameter("vnp_Amount");
 
-        if (orderInfo == null || transactionId == null || paymentTime == null || totalPrice == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
-                    "message", "Thiếu thông tin phản hồi từ VNPay",
-                    "status", "error"
-            ));
-        }
+        // Print all parameters for debugging
+        Map<String, String[]> params = request.getParameterMap();
+        params.forEach((key, value) -> {
+            System.out.println("Key: " + key + ", Value: " + Arrays.toString(value));
+        });
 
+        // Extract details from orderInfo
+        String[] orderDetails = orderInfo.split("-");
+        Long bookingId = Long.parseLong(orderDetails[0]);
+        Long userId = Long.parseLong(orderDetails[1]);
+        String modeOfPayment = orderDetails[2];
+        String chooseMethod = orderDetails[3];
+
+        // Retrieve booking details
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        // Create and save the payment record
         Payment payment = new Payment();
-        payment.setBookingID(Long.parseLong(orderInfo));  // This is where the error occurs
-        payment.setAmount(new BigDecimal(totalPrice).divide(BigDecimal.valueOf(100))); // VNPay trả về đơn vị VNĐ nhân 100
+        payment.setBooking(booking);
+        payment.setUser(booking.getUser());
+        payment.setAmount(new BigDecimal(totalPrice).divide(BigDecimal.valueOf(100)));
         payment.setTransactionCode(transactionId);
-        payment.setPaymentMethodID(2L);  // Giả định VNPay là 2
+        payment.setPaymentMethodID(2L);
         payment.setPaymentDate(LocalDateTime.now());
-        payment.setPaymentStatus(paymentStatus == 1 ? "Approved" : "Failed");
-        payment.setCurrency("VND");  // Bổ sung nếu cần
+        payment.setPaymentStatus("Pending");
+        payment.setModeOfPayment(modeOfPayment);
+        payment.setCurrency("VND");
+        payment.setChooseMethod(chooseMethod);
         payment.setDescription("Thanh toán qua VNPay");
+
+        if (paymentStatus == 1) {
+            payment.setPaymentStatus("Approved");
+        }
 
         paymentRepository.save(payment);
 
-        return ResponseEntity.ok(Map.of(
-                "orderId", orderInfo,
-                "totalPrice", totalPrice,
-                "paymentTime", paymentTime,
-                "transactionId", transactionId,
-                "paymentStatus", paymentStatus
-        ));
+        // Add transaction details to the response
+        Map<String, Object> response = new HashMap<>();
+        response.put("orderId", bookingId);
+        response.put("totalPrice", totalPrice);
+        response.put("paymentTime", paymentTime);
+        response.put("transactionId", transactionId);
+        response.put("paymentStatus", paymentStatus);
+
+        return ResponseEntity.ok(response);
     }
-
-
 }
