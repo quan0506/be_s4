@@ -250,5 +250,60 @@ public class Utils {
                 .map(Utils::mapPaymentEntityToPaymentDTO)
                 .collect(Collectors.toList());
     }
+
+
+
+
+    // Service Payment
+
+    public static List<ServicePaymentDTO> mapServicePaymentListToDTOList(List<ServicePayment> servicePayments) {
+        return servicePayments.stream()
+                .map(Utils::mapServicePaymentEntityToServicePaymentDTO)
+                .collect(Collectors.toList());
+    }
+
+    public static ServicePaymentDTO mapServicePaymentEntityToServicePaymentDTO(ServicePayment servicePayment) {
+        ServicePaymentDTO dto = new ServicePaymentDTO();
+        dto.setPaymentID(servicePayment.getPaymentID());
+        dto.setChooseMethod(servicePayment.getChooseMethod());
+        dto.setPaymentMethodID(servicePayment.getPaymentMethodID());
+        dto.setPaymentDate(servicePayment.getPaymentDate());
+        dto.setAmount(servicePayment.getAmount());
+        dto.setPaymentStatus(servicePayment.getPaymentStatus());
+        dto.setTransactionCode(servicePayment.getTransactionCode());
+        dto.setCurrency(servicePayment.getCurrency());
+        dto.setDescription(servicePayment.getDescription());
+
+        if (servicePayment.getSpaBooking() != null) {
+            dto.setSpaBookingId(servicePayment.getSpaBooking().getId());
+        }
+
+        if (servicePayment.getRestaurantBooking() != null) {
+            dto.setRestaurantBookingId(servicePayment.getRestaurantBooking().getId());
+        }
+
+        if (servicePayment.getUser() != null) {
+            dto.setUserId(servicePayment.getUser().getId());
+        }
+
+        return dto;
+    }
+
+    public static ServicePayment mapServicePaymentDTOToServicePaymentEntity(ServicePaymentDTO dto) {
+        ServicePayment servicePayment = new ServicePayment();
+        servicePayment.setPaymentID(dto.getPaymentID());
+        servicePayment.setChooseMethod(dto.getChooseMethod());
+        servicePayment.setPaymentMethodID(dto.getPaymentMethodID());
+        servicePayment.setPaymentDate(dto.getPaymentDate());
+        servicePayment.setAmount(dto.getAmount());
+        servicePayment.setPaymentStatus(dto.getPaymentStatus());
+        servicePayment.setTransactionCode(dto.getTransactionCode());
+        servicePayment.setCurrency(dto.getCurrency());
+        servicePayment.setDescription(dto.getDescription());
+
+
+
+        return servicePayment;
+    }
 }
 
