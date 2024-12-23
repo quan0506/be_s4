@@ -10,6 +10,7 @@ import com.fptaptech.s4.service.impl.VNPayService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -66,7 +67,7 @@ public class VNPayController {
     }
 
     @GetMapping("/vnpay-payment")
-    public ResponseEntity<Map<String, Object>> getPaymentStatus(HttpServletRequest request) {
+    public ResponseEntity<?> getPaymentStatus(HttpServletRequest request) {
         int paymentStatus = vnPayService.orderReturn(request);
 
         // Retrieve necessary parameters from the request
@@ -114,13 +115,16 @@ public class VNPayController {
 
         // Add transaction details to the response
         Map<String, Object> response = new HashMap<>();
-        response.put("orderId", bookingId);
         response.put("totalPrice", totalPrice);
         response.put("paymentTime", paymentTime);
         response.put("transactionId", transactionId);
         response.put("paymentStatus", paymentStatus);
+        response.put("bookingId", bookingId);
 
-        return ResponseEntity.ok(response);
+
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .header(HttpHeaders.LOCATION, "http://localhost:5173/thank/" + bookingId)
+                .body(response);
     }
 
     @GetMapping("/payments")
