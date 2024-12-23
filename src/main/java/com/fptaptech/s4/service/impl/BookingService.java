@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -95,19 +96,16 @@ public class BookingService implements IBookingService {
 
     private BigDecimal calculateTotalPrice(Booking booking) {
         Room room = booking.getRoom();
-        BigDecimal basePrice = room.getRoomPrice();
-        int adults = booking.getAdults();
-        int children = booking.getChildren();
+        BigDecimal roomPrice = room.getRoomPrice();
+        LocalDate checkInDate = booking.getCheckInDate();
+        LocalDate checkOutDate = booking.getCheckOutDate();
 
-        if (adults > 2) {
-            basePrice = basePrice.add(basePrice.multiply(BigDecimal.valueOf(0.0)));
-        }
+        // Tính số ngày lưu trú
+        long days = ChronoUnit.DAYS.between(checkInDate, checkOutDate);
+        // Tính tổng giá tiền
+        BigDecimal totalPrice = roomPrice.multiply(BigDecimal.valueOf(days));
 
-        if (children > 0) {
-            basePrice = basePrice.add(basePrice.multiply(BigDecimal.valueOf(0.0)));
-        }
-
-        return basePrice;
+        return totalPrice;
     }
 
     private String generateConfirmCode() {
