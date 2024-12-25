@@ -7,21 +7,23 @@ import com.fptaptech.s4.exception.ResourceNotFoundException;
 import com.fptaptech.s4.entity.BookedRoom;
 import com.fptaptech.s4.exception.RoomNotAvailableException;
 import com.fptaptech.s4.repository.BookingRepository;
-import com.fptaptech.s4.repository.RoomRepository;
 import com.fptaptech.s4.repository.UserRepository;
 import com.fptaptech.s4.response.BookingResponseDTO;
 import com.fptaptech.s4.service.interfaces.IBookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+
+
+
 
 @Service
 @RequiredArgsConstructor
@@ -36,14 +38,14 @@ public class BookingService implements IBookingService {
     public BookingResponseDTO createBooking(Booking booking) {
         LocalDate now = LocalDate.now();
 
-        //Chekc thời gian
+        // Chekc thời gian
         if(booking.getCheckInDate().isBefore(now) || booking.getCheckOutDate().isBefore(now)){
-            throw new RoomNotAvailableException("Check in date cannot be before check out date");
+            throw new RoomNotAvailableException("Phòng không tồn tại ở ngày checkin này");
         }
 
         // Tìm kiếm Room với id
         Room room = roomService.getRoomById(booking.getRoom().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Room not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Phòng không tồn tại"));
 
         // Kiểm tra tình trạng phòng trước khi tạo booking
         if (!roomService.isRoomAvailable(room.getId(), booking.getCheckInDate(), booking.getCheckOutDate())) {
@@ -53,7 +55,7 @@ public class BookingService implements IBookingService {
         booking.setRoom(room);
         booking.setConfirmBookingCode(generateConfirmCode());
 
-        //Tìm kiếm người dùng với id
+        // Tìm kiếm người dùng với id
         var userId = booking.getUser().getId();
         var newUser = userRepository.findById(userId);
 
@@ -62,7 +64,7 @@ public class BookingService implements IBookingService {
         booking.getUser().setEmail(newUser.get().getEmail());
         booking.getUser().setPhone(newUser.get().getPhone());
 
-        //Tính tổng giá tiền
+        // Tính tổng giá tiền
         BigDecimal totalPrice = calculateTotalPrice(booking);
         booking.setTotalPrice(totalPrice);
 
@@ -74,10 +76,16 @@ public class BookingService implements IBookingService {
         room.updateStatus();
         roomService.saveRoom(room);
 
-        //Gửi email xác nhận
-        String subject = "Booking Confirmation";
-        String text = "Your booking is confirmed. You confirmation code is:" + savedBooking.getConfirmBookingCode();
-        emailService.sendSimpleMessage(newUser.get().getEmail(), subject, text);
+        // Gửi email xác nhận
+        String subject = "Xác nhận đặt phòng";
+        Context context = new Context();
+        context.setVariable("name", newUser.get().getFirstName());
+        context.setVariable("confirmationCode", savedBooking.getConfirmBookingCode());
+        context.setVariable("checkInDate", booking.getCheckInDate());
+        context.setVariable("checkOutDate", booking.getCheckOutDate());
+        context.setVariable("totalPrice", booking.getTotalPrice());
+        context.setVariable("roomType", booking.getRoom().getRoomType());
+        emailService.sendHtmlMessage(newUser.get().getEmail(), subject, "emailTemplate", context);
 
         return new BookingResponseDTO(
                 savedBooking.getBookingId(),
@@ -102,6 +110,7 @@ public class BookingService implements IBookingService {
 
         // Tính số ngày lưu trú
         long days = ChronoUnit.DAYS.between(checkInDate, checkOutDate);
+
         // Tính tổng giá tiền
         BigDecimal totalPrice = roomPrice.multiply(BigDecimal.valueOf(days));
 
@@ -115,10 +124,12 @@ public class BookingService implements IBookingService {
         return String.valueOf(number);
     }
 
+
+
     @Override
     public Booking updateBooking(Long bookingId, Booking booking) {
         Booking existingBooking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Đặt phòng không tồn tại"));
         existingBooking.setCheckInDate(booking.getCheckInDate());
         existingBooking.setCheckOutDate(booking.getCheckOutDate());
         existingBooking.setAdults(booking.getAdults());
@@ -130,14 +141,14 @@ public class BookingService implements IBookingService {
     @Override
     public void deleteBooking(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Đặt phòng không tồn tại"));
         bookingRepository.delete(booking);
     }
 
     @Override
     public Booking getBookingById(Long bookingId) {
         return bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Đặt phòng không tồn tại"));
     }
 
     @Override
@@ -148,9 +159,9 @@ public class BookingService implements IBookingService {
     @Override
     public void processPayment(Long bookingId, String paymentMethod) {
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Đặt phòng không tồn tại"));
         // Xử lý thanh toán theo phương thức (Online/Offline)
-        booking.setStatus("Confirmed");
+        booking.setStatus("Đã xác thực");
         bookingRepository.save(booking);
     }
 
@@ -165,7 +176,7 @@ public class BookingService implements IBookingService {
     @Override
     public List<BookingResponseDTO> getBookingsByUserId(Long userId, Authentication authentication) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Người dùng không tồn tại"));
 
         boolean isAdminOrEmployee = authentication.getAuthorities().stream()
                 .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN") || role.getAuthority().equals("ROLE_EMPLOYEE"));

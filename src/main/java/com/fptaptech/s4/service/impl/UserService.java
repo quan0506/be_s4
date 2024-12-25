@@ -14,7 +14,6 @@ import com.fptaptech.s4.repository.VerificationCodeRepository;
 import com.fptaptech.s4.service.interfaces.IUserService;
 import com.fptaptech.s4.utils.Utils;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,6 +26,7 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.thymeleaf.context.Context;
 
 @Service
 @RequiredArgsConstructor
@@ -38,16 +38,16 @@ public class UserService implements IUserService {
     private final VerificationCodeRepository verificationCodeRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
-        @Override
-        public UserDTO findById(Long userId) {
-            User user = userRepository.findById(userId).orElseThrow(() -> new OurException("User Not Found"));
-            return Utils.mapUserEntityToUserDTO(user);
-        }
+    @Override
+    public UserDTO findById(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new OurException("User Not Found"));
+        return Utils.mapUserEntityToUserDTO(user);
+    }
 
     @Override public UserDTO findByEmail(String email) {
-            User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new OurException("User Not Found"));
-            return Utils.mapUserEntityToUserDTO(user); }
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new OurException("User Not Found"));
+        return Utils.mapUserEntityToUserDTO(user); }
 
 
     @Override
@@ -118,7 +118,7 @@ public class UserService implements IUserService {
 
         userRepository.save(user);
     }
-        @Override
+    @Override
     public User getUser(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -126,11 +126,11 @@ public class UserService implements IUserService {
 
     @Override
     public UserDTO getCurrentUser(Authentication authentication) {
-            String email = authentication.getName();
-            // Lấy email từ thông tin người dùng đăng nhập
-            User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new OurException("User Not Found"));
-            return Utils.mapUserEntityToUserDTO(user); }
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new OurException("User Not Found"));
+        return Utils.mapUserEntityToUserDTO(user);
+    }
 
     @Override
     public void sendVerificationCode(String email) {
@@ -140,11 +140,18 @@ public class UserService implements IUserService {
         verificationCode.setCode(code);
         verificationCode.setExpiryDate(LocalDateTime.now().plusMinutes(10));
         verificationCodeRepository.save(verificationCode);
-        emailService.sendSimpleMessage(email, "Your verification code", "Your code is: " + code);
+
+        // Tạo context cho template
+        Context context = new Context();
+        context.setVariable("code", code);
+
+        // Gửi email xác nhận với template HTML
+        emailService.sendHtmlMessage(email, "Your verification code", "verificationTemplate", context);
+
         logger.info("Verification code sent to email: {}", email);
     }
 
-    @Transactional
+    @org.springframework.transaction.annotation.Transactional
     public void resetPassword(String email, ResetPasswordDTO resetPasswordDTO) {
         try {
             logger.info("Starting password reset process for email: {}", email);
@@ -251,9 +258,16 @@ public class UserService implements IUserService {
         VerificationCode verificationCode = new VerificationCode();
         verificationCode.setEmail(email);
         verificationCode.setCode(code);
-        verificationCode.setExpiryDate(LocalDateTime.now().plusMinutes(10));  // Mã hết hạn sau 10 phút
+        verificationCode.setExpiryDate(LocalDateTime.now().plusMinutes(5));  // Mã hết hạn sau 5 phút
         verificationCodeRepository.save(verificationCode);
-        emailService.sendSimpleMessage(email, "Your verification code", "Your code is: " + code);
+
+        // Tạo context cho template
+        Context context = new Context();
+        context.setVariable("code", code);
+
+        // Gửi email xác nhận với template HTML
+        emailService.sendHtmlMessage(email, "Your verification code", "verificationTemplate", context);
+
         logger.info("Verification code sent to email: {}", email);
     }
 
@@ -262,12 +276,3 @@ public class UserService implements IUserService {
     }
 
 }
-
-
-
-
-
-
-
-
-
