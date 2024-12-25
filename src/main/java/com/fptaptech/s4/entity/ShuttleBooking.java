@@ -28,6 +28,8 @@ public class ShuttleBooking {
 
     private BigDecimal totalPrice;
 
+    private String phone;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;

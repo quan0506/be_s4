@@ -47,9 +47,9 @@ public class UserDTO {
     private String password;
 
     private List<Role> roles = new ArrayList<>();
-    private List<ShuttleBookingDTO> shuttleBookings = new ArrayList<>();
-    private List<SpaBookingDTO> spaBookings = new ArrayList<>();
-    private List<RestaurantDTO> restaurantBookings = new ArrayList<>();
+//    private List<ShuttleBookingDTO> shuttleBookings = new ArrayList<>();
+//    private List<SpaBookingDTO> spaBookings = new ArrayList<>();
+//    private List<RestaurantDTO> restaurantBookings = new ArrayList<>();
 
     public String getEmail() {
         return userName;

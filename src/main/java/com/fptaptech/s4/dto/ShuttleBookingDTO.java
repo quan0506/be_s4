@@ -11,6 +11,8 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ShuttleBookingDTO {
     private Long id;
+
+    private String phone;
     private LocalDate shuttleCheckInDate;
     private LocalDate shuttleCheckOutDate;
     private String bookingConfirmationCode;

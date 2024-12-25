@@ -80,6 +80,7 @@ public class Utils {
         shuttleBookingDTO.setBookingConfirmationCode(shuttleBooking.getBookingConfirmationCode());
         shuttleBookingDTO.setTotalPrice(shuttleBooking.getTotalPrice());
         shuttleBookingDTO.setUserEmail(shuttleBooking.getUser().getEmail());
+        shuttleBookingDTO.setPhone(shuttleBooking.getPhone());
 
         shuttleBookingDTO.setCarId(shuttle.getId());
         shuttleBookingDTO.setCarType(shuttle.getCarType());

@@ -53,6 +53,7 @@ public class ShuttleBookingService implements IShuttleBookingService {
             shuttleBooking.setUser(user);
             shuttleBooking.setShuttleCheckInDate(shuttleBookingRequest.getShuttleCheckInDate());
             shuttleBooking.setShuttleCheckOutDate(shuttleBookingRequest.getShuttleCheckOutDate());
+            shuttleBooking.setPhone(shuttleBookingRequest.getPhone());
             shuttleBooking.setTotalPrice(totalPrice);
             String bookingConfirmationCode = Utils.generateRandomConfirmationCode(5);
             shuttleBooking.setBookingConfirmationCode(bookingConfirmationCode);
