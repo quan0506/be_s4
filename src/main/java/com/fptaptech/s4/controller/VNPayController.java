@@ -146,5 +146,18 @@ public class VNPayController {
         return ResponseEntity.ok(vnPayService.deletePayment(id));
     }
 
+    @GetMapping("/monthly-total-price")
+    public ResponseEntity<Map<String, BigDecimal>> getMonthlyTotalPrice(@RequestParam int year) {
+        Map<String, BigDecimal> monthlyTotalPrice = vnPayService.calculateTotalPriceForEachMonth(year);
+        return ResponseEntity.ok(monthlyTotalPrice);
+    }
+
+
+    @GetMapping("/yearly-total-price")
+    public ResponseEntity<Map<Integer, BigDecimal>> getYearlyTotalPrice() {
+        Map<Integer, BigDecimal> yearlyTotalPrice = vnPayService.calculateTotalPriceForEachYear();
+        return ResponseEntity.ok(yearlyTotalPrice);
+    }
+
 }
 

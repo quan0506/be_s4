@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -264,4 +265,41 @@ public class VNPayForService {
         return response;
     }
 
+    public Map<String, BigDecimal> calculateTotalPriceForEachMonth(int year, String bookingType) {
+        List<ServicePayment> payments = servicePaymentRepository.findAllByYearAndBookingType(year, bookingType);
+        Map<String, BigDecimal> monthlyTotalPrice = new TreeMap<>();
+
+        // Initialize all months with 0
+        for (int month = 1; month <= 12; month++) {
+            String monthKey = String.format("%02d", month);
+            monthlyTotalPrice.put(monthKey, BigDecimal.ZERO);
+        }
+
+        // Calculate total for each month
+        for (ServicePayment payment : payments) {
+            int month = payment.getPaymentDate().getMonthValue();
+            String monthKey = String.format("%02d", month);
+
+            monthlyTotalPrice.put(monthKey, monthlyTotalPrice.get(monthKey).add(payment.getAmount()));
+        }
+
+        return monthlyTotalPrice;
+    }
+
+    public Map<Integer, BigDecimal> calculateTotalPriceForEachYear(String bookingType) {
+        List<ServicePayment> payments = servicePaymentRepository.findAllByBookingType(bookingType);
+        Map<Integer, BigDecimal> yearlyTotalPrice = new TreeMap<>();
+
+        for (ServicePayment payment : payments) {
+            int year = payment.getPaymentDate().getYear();
+
+            yearlyTotalPrice.putIfAbsent(year, BigDecimal.ZERO);
+            yearlyTotalPrice.put(year, yearlyTotalPrice.get(year).add(payment.getAmount()));
+        }
+
+        return yearlyTotalPrice;
+    }
+
+
 }
+

@@ -78,8 +78,6 @@ public class VNPayForServiceController {
     }
 
 
-
-
     // Handle VNPay payment callback
     @GetMapping("/vnpay-payment")
     public ResponseEntity<Map<String, Object>> getPaymentStatus(HttpServletRequest request) {
@@ -188,5 +186,17 @@ public class VNPayForServiceController {
 //    public ResponseEntity<Response> getAllSpaPayments() {
 //        return ResponseEntity.ok(vnPayForService.getAllSpaPayments());
 //    }
-}
 
+
+    @GetMapping("/monthly-total-price")
+    public ResponseEntity<Map<String, BigDecimal>> getMonthlyTotalPrice(@RequestParam int year, @RequestParam String bookingType) {
+        Map<String, BigDecimal> monthlyTotalPrice = vnPayForService.calculateTotalPriceForEachMonth(year, bookingType);
+        return ResponseEntity.ok(monthlyTotalPrice);
+    }
+
+    @GetMapping("/yearly-total-price")
+    public ResponseEntity<Map<Integer, BigDecimal>> getYearlyTotalPrice(@RequestParam String bookingType) {
+        Map<Integer, BigDecimal> yearlyTotalPrice = vnPayForService.calculateTotalPriceForEachYear(bookingType);
+        return ResponseEntity.ok(yearlyTotalPrice);
+    }
+}

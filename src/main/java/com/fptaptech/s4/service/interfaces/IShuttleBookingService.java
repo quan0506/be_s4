@@ -3,6 +3,9 @@ package com.fptaptech.s4.service.interfaces;
 import com.fptaptech.s4.response.Response;
 import com.fptaptech.s4.dto.ShuttleBookingDTO;
 
+import java.math.BigDecimal;
+import java.util.Map;
+
 public interface IShuttleBookingService {
     Response saveShuttleBooking(Long branchId, Long shuttleId, Long userId, ShuttleBookingDTO shuttleBookingRequest);
 
@@ -17,4 +20,8 @@ public interface IShuttleBookingService {
     String getBookingEmail(Long branchId, Long shuttleBookingId);
 
     Response getAllShuttlesGroupedByBranch();
+
+    BigDecimal calculateTotalPriceForYear(int year);
+
+    Map<String, BigDecimal> calculateTotalPriceForEachMonth(int year);
 }

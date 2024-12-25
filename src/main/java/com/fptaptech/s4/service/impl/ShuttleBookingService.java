@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 @Service
@@ -228,6 +229,37 @@ public class ShuttleBookingService implements IShuttleBookingService {
         }
         return response;
     }
+
+
+    @Override
+    public Map<String, BigDecimal> calculateTotalPriceForEachMonth(int year) {
+        List<ShuttleBooking> bookings = shuttleBookingRepository.findAllByYear(year);
+        Map<String, BigDecimal> monthlyTotalPrice = new TreeMap<>();
+
+        for (ShuttleBooking booking : bookings) {
+            int month = booking.getShuttleCheckInDate().getMonthValue();
+            String monthKey = String.format("%02d", month);
+
+            monthlyTotalPrice.putIfAbsent(monthKey, BigDecimal.ZERO);
+            monthlyTotalPrice.put(monthKey, monthlyTotalPrice.get(monthKey).add(booking.getTotalPrice()));
+        }
+
+        return monthlyTotalPrice;
+    }
+
+    @Override
+    public BigDecimal calculateTotalPriceForYear(int year) {
+        List<ShuttleBooking> bookings = shuttleBookingRepository.findAllByYear(year);
+        BigDecimal totalPrice = BigDecimal.ZERO;
+
+        for (ShuttleBooking booking : bookings) {
+            totalPrice = totalPrice.add(booking.getTotalPrice());
+        }
+
+        return totalPrice;
+    }
+
+
 
 }
 
