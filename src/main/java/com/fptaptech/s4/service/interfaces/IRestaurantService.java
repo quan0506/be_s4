@@ -13,7 +13,7 @@ public interface IRestaurantService {
 
     Response getAllRestaurants(Long branchId);
 
-    Response deleteRestaurant(Long branchId, Long restaurantId);
+    Response deleteRestaurant( Long restaurantId);
 
     Response updateRestaurant(Long branchId, Long restaurantId, String restaurantType, String time, BigDecimal restaurantAdultPrice, BigDecimal restaurantChildrenPrice, String restaurantDescription, List<MultipartFile> photos);
 

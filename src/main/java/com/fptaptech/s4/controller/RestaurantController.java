@@ -75,9 +75,8 @@ public class RestaurantController {
 
     @DeleteMapping("/delete/{restaurantId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Response> deleteRestaurant(@PathVariable Long restaurantId,
-                                                     @RequestParam(value = "branchId") Long branchId) {
-        Response response = restaurantService.deleteRestaurant(branchId, restaurantId);
+    public ResponseEntity<Response> deleteRestaurant(@PathVariable Long restaurantId) {
+        Response response = restaurantService.deleteRestaurant( restaurantId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 

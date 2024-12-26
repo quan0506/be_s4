@@ -34,11 +34,11 @@ public class RestaurantService implements IRestaurantService {
         try {
             Branch branch = branchRepository.findById(branchId).orElseThrow(() -> new OurException("Branch Not Found"));
 
-            List<String> imageUrls = uploadPhotos(photos); // Upload photos to Cloudinary
+            List<String> imageUrls = uploadPhotos(photos);
 
             Restaurant restaurant = new Restaurant();
-            restaurant.setBranch(branch); // Set the branch
-            restaurant.setPhotos(imageUrls); // Set the list of photos
+            restaurant.setBranch(branch);
+            restaurant.setPhotos(imageUrls);
             restaurant.setRestaurantType(restaurantType);
             restaurant.setTime(time);
             restaurant.setRestaurantAdultPrice(restaurantAdultPrice);
@@ -80,15 +80,10 @@ public class RestaurantService implements IRestaurantService {
     }
 
     @Override
-    public Response deleteRestaurant(Long branchId, Long restaurantId) {
+    public Response deleteRestaurant(Long restaurantId) {
         Response response = new Response();
         try {
             Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() -> new OurException("Restaurant Not Found"));
-            if (!restaurant.getBranch().getId().equals(branchId)) {
-                response.setStatusCode(403);
-                response.setMessage("You don't have permission to delete this restaurant.");
-                return response;
-            }
             restaurantRepository.deleteById(restaurantId);
             response.setStatusCode(200);
             response.setMessage("successful");
