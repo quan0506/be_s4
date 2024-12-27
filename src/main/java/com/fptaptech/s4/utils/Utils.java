@@ -33,12 +33,18 @@ public class Utils {
         userDTO.setFirstName(user.getFirstName());
         userDTO.setLastName(user.getLastName());
         userDTO.setPhone(user.getPhone());
+        userDTO.setEmail(user.getEmail());
+
 
         // Map roles directly from Role entity
         userDTO.setRoles(new ArrayList<>(user.getRoles()));
 
         return userDTO;
     }
+    public static List<UserDTO> mapUserListEntityToUserListDTO(List<User> userList) {
+        return userList.stream().map(Utils::mapUserEntityToUserDTO).collect(Collectors.toList());
+    }
+
 
 
     // Shuttle mappings
@@ -129,7 +135,9 @@ public class Utils {
         spaDTO.setBranchAddress(spa.getBranch().getAddress());
         return spaDTO;
     }
-    public static List<SpaDTO> mapSpaListEntityToSpaListDTO(List<Spa> spaList) { return spaList.stream().map(Utils::mapSpaEntityToSpaDTO).collect(Collectors.toList()); }
+    public static List<SpaDTO> mapSpaListEntityToSpaListDTO(List<Spa> spaList) {
+        return spaList.stream().map(Utils::mapSpaEntityToSpaDTO).collect(Collectors.toList());
+    }
 
 
     public static SpaBookingDTO mapSpaBookingEntityToSpaBookingDTO(SpaBooking spaBooking) {
@@ -306,5 +314,10 @@ public class Utils {
 
         return servicePayment;
     }
+
+
+    // USER
+
+
 }
 

@@ -1,12 +1,15 @@
 package com.fptaptech.s4.controller;
 
+import com.fptaptech.s4.dto.Response;
 import com.fptaptech.s4.dto.UserDTO;
 import com.fptaptech.s4.dto.UserUpdateDTO;
 import com.fptaptech.s4.exception.UserAlreadyExistsException;
 import com.fptaptech.s4.entity.User;
+import com.fptaptech.s4.service.impl.UserService;
 import com.fptaptech.s4.service.interfaces.IUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -23,10 +26,16 @@ import java.util.List;
 public class UserController {
     private final IUserService userService;
 
+    @Autowired
+    private final UserService userServices;
+
     @GetMapping("/all")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<User>> getUsers(){
-        return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
+    public ResponseEntity<Response> getUsers(){
+        Response response = userServices.getUsers();
+        response.setStatusCode(200);
+        response.setMessage("successful");
+        return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
     @PostMapping("/register-user")

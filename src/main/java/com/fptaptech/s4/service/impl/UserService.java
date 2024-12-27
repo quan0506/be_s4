@@ -1,6 +1,7 @@
 package com.fptaptech.s4.service.impl;
 
 import com.fptaptech.s4.dto.ResetPasswordDTO;
+import com.fptaptech.s4.dto.Response;
 import com.fptaptech.s4.dto.UserDTO;
 import com.fptaptech.s4.dto.UserUpdateDTO;
 import com.fptaptech.s4.entity.Role;
@@ -78,8 +79,19 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public List<User> getUsers() {
-        return userRepository.findAll();
+    public Response getUsers() {
+        Response response = new Response();
+        try {
+            List<User> users = userRepository.findAll();
+            List<UserDTO> userDTOList = Utils.mapUserListEntityToUserListDTO(users);
+            response.setStatusCode(200);
+            response.setMessage("Users retrieved successfully.");
+            response.setData(userDTOList);
+        }catch (Exception e){
+            response.setStatusCode(500);
+            response.setMessage("Error fetching users" + e.getMessage());
+        }
+        return response;
     }
 
     @Transactional
