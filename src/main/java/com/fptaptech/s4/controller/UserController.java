@@ -66,16 +66,17 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/delete/{userId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') or hasRole('ROLE_EMPLOYEE') and #email == principal.username)")
-    public ResponseEntity<String> deleteUser(@PathVariable("userId") String email){
-        try{
+    @DeleteMapping("/delete/{email}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or (#email == principal.username and (hasRole('ROLE_USER') or hasRole('ROLE_EMPLOYEE')))")
+    public ResponseEntity<String> deleteUser(@PathVariable("email") String email) {
+        try {
             userService.deleteUser(email);
             return ResponseEntity.ok("User deleted successfully");
-        }catch (UsernameNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }catch (Exception e){
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found: " + email);
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting user: " + e.getMessage());
         }
     }
+
 }
