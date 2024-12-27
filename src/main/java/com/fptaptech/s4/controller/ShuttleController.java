@@ -1,6 +1,6 @@
 package com.fptaptech.s4.controller;
 
-import com.fptaptech.s4.response.Response;
+import com.fptaptech.s4.dto.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;

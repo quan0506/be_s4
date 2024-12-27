@@ -4,10 +4,7 @@ package com.fptaptech.s4.controller;
 
 import com.fptaptech.s4.dto.RestaurantBookingDTO;
 import com.fptaptech.s4.dto.UserDTO;
-
-import com.fptaptech.s4.entity.User;
-
-import com.fptaptech.s4.response.Response;
+import com.fptaptech.s4.dto.Response;
 import com.fptaptech.s4.security.user.HotelUserDetails;
 import com.fptaptech.s4.service.interfaces.IRestaurantBookingService;
 import com.fptaptech.s4.service.interfaces.IUserService;

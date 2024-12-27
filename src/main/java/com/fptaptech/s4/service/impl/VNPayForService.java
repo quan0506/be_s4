@@ -3,6 +3,7 @@ package com.fptaptech.s4.service.impl;
 import com.fptaptech.s4.config.VNPayConfig;
 import com.fptaptech.s4.dto.Response;
 import com.fptaptech.s4.dto.ServicePaymentDTO;
+import com.fptaptech.s4.entity.Payment;
 import com.fptaptech.s4.entity.ServicePayment;
 import com.fptaptech.s4.exception.OurException;
 import com.fptaptech.s4.repository.RestaurantBookingRepository;
@@ -277,10 +278,12 @@ public class VNPayForService {
 
         // Calculate total for each month
         for (ServicePayment payment : payments) {
-            int month = payment.getPaymentDate().getMonthValue();
-            String monthKey = String.format("%02d", month);
+            if ("Approved".equalsIgnoreCase(payment.getPaymentStatus())) {
+                int month = payment.getPaymentDate().getMonthValue();
+                String monthKey = String.format("%02d", month);
 
-            monthlyTotalPrice.put(monthKey, monthlyTotalPrice.get(monthKey).add(payment.getAmount()));
+                monthlyTotalPrice.put(monthKey, monthlyTotalPrice.get(monthKey).add(payment.getAmount()));
+            }
         }
 
         return monthlyTotalPrice;
@@ -291,10 +294,12 @@ public class VNPayForService {
         Map<Integer, BigDecimal> yearlyTotalPrice = new TreeMap<>();
 
         for (ServicePayment payment : payments) {
-            int year = payment.getPaymentDate().getYear();
+            if ("Approved".equalsIgnoreCase(payment.getPaymentStatus())) {
+                int year = payment.getPaymentDate().getYear();
 
-            yearlyTotalPrice.putIfAbsent(year, BigDecimal.ZERO);
-            yearlyTotalPrice.put(year, yearlyTotalPrice.get(year).add(payment.getAmount()));
+                yearlyTotalPrice.putIfAbsent(year, BigDecimal.ZERO);
+                yearlyTotalPrice.put(year, yearlyTotalPrice.get(year).add(payment.getAmount()));
+            }
         }
 
         return yearlyTotalPrice;

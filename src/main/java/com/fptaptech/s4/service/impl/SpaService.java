@@ -6,7 +6,7 @@ import com.fptaptech.s4.entity.Spa;
 import com.fptaptech.s4.exception.OurException;
 import com.fptaptech.s4.repository.BranchRepository;
 import com.fptaptech.s4.repository.SpaRepository;
-import com.fptaptech.s4.response.Response;
+import com.fptaptech.s4.dto.Response;
 import com.fptaptech.s4.service.interfaces.ISpaService;
 import com.fptaptech.s4.utils.Utils;
 import lombok.RequiredArgsConstructor;

@@ -2,8 +2,8 @@ package com.fptaptech.s4.service.impl;
 
 
 
-//import com.fptaptech.s4.dto.Response;
-import com.fptaptech.s4.response.Response;
+
+import com.fptaptech.s4.dto.Response;
 import com.fptaptech.s4.dto.SpaBookingDTO;
 import com.fptaptech.s4.entity.Branch;
 import com.fptaptech.s4.entity.Spa;

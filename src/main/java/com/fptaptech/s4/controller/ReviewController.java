@@ -2,7 +2,6 @@ package com.fptaptech.s4.controller;
 
 
 import com.fptaptech.s4.dto.Response;
-import com.fptaptech.s4.dto.ReviewDTO;
 import com.fptaptech.s4.entity.Review;
 import com.fptaptech.s4.service.impl.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;

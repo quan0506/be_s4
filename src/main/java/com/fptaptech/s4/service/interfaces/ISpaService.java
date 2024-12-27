@@ -1,7 +1,7 @@
 package com.fptaptech.s4.service.interfaces;
 
-import com.fptaptech.s4.dto.SpaDTO;
-import com.fptaptech.s4.response.Response;
+
+import com.fptaptech.s4.dto.Response;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;

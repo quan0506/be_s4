@@ -233,10 +233,12 @@ public class VNPayService {
 
         // Calculate total for each month
         for (Payment payment : payments) {
-            int month = payment.getPaymentDate().getMonthValue();
-            String monthKey = String.format("%02d", month);
+            if ("Approved".equalsIgnoreCase(payment.getPaymentStatus())) {
+                int month = payment.getPaymentDate().getMonthValue();
+                String monthKey = String.format("%02d", month);
 
-            monthlyTotalPrice.put(monthKey, monthlyTotalPrice.get(monthKey).add(payment.getAmount()));
+                monthlyTotalPrice.put(monthKey, monthlyTotalPrice.get(monthKey).add(payment.getAmount()));
+            }
         }
 
         return monthlyTotalPrice;
@@ -247,13 +249,16 @@ public class VNPayService {
         Map<Integer, BigDecimal> yearlyTotalPrice = new TreeMap<>();
 
         for (Payment payment : payments) {
-            int year = payment.getPaymentDate().getYear();
+            if ("Approved".equalsIgnoreCase(payment.getPaymentStatus())) {
+                int year = payment.getPaymentDate().getYear();
 
-            yearlyTotalPrice.putIfAbsent(year, BigDecimal.ZERO);
-            yearlyTotalPrice.put(year, yearlyTotalPrice.get(year).add(payment.getAmount()));
+                yearlyTotalPrice.putIfAbsent(year, BigDecimal.ZERO);
+                yearlyTotalPrice.put(year, yearlyTotalPrice.get(year).add(payment.getAmount()));
+            }
         }
 
         return yearlyTotalPrice;
     }
 }
+
 

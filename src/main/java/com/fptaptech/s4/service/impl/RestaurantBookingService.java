@@ -13,7 +13,7 @@ import com.fptaptech.s4.repository.RestaurantBookingRepository;
 import com.fptaptech.s4.repository.RestaurantRepository;
 import com.fptaptech.s4.repository.UserRepository;
 
-import com.fptaptech.s4.response.Response;
+import com.fptaptech.s4.dto.Response;
 import com.fptaptech.s4.service.interfaces.IRestaurantBookingService;
 import com.fptaptech.s4.utils.Utils;
 import lombok.RequiredArgsConstructor;

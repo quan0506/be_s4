@@ -1,8 +1,6 @@
 package com.fptaptech.s4.controller;
 
-import com.fptaptech.s4.dto.SpaDTO;
-
-import com.fptaptech.s4.response.Response;
+import com.fptaptech.s4.dto.Response;
 import com.fptaptech.s4.service.interfaces.ISpaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @RestController

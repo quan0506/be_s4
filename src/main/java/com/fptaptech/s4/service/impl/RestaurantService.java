@@ -1,14 +1,12 @@
 package com.fptaptech.s4.service.impl;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import com.fptaptech.s4.dto.RestaurantDTO;
 import com.fptaptech.s4.entity.Branch;
 import com.fptaptech.s4.entity.Restaurant;
 import com.fptaptech.s4.exception.OurException;
 import com.fptaptech.s4.repository.BranchRepository;
 import com.fptaptech.s4.repository.RestaurantRepository;
-import com.fptaptech.s4.response.Response;
+import com.fptaptech.s4.dto.Response;
 import com.fptaptech.s4.service.interfaces.IRestaurantService;
 import com.fptaptech.s4.utils.Utils;
 import lombok.RequiredArgsConstructor;

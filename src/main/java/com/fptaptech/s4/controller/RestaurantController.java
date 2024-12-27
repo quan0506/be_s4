@@ -1,6 +1,6 @@
 package com.fptaptech.s4.controller;
 
-import com.fptaptech.s4.response.Response;
+import com.fptaptech.s4.dto.Response;
 import com.fptaptech.s4.service.interfaces.IRestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
