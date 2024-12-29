@@ -33,7 +33,7 @@ public class Utils {
         userDTO.setFirstName(user.getFirstName());
         userDTO.setLastName(user.getLastName());
         userDTO.setPhone(user.getPhone());
-        userDTO.setEmail(user.getEmail());
+        userDTO.setThisEmail(user.getEmail());
 
 
         // Map roles directly from Role entity
@@ -316,7 +316,15 @@ public class Utils {
     }
 
 
-    // USER
+    // Rooms Number
+//    public static RoomsDTO mapRoomsEntityToRoomsDTO(Rooms rooms) {
+//        RoomsDTO roomsDTO = new RoomsDTO();
+//        roomsDTO.setId(rooms.getId());
+//        roomsDTO.setName(rooms.getName());
+//        roomsDTO.setDescription(rooms.getDescription());
+//        roomsDTO.setRoomStatus(r);
+//        return roomsDTO;
+//    }
 
 
 }
