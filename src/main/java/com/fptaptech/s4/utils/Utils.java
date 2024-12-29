@@ -327,5 +327,26 @@ public class Utils {
 //    }
 
 
+
+    // Amenities
+    public static AmenitiesDTO mapAmenitiesEntityToAmenitiesDTO(Amenities amenities) {
+        AmenitiesDTO amenitiesDTO = new AmenitiesDTO();
+        amenitiesDTO.setId(amenities.getId());
+        amenitiesDTO.setName(amenities.getName());
+        amenitiesDTO.setPhotos(amenities.getPhotos());
+        amenitiesDTO.setDescription(amenities.getDescription());
+        amenitiesDTO.setRoomId(amenities.getRoom().getId());
+        amenitiesDTO.setRoomType(amenities.getRoom().getRoomType());
+        return amenitiesDTO;
+    }
+    public static List<AmenitiesDTO> mapAmenitiesListEntityToAmenitiesListDTO(List<Amenities> amenitiesList) {
+        List<AmenitiesDTO> amenitiesDTOList = new ArrayList<>();
+        for (Amenities amenities : amenitiesList) {
+            AmenitiesDTO amenitiesDTO = mapAmenitiesEntityToAmenitiesDTO(amenities);
+            amenitiesDTOList.add(amenitiesDTO);
+        }
+        return amenitiesDTOList;
+    }
+
 }
 
