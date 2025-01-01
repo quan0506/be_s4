@@ -88,13 +88,17 @@ public class Utils {
         shuttleBookingDTO.setUserEmail(shuttleBooking.getUser().getEmail());
         shuttleBookingDTO.setPhone(shuttleBooking.getPhone());
 
-        shuttleBookingDTO.setCarId(shuttle.getId());
-        shuttleBookingDTO.setCarType(shuttle.getCarType());
-        shuttleBookingDTO.setCarPrice(shuttle.getCarPrice());
-        shuttleBookingDTO.setPhotos(shuttle.getPhotos());
-        shuttleBookingDTO.setCarDescription(shuttle.getCarDescription());
-        shuttleBookingDTO.setBranchId(shuttleBooking.getShuttle().getBranch().getId());
-        shuttleBookingDTO.setBranchName(shuttleBooking.getShuttle().getBranch().getBranchName());
+        shuttleBookingDTO.setUser(mapUserEntityToUserDTO(shuttleBooking.getUser()));
+        shuttleBookingDTO.setShuttle(mapShuttleEntityToShuttleDTO(shuttleBooking.getShuttle()));
+
+
+//        shuttleBookingDTO.setCarId(shuttle.getId());
+//        shuttleBookingDTO.setCarType(shuttle.getCarType());
+//        shuttleBookingDTO.setCarPrice(shuttle.getCarPrice());
+//        shuttleBookingDTO.setPhotos(shuttle.getPhotos());
+//        shuttleBookingDTO.setCarDescription(shuttle.getCarDescription());
+//        shuttleBookingDTO.setBranchId(shuttleBooking.getShuttle().getBranch().getId());
+//        shuttleBookingDTO.setBranchName(shuttleBooking.getShuttle().getBranch().getBranchName());
         return shuttleBookingDTO;
     }
 
