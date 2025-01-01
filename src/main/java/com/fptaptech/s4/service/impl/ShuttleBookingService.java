@@ -163,7 +163,7 @@ public class ShuttleBookingService implements IShuttleBookingService {
 
             response.setStatusCode(200);
             response.setMessage("User shuttle bookings retrieved successfully.");
-            response.setShuttleBookingList(shuttleBookingDTOList);
+            response.setData(shuttleBookingDTOList);
             response.setEmail(user.getEmail());
         } catch (OurException e) {
             response.setStatusCode(404);
