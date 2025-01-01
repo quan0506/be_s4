@@ -56,18 +56,6 @@ public class BookingResponse {
         this.bookingConfirmationCode = bookingConfirmationCode;
     }
 
-    public BookingResponse(BookedRoom bookedRoom) {
-        this.id = bookedRoom.getBookingId();
-        this.checkInDate = bookedRoom.getCheckInDate();
-        this.checkOutDate = bookedRoom.getCheckOutDate();
-        this.guestName = bookedRoom.getGuestFullName();
-        this.guestEmail = bookedRoom.getGuestEmail();
-        this.numOfAdults = bookedRoom.getNumOfAdults();
-        this.numOfChildren = bookedRoom.getNumOfChildren();
-        this.totalNumOfGuests = bookedRoom.getTotalNumOfGuest();
-        this.bookingConfirmationCode = bookedRoom.getBookingConfirmationCode();
-    }
-
     public BookingResponse(Booking booking) {
         this.id = booking.getBookingId();
         this.checkInDate = booking.getCheckInDate();

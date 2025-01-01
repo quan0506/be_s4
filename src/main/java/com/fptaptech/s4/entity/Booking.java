@@ -1,13 +1,10 @@
 package com.fptaptech.s4.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -48,4 +45,18 @@ public class Booking {
 
     @Column(name = "status", nullable = false)
     private String status;
+
+    @PrePersist
+    @PreUpdate
+    public void updateStatus() {
+        LocalDate now = LocalDate.now();
+        if (status == null || !status.equals("Đã hủy")) {
+            if (now.isAfter(checkOutDate) || now.isBefore(checkInDate)) {
+                this.status = "Ngoài thời gian sử dụng phòng";
+            } else {
+                this.status = "Đang sử dụng";
+            }
+        }
+    }
 }
+

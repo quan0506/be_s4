@@ -12,14 +12,14 @@ public interface IBookingService {
     Booking updateBooking(Long bookingId, Booking booking);
     void deleteBooking(Long bookingId);
     Booking getBookingById(Long bookingId);
-
     List<BookingResponseDTO> getBookingsByUserId(Long userId, Authentication authentication);
-
     List<Booking> getAllBookings();
     void processPayment(Long bookingId, String paymentMethod);
     List<BookedRoom> getAllBookingsByRoomId(Long roomId);
-/*
-    void cancelBooking(Long bookingId);*/
+
+    // Phương thức mới
+    void requestCancellation(Long bookingId, String userEmail);
 }
+
 
 

@@ -4,6 +4,7 @@ import com.fptaptech.s4.entity.Booking;
 import com.fptaptech.s4.entity.Branch;
 import com.fptaptech.s4.entity.Room;
 import com.fptaptech.s4.exception.ResourceNotFoundException;
+import com.fptaptech.s4.repository.BookingRepository;
 import com.fptaptech.s4.repository.BranchRepository;
 import com.fptaptech.s4.repository.RoomRepository;
 import com.fptaptech.s4.service.interfaces.IRoomService;
@@ -22,6 +23,7 @@ public class RoomService implements IRoomService {
     private final RoomRepository roomRepository;
     private final BranchRepository branchRepository;
     private final CloudinaryService cloudinaryService;
+    private final BookingRepository bookingRepository;
 
     @Override
     public Room addNewRoom(List<MultipartFile> photos, String roomType, BigDecimal roomPrice, Long branchId, String description) throws IOException {
@@ -133,5 +135,11 @@ public class RoomService implements IRoomService {
     }
 
     public void saveRoom(Room room) { roomRepository.save(room);
+    }
+
+
+    public boolean isRoomBooked(Long roomId) {
+        List<Booking> bookings = bookingRepository.findByRoomIdAndStatus(roomId, "BOOKED");
+        return !bookings.isEmpty();
     }
 }

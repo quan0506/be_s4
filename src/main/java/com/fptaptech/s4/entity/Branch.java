@@ -43,6 +43,9 @@ public class Branch {
     @Column(updatable = false)
     private LocalDate createdAt;
 
+    @Column(name = "email", nullable = true )
+    private String email;
+
     @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Room> rooms;
 

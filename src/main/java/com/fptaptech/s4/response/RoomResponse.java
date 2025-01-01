@@ -39,7 +39,7 @@ public class RoomResponse {
         this.bookings = bookings;
     }
 
-        // Constructor that does not include the branch reference
+    // Constructor that does not include the branch reference
     public RoomResponse(Room room) {
         this.id = room.getId();
         this.roomType = room.getRoomType();
@@ -50,9 +50,9 @@ public class RoomResponse {
         this.isBooked = room.isBooked();
         this.branchId = room.getBranch()!=null? room.getBranch().getId() : null;
         this.bookings = room.getBookings().stream()
-            .map(BookingResponse::new)
-            .collect(Collectors.toList());
-        }
+                .map(BookingResponse::new)
+                .collect(Collectors.toList());
+    }
 
     public RoomResponse(Long id, String roomType, BigDecimal roomPrice, Long branchId ,List<String> photos, String description) {
         this.id = id;
@@ -71,5 +71,16 @@ public class RoomResponse {
         this.isBooked = false;
         this.photos = photos;
         this.description = description;
+    }
+
+    public RoomResponse(Long id, String roomType, BigDecimal roomPrice, Long branchId, List<String> photos, String description, String status) {
+        this.id = id;
+        this.roomType = roomType;
+        this.roomPrice = roomPrice;
+        this.branchId = branchId;
+        this.photos = photos;
+        this.description = description;
+        this.status = status;
+
     }
 }

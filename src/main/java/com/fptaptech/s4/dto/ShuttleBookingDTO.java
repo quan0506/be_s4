@@ -11,24 +11,22 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ShuttleBookingDTO {
     private Long id;
-
-    private String phone;
     private LocalDate shuttleCheckInDate;
     private LocalDate shuttleCheckOutDate;
+    private String phone;
     private String bookingConfirmationCode;
     private BigDecimal totalPrice;
 
-    private Long carId;
-    private String carType;
-    private BigDecimal carPrice;
-    private List<String> photos;
-    private String carDescription;
+//    private Long carId;
+//    private String carType;
+//    private BigDecimal carPrice;
+//    private List<String> photos;
+//    private String carDescription;
 
 
     private String userEmail;
-
     private UserDTO user;
     private ShuttleDTO shuttle;
-    private Long branchId;
-    private String branchName;
+//    private Long branchId;
+//    private String branchName;
 }

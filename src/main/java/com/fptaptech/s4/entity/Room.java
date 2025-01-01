@@ -34,6 +34,9 @@ public class Room {
     @Column(name = "is_booked")
     private boolean isBooked;
 
+    @Column(name ="need_cleaning")
+    private Boolean needsCleaning = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "branch_id", nullable = false)
     private Branch branch;
@@ -75,6 +78,12 @@ public class Room {
         this.status = booked ? "Đang sử dụng" : "Còn trống";
     }
 
+    @PrePersist
+    @PreUpdate
+    public void preSave() {
+        updateStatus();
+    }
+
     public Long getBranchId() {
         return branch.getId();
     }
@@ -83,4 +92,3 @@ public class Room {
         return branch.getBranchName();
     }
 }
-

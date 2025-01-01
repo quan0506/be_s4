@@ -6,6 +6,7 @@ import com.fptaptech.s4.entity.Booking;
 import com.fptaptech.s4.response.BookingResponse;
 import com.fptaptech.s4.response.BookingResponseDTO;
 import com.fptaptech.s4.service.impl.BookingService;
+import com.fptaptech.s4.service.impl.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import java.util.List;
 public class BookingController {
 
     private final BookingService bookingService;
+    private final EmailService emailService;
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_EMPLOYEE')")
@@ -35,6 +37,13 @@ public class BookingController {
         Booking updatedBooking = bookingService.updateBooking(id, booking);
         return ResponseEntity.ok(updatedBooking);
     }
+
+ /*   @PutMapping("/update/dates/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EMPLOYEE')")
+    public ResponseEntity<Booking> updateBookingDates(@PathVariable Long id, @RequestBody Booking booking) {
+        Booking updatedBooking = bookingService.updateBooking(id, booking, true);
+        return ResponseEntity.ok(updatedBooking);
+    }*/
 
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
@@ -81,5 +90,12 @@ public class BookingController {
     public ResponseEntity<String> processPayment(@PathVariable Long id, @RequestParam String paymentMethod) {
         bookingService.processPayment(id, paymentMethod);
         return ResponseEntity.ok("Payment processed successfully.");
+    }
+
+    @PostMapping("/cancel/request/{bookingId}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_EMPLOYEE')")
+    public ResponseEntity<Void> requestCancellation(@PathVariable Long bookingId, @RequestParam String userEmail) {
+        bookingService.requestCancellation(bookingId, userEmail);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

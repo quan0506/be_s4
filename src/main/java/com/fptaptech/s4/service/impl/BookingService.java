@@ -11,6 +11,7 @@ import com.fptaptech.s4.repository.UserRepository;
 import com.fptaptech.s4.response.BookingResponseDTO;
 import com.fptaptech.s4.service.interfaces.IBookingService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
@@ -19,7 +20,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 
@@ -54,6 +57,7 @@ public class BookingService implements IBookingService {
 
         booking.setRoom(room);
         booking.setConfirmBookingCode(generateConfirmCode());
+        booking.updateStatus();
 
         // Tìm kiếm người dùng với id
         var userId = booking.getUser().getId();
@@ -125,6 +129,27 @@ public class BookingService implements IBookingService {
     }
 
 
+    @Override
+    public void requestCancellation(Long bookingId, String userEmail) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+
+        // Kiểm tra ngày hủy phòng
+        LocalDate today = LocalDate.now();
+        if (booking.getCheckInDate().isBefore(today.plusDays(1))) {
+            throw new IllegalArgumentException("Booking cannot be cancelled within one day before check-in date");
+        }
+
+        // Hủy phòng
+        booking.setStatus("Cancelled");
+        bookingRepository.save(booking);
+
+        // Gửi thông báo hủy phòng thành công
+        Context context = new Context();
+        context.setVariable("bookingId", booking.getBookingId());
+        emailService.sendHtmlMessage(userEmail, "Hủy phòng thành công", "cancelationTemplate", context);
+    }
+
 
     @Override
     public Booking updateBooking(Long bookingId, Booking booking) {
@@ -137,6 +162,22 @@ public class BookingService implements IBookingService {
         existingBooking.setStatus(booking.getStatus());
         return bookingRepository.save(existingBooking);
     }
+
+/*    @Override
+    public Booking updateBooking(Long bookingId, Booking booking, boolean updateDates) {
+        Booking existingBooking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Đặt phòng không tồn tại"));
+
+        if (updateDates) {
+            existingBooking.setCheckInDate(booking.getCheckInDate());
+            existingBooking.setCheckOutDate(booking.getCheckOutDate());
+        }
+
+        existingBooking.setAdults(booking.getAdults());
+        existingBooking.setChildren(booking.getChildren());
+        existingBooking.setStatus(booking.getStatus());
+        return bookingRepository.save(existingBooking);
+    }*/
 
     @Override
     public void deleteBooking(Long bookingId) {
@@ -209,45 +250,6 @@ public class BookingService implements IBookingService {
                 ))
                 .collect(Collectors.toList());
     }
-
-    /*@Override
-    public void cancelBooking(Long bookingId) {
-        Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
-
-        LocalDate currentDate = LocalDate.now();
-        if (booking.getCheckInDate().minusDays(1).isBefore(currentDate)) {
-            throw new IllegalStateException("Cannot cancel booking less than 1 day before check-in date");
-        }
-
-        BigDecimal cancellationFee;
-        if (booking.getCheckInDate().minusDays(1).isAfter(currentDate)) {
-            cancellationFee = booking.getTotalPrice().multiply(BigDecimal.valueOf(0.50));
-        } else {
-            cancellationFee = booking.getTotalPrice().multiply(BigDecimal.valueOf(1.00));
-        }
-
-        booking.setStatus("Cancelled");
-        bookingRepository.save(booking);
-
-        // Logic để trừ tiền phạt từ tài khoản người dùng hoặc trả lại tiền cọc
-        processCancellationFee(booking, cancellationFee);
-    }
-
-    private void processCancellationFee(Booking booking, BigDecimal cancellationFee) {
-        // Thực hiện logic xử lý tiền phạt khi hủy đặt phòng
-        // Ví dụ: trừ tiền từ tài khoản người dùng hoặc trả lại tiền cọc nếu có
-        // Ở đây chỉ cần in ra thông tin để minh họa
-        User user = booking.getUser();
-        BigDecimal newBalance = user.getAccountBalance().subtract(cancellationFee);
-        if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalStateException("Not enough balance to to cover the cancellation fee");
-        }
-        user.setAccountBalance(newBalance);
-        userRepository.save(user);
-        System.out.println("Cancellation fee for booking ID " + booking.getBookingId() + ": " + cancellationFee);
-        System.out.println("New account balance for user ID: " + user.getId() + ": " + newBalance);
-    }*/
 }
 
 

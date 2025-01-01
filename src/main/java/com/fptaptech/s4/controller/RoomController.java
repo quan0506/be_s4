@@ -46,7 +46,10 @@ public class RoomController {
     public ResponseEntity<List<RoomResponse>> getAllRooms() {
         List<Room> rooms = roomService.getAllRooms();
         List<RoomResponse> roomResponses = rooms.stream()
-                .map(RoomResponse::new)
+                .map(room -> {
+                    boolean isAvailable = roomService.isRoomAvailable(room.getId(), LocalDate.now(), LocalDate.now().plusDays(1));
+                    return new RoomResponse(room.getId(), room.getRoomType(), room.getRoomPrice(), room.getBranch().getId(), room.getPhotos(), room.getDescription(), isAvailable ? "Còn trống" : "Không còn trống");
+                })
                 .collect(Collectors.toList());
         return ResponseEntity.ok(roomResponses);
     }
@@ -55,8 +58,11 @@ public class RoomController {
     public ResponseEntity<List<RoomResponse>> getRoomsByBranch(@PathVariable Long branchId) {
         List<Room> rooms = roomService.getRoomsByBranch(branchId);
         List<RoomResponse> roomResponses = rooms.stream()
-                .map(RoomResponse::new)
-                .toList();
+                .map(room -> {
+                    boolean isAvailable = roomService.isRoomAvailable(room.getId(), LocalDate.now(), LocalDate.now().plusDays(1));
+                    return new RoomResponse(room.getId(), room.getRoomType(), room.getRoomPrice(), room.getBranch().getId(), room.getPhotos(), room.getDescription(), isAvailable ? "Còn trống" : "Không còn trống");
+                })
+                .collect(Collectors.toList());
         return ResponseEntity.ok(roomResponses);
     }
 
@@ -64,8 +70,11 @@ public class RoomController {
     public ResponseEntity<List<RoomResponse>> getRoomsByTypeAndBranch(@RequestParam String roomType, @RequestParam Long branchId) {
         List<Room> rooms = roomService.getRoomsByTypeAndBranch(roomType, branchId);
         List<RoomResponse> roomResponses = rooms.stream()
-                .map(RoomResponse::new)
-                .toList();
+                .map(room -> {
+                    boolean isAvailable = roomService.isRoomAvailable(room.getId(), LocalDate.now(), LocalDate.now().plusDays(1));
+                    return new RoomResponse(room.getId(), room.getRoomType(), room.getRoomPrice(), room.getBranch().getId(), room.getPhotos(), room.getDescription(), isAvailable ? "Còn trống" : "Không còn trống");
+                })
+                .collect(Collectors.toList());
         return ResponseEntity.ok(roomResponses);
     }
 
@@ -73,15 +82,21 @@ public class RoomController {
     public ResponseEntity<List<RoomResponse>> getRoomsByPriceAndBranch(@RequestParam BigDecimal roomPrice, @RequestParam Long branchId) {
         List<Room> rooms = roomService.getRoomsByPriceAndBranch(roomPrice, branchId);
         List<RoomResponse> roomResponses = rooms.stream()
-                .map(RoomResponse::new)
-                .toList();
+                .map(room -> {
+                    boolean isAvailable = roomService.isRoomAvailable(room.getId(), LocalDate.now(), LocalDate.now().plusDays(1));
+                    return new RoomResponse(room.getId(), room.getRoomType(), room.getRoomPrice(), room.getBranch().getId(), room.getPhotos(), room.getDescription(), isAvailable ? "Còn trống" : "Không còn trống");
+                })
+                .collect(Collectors.toList());
         return ResponseEntity.ok(roomResponses);
     }
 
     @GetMapping("/room/{roomId}")
     public ResponseEntity<RoomResponse> getRoomById(@PathVariable Long roomId) {
         return roomService.getRoomById(roomId)
-                .map(RoomResponse::new)
+                .map(room -> {
+                    boolean isAvailable = roomService.isRoomAvailable(room.getId(), LocalDate.now(), LocalDate.now().plusDays(1));
+                    return new RoomResponse(room.getId(), room.getRoomType(), room.getRoomPrice(), room.getBranch().getId(), room.getPhotos(), room.getDescription(), isAvailable ? "Còn trống" : "Không còn trống");
+                })
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> new ResourceNotFoundException("Room not found"));
     }
@@ -108,6 +123,9 @@ public class RoomController {
     @DeleteMapping("/delete/room/{roomId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteRoom(@PathVariable Long roomId) {
+        if (roomService.isRoomBooked(roomId)) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
         roomService.deleteRoom(roomId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
