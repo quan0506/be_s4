@@ -12,7 +12,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class BookingDTO {
     private Long bookingId;
-    private String userName;
     private String roomType;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
@@ -21,4 +20,6 @@ public class BookingDTO {
     private BigDecimal totalPrice;
     private String confirmBookingCode;
     private String status;
+
+    private UserDTO user;
 }

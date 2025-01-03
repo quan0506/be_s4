@@ -8,8 +8,8 @@ public class BookingMapper {
     public static BookingDTO toDTO(Booking booking) {
         BookingDTO dto = new BookingDTO();
         dto.setBookingId(booking.getBookingId());
-        dto.setUserName(booking.getUser().getFirstName());
-        dto.setUserName(booking.getUser().getLastName());
+//        dto.setUserName(booking.getUser().getFirstName());
+//        dto.setUserName(booking.getUser().getLastName());
         dto.setRoomType(booking.getRoom().getRoomType());
         dto.setCheckInDate(booking.getCheckInDate());
         dto.setCheckOutDate(booking.getCheckOutDate());

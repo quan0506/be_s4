@@ -1,5 +1,7 @@
 package com.fptaptech.s4.service.impl;
 
+import com.fptaptech.s4.dto.BookingDTO;
+import com.fptaptech.s4.dto.Response;
 import com.fptaptech.s4.entity.Booking;
 import com.fptaptech.s4.entity.Room;
 import com.fptaptech.s4.entity.User;
@@ -10,6 +12,7 @@ import com.fptaptech.s4.repository.BookingRepository;
 import com.fptaptech.s4.repository.UserRepository;
 import com.fptaptech.s4.response.BookingResponseDTO;
 import com.fptaptech.s4.service.interfaces.IBookingService;
+import com.fptaptech.s4.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.core.Authentication;
@@ -193,8 +196,19 @@ public class BookingService implements IBookingService {
     }
 
     @Override
-    public List<Booking> getAllBookings() {
-        return bookingRepository.findAll();
+    public Response getAllBookings() {
+        Response response = new Response();
+        try{
+            List<Booking> bookings = bookingRepository.findAll();
+            List<BookingDTO>  bookingDTOList = Utils.mapBookingListEntityToBookingListDTO(bookings);
+            response.setStatusCode(200);
+            response.setMessage("Bookings retrieved successfully");
+            response.setData(bookingDTOList);
+        }catch (Exception e){
+            response.setStatusCode(500);
+            response.setMessage("Error fetching bookings " + e.getMessage());
+        }
+        return response;
     }
 
     @Override

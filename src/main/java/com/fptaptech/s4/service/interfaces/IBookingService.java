@@ -1,5 +1,6 @@
 package com.fptaptech.s4.service.interfaces;
 
+import com.fptaptech.s4.dto.Response;
 import com.fptaptech.s4.entity.BookedRoom;
 import com.fptaptech.s4.entity.Booking;
 import com.fptaptech.s4.response.BookingResponseDTO;
@@ -13,7 +14,7 @@ public interface IBookingService {
     void deleteBooking(Long bookingId);
     Booking getBookingById(Long bookingId);
     List<BookingResponseDTO> getBookingsByUserId(Long userId, Authentication authentication);
-    List<Booking> getAllBookings();
+    Response getAllBookings();
     void processPayment(Long bookingId, String paymentMethod);
     List<BookedRoom> getAllBookingsByRoomId(Long roomId);
 

@@ -2,6 +2,7 @@ package com.fptaptech.s4.utils;
 
 import com.fptaptech.s4.dto.*;
 import com.fptaptech.s4.entity.*;
+import jdk.jshell.execution.Util;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -352,4 +353,33 @@ public class Utils {
         return amenitiesDTOList;
     }
 
+
+
+
+    // Bookings
+    public static BookingDTO mapBookingEntityToBookingDTO(Booking booking) {
+        BookingDTO bookingDTO = new BookingDTO();
+        bookingDTO.setBookingId(booking.getBookingId());
+        bookingDTO.setCheckInDate(booking.getCheckInDate());
+        bookingDTO.setCheckOutDate(booking.getCheckOutDate());
+        bookingDTO.setAdults(booking.getAdults());
+        bookingDTO.setChildren(booking.getChildren());
+        bookingDTO.setTotalPrice(booking.getTotalPrice());
+        bookingDTO.setConfirmBookingCode(booking.getConfirmBookingCode());
+        bookingDTO.setStatus(booking.getStatus());
+        bookingDTO.setRoomType(booking.getRoom().getRoomType());
+        bookingDTO.setUser(Utils.mapUserEntityToUserDTO(booking.getUser()));
+        return bookingDTO;
+    }
+
+
+
+    public static List<BookingDTO> mapBookingListEntityToBookingListDTO(List<Booking> bookingList) {
+        List<BookingDTO> bookingDTOList = new ArrayList<>();
+        for (Booking booking : bookingList) {
+            BookingDTO bookingDTO =  mapBookingEntityToBookingDTO(booking);
+            bookingDTOList.add(bookingDTO);
+        }
+        return bookingDTOList;
+    }
 }

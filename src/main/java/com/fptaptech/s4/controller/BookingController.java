@@ -2,6 +2,7 @@ package com.fptaptech.s4.controller;
 
 import com.fptaptech.s4.Mapper.BookingMapper;
 import com.fptaptech.s4.dto.BookingDTO;
+import com.fptaptech.s4.dto.Response;
 import com.fptaptech.s4.entity.Booking;
 import com.fptaptech.s4.response.BookingResponse;
 import com.fptaptech.s4.response.BookingResponseDTO;
@@ -76,14 +77,11 @@ public class BookingController {
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<BookingResponse> getAllBookings() {
-        List<Booking> bookings = bookingService.getAllBookings();
-        List<BookingDTO> bookingDTOs = bookings.stream()
-                .map(BookingMapper::toDTO)
-                .toList();
-        BookingResponse response = new BookingResponse();
-        response.setBookings(bookingDTOs);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<Response> getAllBookings() {
+        Response response = bookingService.getAllBookings();
+        response.setMessage("Bookings listed successfully.");
+        response.setStatusCode(200);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
     @PostMapping("/payment/{id}")
