@@ -368,11 +368,17 @@ public class Utils {
         bookingDTO.setConfirmBookingCode(booking.getConfirmBookingCode());
         bookingDTO.setStatus(booking.getStatus());
         bookingDTO.setRoomType(booking.getRoom().getRoomType());
-        bookingDTO.setUser(Utils.mapUserEntityToUserDTO(booking.getUser()));
+        bookingDTO.setFirstName(booking.getUser().getFirstName());
+        bookingDTO.setLastName(booking.getUser().getLastName());
+        bookingDTO.setEmail(booking.getUser().getEmail());
+        bookingDTO.setPhone(bookingDTO.getPhone());
+
         return bookingDTO;
     }
 
-
+//shuttleDTO.setBranchId(shuttle.getBranch().getId());
+//        shuttleDTO.setBranchName(shuttle.getBranch().getBranchName());
+//        shuttleDTO.setBranchAddress(shuttle.getBranch().getAddress());
 
     public static List<BookingDTO> mapBookingListEntityToBookingListDTO(List<Booking> bookingList) {
         List<BookingDTO> bookingDTOList = new ArrayList<>();

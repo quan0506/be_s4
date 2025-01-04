@@ -21,5 +21,8 @@ public class BookingDTO {
     private String confirmBookingCode;
     private String status;
 
-    private UserDTO user;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phone;
 }
