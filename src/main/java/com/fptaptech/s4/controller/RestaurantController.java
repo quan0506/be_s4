@@ -81,7 +81,8 @@ public class RestaurantController {
     }
 
     @GetMapping("/get-all-restaurants")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<Response> getAllRestaurants() {
         Response response = restaurantService.getAllRestaurantsNoBranch();
         return ResponseEntity.status(response.getStatusCode()).body(response);

@@ -123,7 +123,8 @@ public class ShuttleController {
     }
 
     @GetMapping("/get-all-shuttles")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<Response> getAllShuttles() {
         Response response = shuttleService.getAllShuttles();
         return ResponseEntity.status(response.getStatusCode()).body(response);

@@ -363,7 +363,7 @@ public class Utils {
         bookingDTO.setCheckInDate(booking.getCheckInDate());
         bookingDTO.setCheckOutDate(booking.getCheckOutDate());
         bookingDTO.setAdults(booking.getAdults());
-        bookingDTO.setChildren(booking.getChildren());
+//        bookingDTO.setChildren(booking.getChildren());
         bookingDTO.setTotalPrice(booking.getTotalPrice());
         bookingDTO.setConfirmBookingCode(booking.getConfirmBookingCode());
         bookingDTO.setStatus(booking.getStatus());

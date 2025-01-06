@@ -58,5 +58,13 @@ public class Booking {
             }
         }
     }
+
+    public int getChildren() {
+        return children;
+    }
+
+    public void setChildren(int children) {
+        this.children = children;
+    }
 }
 

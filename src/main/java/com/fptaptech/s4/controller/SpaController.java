@@ -81,7 +81,8 @@ public class SpaController {
     }
 
     @GetMapping("/get-all-spas")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<Response> getAllSpas() {
         Response response = spaService.getAllSpas();
         return ResponseEntity.status(response.getStatusCode()).body(response);

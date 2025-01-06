@@ -14,7 +14,7 @@ public class BookingMapper {
         dto.setCheckInDate(booking.getCheckInDate());
         dto.setCheckOutDate(booking.getCheckOutDate());
         dto.setAdults(booking.getAdults());
-        dto.setChildren(booking.getChildren());
+//        dto.setChildren(booking.getChildren());
         dto.setTotalPrice(booking.getTotalPrice());
         dto.setConfirmBookingCode(booking.getConfirmBookingCode());
         dto.setStatus(booking.getStatus());
