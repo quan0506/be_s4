@@ -164,7 +164,7 @@ public class UserService implements IUserService {
         logger.info("Verification code sent to email: {}", email);
     }
 
-    @org.springframework.transaction.annotation.Transactional
+    @Transactional
     public void resetPassword(String email, ResetPasswordDTO resetPasswordDTO) {
         try {
             logger.info("Starting password reset process for email: {}", email);
