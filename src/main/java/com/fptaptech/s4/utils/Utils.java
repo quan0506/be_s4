@@ -2,19 +2,20 @@ package com.fptaptech.s4.utils;
 
 import com.fptaptech.s4.dto.*;
 import com.fptaptech.s4.entity.*;
-import jdk.jshell.execution.Util;
-
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fptaptech.s4.service.impl.BookingService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Utils {
 
     private static final String ALPHANUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final SecureRandom secureRandom = new SecureRandom();
-
-    // Generate random confirmation code
+    private static final Logger logger = LoggerFactory.getLogger(Utils.class);    // Generate random confirmation code
     public static String generateRandomConfirmationCode(int length) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < length; i++) {
@@ -372,7 +373,7 @@ public class Utils {
         bookingDTO.setLastName(booking.getUser().getLastName());
         bookingDTO.setEmail(booking.getUser().getEmail());
         bookingDTO.setPhone(bookingDTO.getPhone());
-
+        logger.info("Mapped BookingDTO: {}", bookingDTO);
         return bookingDTO;
     }
 

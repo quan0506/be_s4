@@ -1,3 +1,4 @@
+/*
 package com.fptaptech.s4.repository;
 
 import com.fptaptech.s4.entity.BookedRoom;
@@ -10,9 +11,12 @@ import java.util.Optional;
 @Repository
 
 public interface BookedRepository extends JpaRepository<BookedRoom, Long> {
-    List<BookedRoom> findByGuestEmail(String email);
+*/
+/*    List<BookedRoom> findByGuestEmail(String email);
 
     List<BookedRoom> findByRoomId(Long roomId);
 
-    Optional<BookedRoom> findByBookingConfirmationCode(String confirmationCode);
+    Optional<BookedRoom> findByBookingConfirmationCode(String confirmationCode);*//*
+
 }
+*/

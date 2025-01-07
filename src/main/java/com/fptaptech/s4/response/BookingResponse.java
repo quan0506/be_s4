@@ -36,6 +36,8 @@ public class BookingResponse {
     @Column(nullable = false)
     private int numOfAdults;
 
+    private String description;
+
     @Column(nullable = false)
     private int numOfChildren;
 

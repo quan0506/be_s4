@@ -1,3 +1,4 @@
+/*
 package com.fptaptech.s4.controller;
 
 import com.fptaptech.s4.entity.BookedRoom;
@@ -21,7 +22,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/booked")
 public class BookedController {
-    private final BookedService bookedService;
+*/
+/*    private final BookedService bookedService;
     private final IRoomService roomService;
 
     @PostMapping("/create/{roomId}")
@@ -95,5 +97,6 @@ public class BookedController {
                 theRoom.getPhotos(),
                 theRoom.getDescription());
         return new BookingResponse();
-    }
-}
+    }*//*
+
+}*/

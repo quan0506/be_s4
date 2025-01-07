@@ -27,12 +27,13 @@ public class BookingResponseDTO {
     private String firstName;
     private String lastName;
     private String phone;
+    private String description;
 
     // Constructors, Getters and Setters
     public BookingResponseDTO(Long bookingId, Long userId, Long roomId, String branchName
             ,LocalDate checkInDate, LocalDate checkOutDate, int adults, int children,
                               BigDecimal totalPrice, String confirmBookingCode,
-                              String status, String email, String phone,String firstName, String lastName) {
+                              String status, String email, String phone,String firstName, String lastName, String description) {
         this.bookingId = bookingId;
         this.userId = userId;
         this.roomId = roomId;
@@ -48,9 +49,10 @@ public class BookingResponseDTO {
         this.phone = phone;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.description = description;
     }
 
-    public BookingResponseDTO(Long bookingId, Long userId, Long roomId, String branchName, LocalDate checkInDate, LocalDate checkOutDate, int adults, int children, BigDecimal totalPrice, String confirmBookingCode, String status) {
+    public BookingResponseDTO(Long bookingId, Long userId, Long roomId, String branchName, LocalDate checkInDate, LocalDate checkOutDate, int adults, int children, BigDecimal totalPrice, String confirmBookingCode, String status, String description) {
         this.bookingId = bookingId;
         this.userId = userId;
         this.roomId = roomId;
@@ -62,5 +64,6 @@ public class BookingResponseDTO {
         this.totalPrice = totalPrice;
         this.confirmBookingCode = confirmBookingCode;
         this.status = status;
+        this.description = description;
     }
 }

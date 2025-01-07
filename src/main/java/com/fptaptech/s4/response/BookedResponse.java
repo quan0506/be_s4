@@ -1,4 +1,4 @@
-package com.fptaptech.s4.response;
+/*package com.fptaptech.s4.response;
 
 import com.fptaptech.s4.entity.Room;
 import lombok.*;
@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BookedResponse {
-    private  Long bookingId;
+*//*    private  Long bookingId;
 
     private LocalDate checkInDate;
 
@@ -28,6 +28,6 @@ public class BookedResponse {
 
     private String bookingConfirmationCode;
 
-    private Room room;
+    private Room room;*//*
 
-}
+}*/

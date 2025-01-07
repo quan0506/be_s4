@@ -105,7 +105,8 @@ public class BookingService implements IBookingService {
                 savedBooking.getChildren(),
                 savedBooking.getTotalPrice(),
                 savedBooking.getConfirmBookingCode(),
-                savedBooking.getStatus()
+                savedBooking.getStatus(),
+                savedBooking.getDescription()
         );
     }
 
@@ -163,6 +164,7 @@ public class BookingService implements IBookingService {
         existingBooking.setAdults(booking.getAdults());
         existingBooking.setChildren(booking.getChildren());
         existingBooking.setStatus(booking.getStatus());
+        existingBooking.setDescription(booking.getDescription());
         return bookingRepository.save(existingBooking);
     }
 
@@ -259,7 +261,8 @@ public class BookingService implements IBookingService {
                         booking.getUser().getEmail(),
                         booking.getUser().getPhone(),
                         booking.getUser().getFirstName(),
-                        booking.getUser().getLastName()
+                        booking.getUser().getLastName(),
+                        booking.getDescription()
 
                 ))
                 .collect(Collectors.toList());

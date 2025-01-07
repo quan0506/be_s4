@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
+@Getter
+@Setter
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,7 +36,7 @@ public class Booking {
     @Column(name = "adults", nullable = false)
     private int adults;
 
-    @Column(name = "children", nullable = false)
+    @Column(name = "children", nullable = true)
     private int children;
 
     @Column(name = "total_price", nullable = false)
@@ -43,8 +45,11 @@ public class Booking {
     @Column(name = "confirm_booking_code", nullable = false, unique = true, length = 5)
     private String confirmBookingCode;
 
-    @Column(name = "status", nullable = false)
+    @Column(name = "status", nullable = true)
     private String status;
+
+    @Column(name = "description", nullable = true)
+    private String description;
 
     @PrePersist
     @PreUpdate

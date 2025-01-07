@@ -1,3 +1,4 @@
+/*
 package com.fptaptech.s4.service.impl;
 
 import com.fptaptech.s4.entity.BookedRoom;
@@ -17,7 +18,8 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class BookedService implements IBookedService {
-    private final BookedRepository bookedRepository;
+*/
+/*    private final BookedRepository bookedRepository;
     private final IRoomService roomService;
     private final RoomRepository roomRepository;
 
@@ -82,5 +84,7 @@ public class BookedService implements IBookedService {
                                 || (bookingRequest.getCheckInDate().equals(existingBooking.getCheckOutDate())
                                 && bookingRequest.getCheckOutDate().equals(bookingRequest.getCheckInDate()))
                 );
-    }
+    }*//*
+
 }
+*/
