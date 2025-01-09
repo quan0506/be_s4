@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Shuttle Booking Confirmation</title>
+</head>
+<body>
+<h2>Hello, <span th:text="${userName}"></span>!</h2>
+<p>Your shuttle booking has been confirmed.</p>
+<ul>
+    <li>Shuttle: <span th:text="${shuttleName}"></span></li>
+    <li>Check-in Date: <span th:text="${checkInDate}"></span></li>
+    <li>Check-out Date: <span th:text="${checkOutDate}"></span></li>
+    <li>Total Price: <span th:text="${totalPrice}"></span></li>
+    <li>Confirmation Code: <span th:text="${confirmationCode}"></span></li>
+</ul>
+<p>Thank you for booking with us!</p>
+</body>
+</html>
+>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Xác nhận dịch vụ nhà hàng</title>
+</head>
+<body>
+<h2>Xin chào, <span th:text="${userName}"></span>!</h2>
+<p>Đơn đặt nhà hàng của quý khách đã được xác nhận thành công</p>
+<ul>
+    <li>Nhà hàng: <span th:text="${RestaurantType}"></span></li>
+    <li>Thời gian đặt: <span th:text="${DayCheckIn}"></span></li>
+    <li>Số lượng trẻ em: <span th:text="${NumOfChildren}"></span></li>
+    <li>Số lượng người lớn: <span th:text="${NumOfAdults}"></span></li>
+    <li>Tổng tiền thanh toán: <span th:text="${totalPrice}"></span></li>
+</ul>
+<p>Cảm ơn bạn đã đặt dịch vụ của chúng tôi</p>
+</body>
+</html>

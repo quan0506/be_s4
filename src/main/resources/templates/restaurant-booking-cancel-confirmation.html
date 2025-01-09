@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Xác Nhận Hủy Đặt Bàn</title>
+</head>
+<body>
+<h2>Chào <span th:text="${userName}"></span>,</h2>
+<p>Chúng tôi xin thông báo rằng yêu cầu hủy đặt bàn của bạn tại nhà hàng <span th:text="${restaurantName}"></span> đã được xử lý thành công.</p>
+<p>Dưới đây là thông tin chi tiết về đặt bàn của bạn:</p>
+<ul>
+    <li>Nhà hàng: <span th:text="${restaurantName}"></span></li>
+    <li>Ngày đặt: <span th:text="${dayCheckIn}"></span></li>
+
+</ul>
+<p>Chúng tôi rất tiếc vì sự bất tiện này và hy vọng sẽ có cơ hội phục vụ bạn trong tương lai.</p>
+<p>Trân trọng,</p>
+<p>Đội ngũ hỗ trợ khách hàng</p>
+</body>
+</html>

@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -34,7 +35,8 @@ public class RestaurantBookingService implements IRestaurantBookingService {
     private final RestaurantBookingRepository restaurantBookingRepository;
     private final RestaurantRepository restaurantRepository;
     private final UserRepository userRepository;
-    private final BranchRepository branchRepository; // Assuming you have a BranchRepository
+    private final BranchRepository branchRepository;
+    private final EmailService emailService;
 
     @Override
     public Response saveRestaurantBooking(Long branchId, Long restaurantId, Long userId, RestaurantBookingDTO restaurantBookingRequest) {
@@ -64,6 +66,24 @@ public class RestaurantBookingService implements IRestaurantBookingService {
             response.setStatusCode(200);
             response.setMessage("successful");
             response.setRestaurantBooking(restaurantBookingDTO);
+
+
+            Context emailContext = new Context();
+            emailContext.setVariable("userName", user.getEmail());
+            emailContext.setVariable("RestaurantType", restaurant.getRestaurantType());
+            emailContext.setVariable("DayCheckIn", restaurantBooking.getDayCheckIn());
+            emailContext.setVariable("NumOfChildren", restaurantBooking.getNumOfChildren());
+            emailContext.setVariable("NumOfAdults", restaurantBooking.getNumOfAdults());
+            emailContext.setVariable("totalPrice", totalPrice);
+
+
+            emailService.sendHtmlMessage(
+                    user.getEmail(),
+                    "Shuttle Booking Confirmation",
+                    "shuttle-booking-confirmation",
+                    emailContext
+            );
+
         } catch (OurException e) {
             response.setStatusCode(404);
             response.setMessage(e.getMessage());
@@ -100,6 +120,21 @@ public class RestaurantBookingService implements IRestaurantBookingService {
         Response response = new Response();
         try {
             RestaurantBooking restaurantBooking = restaurantBookingRepository.findById(restaurantBookingId).orElseThrow(() -> new OurException("Booking Not Found"));
+
+            User user = restaurantBooking.getUser();
+            Context emailContext = new Context();
+            emailContext.setVariable("userName", user.getEmail());
+            emailContext.setVariable("restaurantName", restaurantBooking.getName());
+            emailContext.setVariable("dayCheckIn", restaurantBooking.getDayCheckIn());
+
+            emailService.sendHtmlMessage(
+                    user.getEmail(),
+                    "Xác Nhận Hủy Đặt Bàn",
+                    "restaurant-booking-cancel-confirmation",
+                    emailContext
+            );
+
+
             restaurantBookingRepository.deleteById(restaurantBookingId);
             response.setStatusCode(200);
             response.setMessage("successful");

@@ -16,6 +16,7 @@ import com.fptaptech.s4.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
@@ -30,23 +31,25 @@ public class ShuttleBookingService implements IShuttleBookingService {
     private final ShuttleBookingRepository shuttleBookingRepository;
     private final ShuttleRepository shuttleRepository;
     private final UserRepository userRepository;
+    private final EmailService emailService;
 
-    @Override
-    public Response saveShuttleBooking(Long branchId, Long shuttleId, Long userId, ShuttleBookingDTO shuttleBookingRequest)
-    {
+    public Response saveShuttleBooking(Long branchId, Long shuttleId, Long userId, ShuttleBookingDTO shuttleBookingRequest) {
         Response response = new Response();
         try {
-            Shuttle shuttle = shuttleRepository.findByIdAndBranchId(shuttleId, branchId).orElseThrow(() -> new OurException("Shuttle Not Found"));
-            User user = userRepository.findById(userId).orElseThrow(() -> new OurException("User Not Found"));
+            Shuttle shuttle = shuttleRepository.findByIdAndBranchId(shuttleId, branchId)
+                    .orElseThrow(() -> new OurException("Shuttle Not Found"));
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new OurException("User Not Found"));
 
             List<ShuttleBooking> existingBookings = shuttle.getShuttleBookings();
-
             if (!shuttleIsAvailable(shuttleBookingRequest, existingBookings)) {
                 throw new OurException("Shuttle not available for selected date range");
             }
 
-            // Calculate the total price
-            long totalBookDays = ChronoUnit.DAYS.between(shuttleBookingRequest.getShuttleCheckInDate(), shuttleBookingRequest.getShuttleCheckOutDate());
+            long totalBookDays = ChronoUnit.DAYS.between(
+                    shuttleBookingRequest.getShuttleCheckInDate(),
+                    shuttleBookingRequest.getShuttleCheckOutDate()
+            );
             BigDecimal totalPrice = shuttle.getCarPrice().multiply(BigDecimal.valueOf(totalBookDays));
 
             ShuttleBooking shuttleBooking = new ShuttleBooking();
@@ -60,9 +63,25 @@ public class ShuttleBookingService implements IShuttleBookingService {
             shuttleBooking.setBookingConfirmationCode(bookingConfirmationCode);
             shuttleBookingRepository.save(shuttleBooking);
 
+            // Prepare and send booking confirmation email
+            Context emailContext = new Context();
+            emailContext.setVariable("userName", user.getEmail());
+            emailContext.setVariable("shuttleName", shuttle.getCarType());
+            emailContext.setVariable("checkInDate", shuttleBookingRequest.getShuttleCheckInDate());
+            emailContext.setVariable("checkOutDate", shuttleBookingRequest.getShuttleCheckOutDate());
+            emailContext.setVariable("totalPrice", totalPrice);
+            emailContext.setVariable("confirmationCode", bookingConfirmationCode);
+
+            emailService.sendHtmlMessage(
+                    user.getEmail(),
+                    "Shuttle Booking Confirmation",
+                    "shuttle-booking-confirmation",
+                    emailContext
+            );
+
             ShuttleBookingDTO shuttleBookingDTO = Utils.mapShuttleBookingEntityToShuttleBookingDTOPlusShuttle(shuttleBooking);
             response.setStatusCode(200);
-            response.setMessage("successful");
+            response.setMessage("Booking successful");
             response.setBookingConfirmationCode(bookingConfirmationCode);
             response.setData(shuttleBookingDTO);
         } catch (OurException e) {
@@ -74,7 +93,6 @@ public class ShuttleBookingService implements IShuttleBookingService {
         }
         return response;
     }
-
 
 
     // Other service methods remain unchanged
@@ -127,19 +145,45 @@ public class ShuttleBookingService implements IShuttleBookingService {
     public Response cancelShuttleBooking(Long branchId, Long shuttleBookingId) {
         Response response = new Response();
         try {
-            ShuttleBooking shuttleBooking = shuttleBookingRepository.findById(shuttleBookingId).orElseThrow(() -> new OurException("Booking Not Found"));
+            // Lấy thông tin đặt chỗ
+            ShuttleBooking shuttleBooking = shuttleBookingRepository.findById(shuttleBookingId)
+                    .orElseThrow(() -> new OurException("Không tìm thấy đặt chỗ"));
+
+            // Kiểm tra xem đặt chỗ có thuộc chi nhánh này không
             if (!shuttleBooking.getShuttle().getBranch().getId().equals(branchId)) {
-                throw new OurException("Booking not found in the specified branch");
+                throw new OurException("Đặt chỗ không thuộc chi nhánh được chỉ định");
             }
+
+            // Xóa đặt chỗ
+
+
+            // Gửi email thông báo hủy đặt chỗ
+            User user = shuttleBooking.getUser();
+            Context emailContext = new Context();
+            emailContext.setVariable("userName", user.getEmail());
+            emailContext.setVariable("shuttleName", shuttleBooking.getShuttle().getCarType());
+            emailContext.setVariable("checkInDate", shuttleBooking.getShuttleCheckInDate());
+            emailContext.setVariable("checkOutDate", shuttleBooking.getShuttleCheckOutDate());
+            emailContext.setVariable("bookingConfirmationCode", shuttleBooking.getBookingConfirmationCode());
+
+            // Gửi email thông báo
+            emailService.sendHtmlMessage(
+                    user.getEmail(),
+                    "Thông Báo Hủy Đặt Chỗ Xe Đưa Đón",
+                    "shuttle-booking-cancel-confirmation",
+                    emailContext
+            );
             shuttleBookingRepository.deleteById(shuttleBookingId);
+            // Cập nhật phản hồi thành công
             response.setStatusCode(200);
-            response.setMessage("successful");
+            response.setMessage("Hủy đặt chỗ thành công");
+
         } catch (OurException e) {
             response.setStatusCode(404);
             response.setMessage(e.getMessage());
         } catch (Exception e) {
             response.setStatusCode(500);
-            response.setMessage("Error canceling shuttle booking: " + e.getMessage());
+            response.setMessage("Lỗi khi hủy đặt chỗ xe đưa đón: " + e.getMessage());
         }
         return response;
     }

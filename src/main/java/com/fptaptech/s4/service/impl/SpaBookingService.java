@@ -20,6 +20,7 @@ import com.fptaptech.s4.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ public class SpaBookingService implements ISpaBookingService {
     private final SpaRepository spaRepository;
     private final UserRepository userRepository;
     private final BranchRepository branchRepository;
+    private final EmailService emailService;
 
     @Override
     public Response saveSpaBooking(Long branchId, Long spaId, Long userId, SpaBookingDTO spaBookingRequest) {
@@ -55,6 +57,24 @@ public class SpaBookingService implements ISpaBookingService {
             spaBookingRepository.save(spaBooking);
             response.setStatusCode(200);
             response.setMessage("successful");
+
+
+            Context emailContext = new Context();
+            emailContext.setVariable("userName", user.getEmail());
+            emailContext.setVariable("SpaServiceName", spa.getSpaServiceName());
+            emailContext.setVariable("AppointmentTime", spaBookingRequest.getAppointmentTime());
+            emailContext.setVariable("Phone", spaBookingRequest.getPhone());
+            emailContext.setVariable("NumberOfPeople", spaBookingRequest.getNumberOfPeople());
+            emailContext.setVariable("Description", spaBookingRequest.getDescription());
+
+            emailService.sendHtmlMessage(
+                    user.getEmail(),
+                    "Restaurant Booking Confirmation",
+                    "restaurant-booking-confirmation",
+                    emailContext
+            );
+
+
         } catch (OurException e) {
             response.setStatusCode(404);
             response.setMessage(e.getMessage());
@@ -146,11 +166,36 @@ public class SpaBookingService implements ISpaBookingService {
     public Response cancelSpaBooking(Long branchId, Long spaBookingId) {
         Response response = new Response();
         try {
+
             SpaBooking spaBooking = spaBookingRepository.findById(spaBookingId)
                     .orElseThrow(() -> new OurException("Booking Not Found"));
-            spaBookingRepository.deleteById(spaBookingId);
+
+            // Check if the booking belongs to the specified branch
+            if (!spaBooking.getSpa().getBranch().getId().equals(branchId)) {
+                throw new OurException("Booking does not belong to the specified branch");
+            }
+
+            // Send a cancellation email to the user
+            User user = spaBooking.getUser();
+            Context emailContext = new Context();
+            emailContext.setVariable("userName", user.getEmail());
+            emailContext.setVariable("spaServiceName", spaBooking.getSpa().getSpaServiceName());
+            emailContext.setVariable("AppointmentTime", spaBooking.getAppointmentTime());
+            emailContext.setVariable("NumberOfPeople", spaBooking.getNumberOfPeople());
+            emailContext.setVariable("Description", spaBooking.getDescription());
+
+            // Send the cancellation email
+            emailService.sendHtmlMessage(
+                    user.getEmail(),
+                    "Xác Nhận Hủy Đặt Lịch Spa",
+                    "spa-booking-cancel-confirmation", // Email template name
+                    emailContext
+            );
+
+            // Set response message
             response.setStatusCode(200);
             response.setMessage("Booking canceled successfully");
+            spaBookingRepository.deleteById(spaBookingId);
         } catch (OurException e) {
             response.setStatusCode(404);
             response.setMessage(e.getMessage());
@@ -158,6 +203,7 @@ public class SpaBookingService implements ISpaBookingService {
             response.setStatusCode(500);
             response.setMessage("Error canceling spa booking: " + e.getMessage());
         }
+
         return response;
     }
 

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thông Báo Hủy Đặt Chỗ Xe Đưa Đón</title>
+</head>
+<body>
+<h2>Xin chào, <span th:text="${userName}"></span>!</h2>
+<p>Chúng tôi xin thông báo rằng đặt chỗ của bạn đã bị hủy.</p>
+<ul>
+    <li>Tên xe đưa đón: <span th:text="${shuttleName}"></span></li>
+    <li>Ngày giờ check-in: <span th:text="${checkInDate}"></span></li>
+    <li>Ngày giờ check-out: <span th:text="${checkOutDate}"></span></li>
+    <li>Mã xác nhận: <span th:text="${bookingConfirmationCode}"></span></li>
+</ul>
+<p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!</p>
+</body>
+</html>

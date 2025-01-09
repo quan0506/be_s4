@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Xác nhận dịch vụ spa</title>
+</head>
+<body>
+<h2>Xin chào, <span th:text="${userName}"></span>!</h2>
+<p>Đơn đặt dịch vụ spa của quý khách đã được xác nhận thành công</p>
+<ul>
+    <li>Dịch vụ spa: <span th:text="${SpaServiceName}"></span></li>
+    <li>Thời gian đặt: <span th:text="${AppointmentTime}"></span></li>
+    <li>Số lượng người: <span th:text="${NumberOfPeople}"></span></li>
+    <li>Thông tin chi tiết: <span th:text="${Description}"></span></li>
+</ul>
+<p>Cảm ơn bạn đã đặt dịch vụ của chúng tôi</p>
+</body>
+</html>
