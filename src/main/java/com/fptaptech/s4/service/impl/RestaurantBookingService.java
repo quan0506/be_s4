@@ -79,8 +79,8 @@ public class RestaurantBookingService implements IRestaurantBookingService {
 
             emailService.sendHtmlMessage(
                     user.getEmail(),
-                    "Shuttle Booking Confirmation",
-                    "shuttle-booking-confirmation",
+                    "Restaurant Booking Confirmation",
+                    "restaurant-booking-confirmation",
                     emailContext
             );
 
