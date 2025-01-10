@@ -70,10 +70,10 @@ public class RestaurantBookingService implements IRestaurantBookingService {
 
             Context emailContext = new Context();
             emailContext.setVariable("userName", user.getEmail());
-            emailContext.setVariable("RestaurantType", restaurant.getRestaurantType());
-            emailContext.setVariable("DayCheckIn", restaurantBooking.getDayCheckIn());
-            emailContext.setVariable("NumOfChildren", restaurantBooking.getNumOfChildren());
-            emailContext.setVariable("NumOfAdults", restaurantBooking.getNumOfAdults());
+            emailContext.setVariable("restaurantType", restaurant.getRestaurantType());
+            emailContext.setVariable("dayCheckIn", restaurantBooking.getDayCheckIn());
+            emailContext.setVariable("numOfChildren", restaurantBooking.getNumOfChildren());
+            emailContext.setVariable("numOfAdults", restaurantBooking.getNumOfAdults());
             emailContext.setVariable("totalPrice", totalPrice);
 
 

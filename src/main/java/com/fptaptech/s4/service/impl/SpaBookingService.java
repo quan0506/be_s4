@@ -61,16 +61,16 @@ public class SpaBookingService implements ISpaBookingService {
 
             Context emailContext = new Context();
             emailContext.setVariable("userName", user.getEmail());
-            emailContext.setVariable("SpaServiceName", spa.getSpaServiceName());
-            emailContext.setVariable("AppointmentTime", spaBookingRequest.getAppointmentTime());
-            emailContext.setVariable("Phone", spaBookingRequest.getPhone());
-            emailContext.setVariable("NumberOfPeople", spaBookingRequest.getNumberOfPeople());
-            emailContext.setVariable("Description", spaBookingRequest.getDescription());
+            emailContext.setVariable("spaServiceName", spa.getSpaServiceName());
+            emailContext.setVariable("appointmentTime", spaBookingRequest.getAppointmentTime());
+            emailContext.setVariable("phone", spaBookingRequest.getPhone());
+            emailContext.setVariable("numberOfPeople", spaBookingRequest.getNumberOfPeople());
+            emailContext.setVariable("description", spaBookingRequest.getDescription());
 
             emailService.sendHtmlMessage(
                     user.getEmail(),
-                    "Restaurant Booking Confirmation",
-                    "restaurant-booking-confirmation",
+                    "Xác nhận đặt Spa",
+                    "spa-booking-confirmation",
                     emailContext
             );
 
