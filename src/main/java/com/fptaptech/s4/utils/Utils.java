@@ -372,14 +372,11 @@ public class Utils {
         bookingDTO.setFirstName(booking.getUser().getFirstName());
         bookingDTO.setLastName(booking.getUser().getLastName());
         bookingDTO.setEmail(booking.getUser().getEmail());
-        bookingDTO.setPhone(bookingDTO.getPhone());
+        bookingDTO.setPhone(booking.getUser().getPhone());
+        bookingDTO.setDescription(booking.getDescription());
         logger.info("Mapped BookingDTO: {}", bookingDTO);
         return bookingDTO;
     }
-
-//shuttleDTO.setBranchId(shuttle.getBranch().getId());
-//        shuttleDTO.setBranchName(shuttle.getBranch().getBranchName());
-//        shuttleDTO.setBranchAddress(shuttle.getBranch().getAddress());
 
     public static List<BookingDTO> mapBookingListEntityToBookingListDTO(List<Booking> bookingList) {
         List<BookingDTO> bookingDTOList = new ArrayList<>();
